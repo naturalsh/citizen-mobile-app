@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>112 Operator Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Start of shift: the operator's name goes on every claim and decision (accountability),
+       and the click lets the browser play alert sounds. -->
+  <div id="start" class="overlay" role="dialog" aria-modal="true" aria-labelledby="start-title">
+    <form id="start-form" class="overlay-box">
+      <h1 id="start-title">Start shift</h1>
+      <p>Your name is recorded on every claim and urgency decision.</p>
+      <label for="operator-name">Operator name</label>
+      <input id="operator-name" name="operator" maxlength="40" autocomplete="name" required>
+      <label class="check"><input id="start-sound" type="checkbox" checked> Sound alert for new unclaimed life-threats</label>
+      <button type="submit" class="primary">Start shift</button>
+    </form>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">112</span>
+      <span>Overflow operator dashboard</span>
+      <span id="demo-tag" class="tag hidden">DEMO DATA</span>
+    </div>
+    <div id="counts" class="counts" aria-label="Incidents by urgency: click one to jump to it in the queue"></div>
+    <div class="controls">
+      <span id="freshness" class="freshness" title="Time since the last update from the server"></span>
+      <span id="ai-usage" class="muted small" title="Gemini requests counted by the spending limit"></span>
+      <button id="sound-btn" class="ghost" type="button" aria-pressed="false">🔕 Alerts off</button>
+      <button id="theme-btn" class="ghost" type="button">☀ Light</button>
+      <button id="operator-btn" class="ghost" type="button" title="Change the operator name used for your decisions"></button>
+      <button id="surge-btn" class="surge" type="button" aria-pressed="false">Surge mode</button>
+      <button id="pause-btn" class="pause" type="button" aria-pressed="false">⏸ Pause AI</button>
+    </div>
+  </header>
+  <div id="banner" class="banner hidden" role="alert"></div>
+
+  <main class="layout">
+    <section class="queue-panel" aria-label="Incident queue">
+      <div class="panel-head">
+        <h2>Queue <span id="queue-count" class="muted"></span></h2>
+        <div class="filters">
+          <label class="small">Show
+            <select id="status-filter" title="Resolved incidents are hidden from the queue and the map unless you pick them here">
+              <option value="open">Open</option>
+              <option value="resolved">Resolved</option>
+              <option value="all">All</option>
+            </select>
+          </label>
+          <label class="small">Hazard
+            <select id="hazard-filter">
+              <option value="">All</option>
+              <optgroup label="🏚️ Earthquake">
+                <option value="earthquake">🏚️ Earthquake: all</option>
+                <option value="earthquake.collapse">Earthquake: building collapse</option>
+                <option value="earthquake.damage">Earthquake: damage</option>
+              </optgroup>
+              <optgroup label="🔥 Fire">
+                <option value="fire">🔥 Fire: all</option>
+                <option value="fire.wildfire">Fire: wildfire</option>
+                <option value="fire.building">Fire: building</option>
+                <option value="fire.vehicle">Fire: vehicle</option>
+                <option value="fire.other">Fire: other</option>
+              </optgroup>
+              <optgroup label="🌊 Flood">
+                <option value="flood">🌊 Flood: all</option>
+                <option value="flood.building">Flood: water in a building</option>
+                <option value="flood.street">Flood: street / area</option>
+                <option value="flood.vehicle">Flood: vehicle in water</option>
+                <option value="flood.river">Flood: river / flash flood</option>
+              </optgroup>
+              <optgroup label="🌪️ Storm">
+                <option value="storm">🌪️ Storm: all</option>
+                <option value="storm.wind">Storm: wind damage</option>
+                <option value="storm.fallen_tree">Storm: fallen tree</option>
+                <option value="storm.power_line">Storm: power line down</option>
+                <option value="storm.lightning">Storm: lightning</option>
+              </optgroup>
+              <option value="landslide">⛰️ Landslide</option>
+              <optgroup label="⚠️ Other">
+                <option value="other">⚠️ Other: all</option>
+                <option value="other.gas_leak">Other: gas leak</option>
+                <option value="other.explosion">Other: explosion</option>
+                <option value="other.road_accident">Other: road accident</option>
+                <option value="other.other">Other: other</option>
+              </optgroup>
+              <option value="animals">🐾 Animals involved</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <p class="hint small muted">Most urgent first. Within a level: not taken, then not breathing, then most people at risk, then longest waiting. The list holds still while your mouse is over it.</p>
+      <div id="queue" class="queue"></div>
+    </section>
+
+    <section class="map-panel" aria-label="Map of incidents">
+      <div id="map"></div>
+      <div id="map-note" class="map-note small muted"></div>
+    </section>
+
+    <section class="detail-panel" aria-label="Selected incident">
+      <div id="detail" class="detail"><p class="muted empty">Select an incident in the queue or on the map.</p></div>
+    </section>
+  </main>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

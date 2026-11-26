@@ -1,0 +1,1191 @@
+[
+  {
+    "id": "el-eq-relative-trapped",
+    "description": "Samos earthquake. Caller outside, mother trapped under rubble with a suspected broken leg.",
+    "lang": "el",
+    "phone": "+30 694 100 0001",
+    "channel": "voice",
+    "turns": [
+      "Είμαι στη Σάμο, στο Βαθύ, οδός Θεμιστοκλέους 5, δίπλα στο φαρμακείο."
+    ],
+    "answers": {
+      "what_happened": "Έγινε σεισμός και έπεσε ένα μέρος του σπιτιού. Η μητέρα μου είναι κάτω από τα συντρίμμια.",
+      "people": "Είμαστε τρεις. Εγώ, η μητέρα μου και ο γιος μου. Εγώ και ο γιος μου είμαστε έξω.",
+      "danger": "Η μητέρα μου δεν μπορεί να κουνηθεί, νομίζω ότι έχει σπάσει το πόδι της. Ακούω τη φωνή της.",
+      "name": "Μαρία Παπαδοπούλου.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "address_contains": [
+        "Θεμιστοκλέους",
+        "5"
+      ],
+      "caller_name": "Παπαδοπούλου",
+      "advice_required": [
+        "earthquake.others_trapped"
+      ],
+      "advice_forbidden": [
+        "earthquake.trapped",
+        "first_aid.bleeding"
+      ]
+    }
+  },
+  {
+    "id": "el-eq-caller-trapped",
+    "description": "Caller themself trapped under a beam in a collapsed house, speaking quietly.",
+    "lang": "el",
+    "phone": "+30 697 100 0002",
+    "channel": "voice",
+    "turns": [
+      "Βοήθεια... είμαι παγιδευμένος μέσα στο σπίτι, έπεσε το ταβάνι."
+    ],
+    "answers": {
+      "area": "Στο Καρλόβασι της Σάμου, οδός Αγίου Νικολάου 12.",
+      "street": "Στο Καρλόβασι της Σάμου, οδός Αγίου Νικολάου 12.",
+      "people": "Είμαι μόνος μου. Ένα δοκάρι πατάει το πόδι μου και δεν μπορώ να βγω.",
+      "danger": "Πονάω στο πόδι αλλά δεν αιμορραγώ. Αναπνέω κανονικά, έχει πολλή σκόνη.",
+      "name": "Γιώργος Νικολάου.",
+      "yes": "Ναι."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "address_contains": [
+        "Αγίου Νικολάου",
+        "12"
+      ],
+      "caller_name": "Νικολάου",
+      "advice_required": [
+        "earthquake.trapped"
+      ],
+      "advice_forbidden": [
+        "earthquake.others_trapped",
+        "first_aid.bleeding"
+      ]
+    }
+  },
+  {
+    "id": "el-eq-cracks-no-injury",
+    "description": "Cracks in the walls after the quake, everyone outside, nobody hurt.",
+    "lang": "el",
+    "phone": "+30 693 100 0003",
+    "channel": "voice",
+    "turns": [
+      "Καλησπέρα, είμαι στο Πυθαγόρειο, στη Σάμο, οδός Λυκούργου 8."
+    ],
+    "answers": {
+      "what_happened": "Με τον σεισμό άνοιξαν μεγάλες ρωγμές στους τοίχους του σπιτιού.",
+      "people": "Είμαστε τέσσερις, όλοι βγήκαμε έξω στην αυλή.",
+      "danger": "Όχι, κανείς δεν τραυματίστηκε. Απλώς φοβόμαστε να μπούμε μέσα.",
+      "name": "Ελένη Κωστοπούλου.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "information"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "address_contains": [
+        "Λυκούργου",
+        "8"
+      ],
+      "caller_name": "Κωστοπούλου",
+      "advice_forbidden": [
+        "earthquake.trapped",
+        "earthquake.others_trapped",
+        "first_aid.bleeding"
+      ]
+    }
+  },
+  {
+    "id": "el-eq-information-only",
+    "description": "Caller only wants information: was that a big earthquake, is there a tsunami warning. Everyone fine.",
+    "lang": "el",
+    "phone": "+30 698 100 0004",
+    "channel": "voice",
+    "turns": [
+      "Γεια σας, είμαι στο Βαθύ. Θέλω απλώς να ρωτήσω πόσο μεγάλος ήταν ο σεισμός και αν υπάρχει κίνδυνος για τσουνάμι."
+    ],
+    "answers": {
+      "what_happened": "Όχι, όλοι είμαστε καλά, δεν έπαθε τίποτα το σπίτι.",
+      "people": "Είμαστε δύο.",
+      "danger": "Κανείς.",
+      "name": "Νίκος Δημητρίου.",
+      "yes": "Ναι."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "information",
+        "needs_help"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "advice_forbidden": [
+        "earthquake.trapped",
+        "earthquake.others_trapped",
+        "first_aid.bleeding"
+      ]
+    }
+  },
+  {
+    "id": "el-eq-elderly-alone",
+    "description": "Elderly woman alone, cannot walk, door jammed after the quake, not injured. Ambiguous urgency.",
+    "lang": "el",
+    "phone": "+30 2273 100005",
+    "channel": "voice",
+    "turns": [
+      "Είμαι μια ηλικιωμένη γυναίκα, μένω μόνη μου στο Βαθύ, οδός Κανάρη 3."
+    ],
+    "answers": {
+      "what_happened": "Με τον σεισμό κόλλησε η πόρτα και δεν ανοίγει. Πέσανε και πράγματα μέσα στο σπίτι.",
+      "people": "Είμαι μόνη μου. Δεν περπατάω καλά, χρησιμοποιώ περπατούρα.",
+      "danger": "Όχι, δεν χτύπησα. Φοβάμαι όμως ότι θα έρθει κι άλλος σεισμός.",
+      "name": "Αικατερίνη Βλάχου.",
+      "yes": "Ναι, έτσι είναι."
+    },
+    "expect": {
+      "life_threat": null,
+      "urgency": [
+        "urgent",
+        "life_threat",
+        "needs_help"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "address_contains": [
+        "Κανάρη",
+        "3"
+      ],
+      "caller_name": "Βλάχου",
+      "advice_forbidden": [
+        "earthquake.others_trapped",
+        "first_aid.bleeding"
+      ]
+    }
+  },
+  {
+    "id": "el-fire-approaching",
+    "description": "Wildfire 300 m from the house in Dadia, caller with two children and a car.",
+    "lang": "el",
+    "phone": "+30 695 100 0006",
+    "channel": "voice",
+    "turns": [
+      "Η φωτιά έρχεται προς το χωριό! Είμαι στη Δαδιά, στον Έβρο, στην έξοδο του χωριού προς το Σουφλί."
+    ],
+    "answers": {
+      "what_happened": "Η φωτιά είναι περίπου τριακόσια μέτρα από το σπίτι, ο καπνός είναι πολύς.",
+      "people": "Είμαι με τα δύο παιδιά μου, οκτώ και πέντε χρονών. Έχουμε αυτοκίνητο.",
+      "danger": "Όχι, κανείς δεν είναι τραυματισμένος ακόμα.",
+      "name": "Δημήτρης Αθανασίου.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat",
+        "urgent"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "wildfire",
+      "action": "end",
+      "area_contains": [
+        "Dadia"
+      ],
+      "caller_name": "Αθανασίου",
+      "advice_required": [
+        "wildfire.approaching"
+      ],
+      "advice_forbidden": [
+        "earthquake.trapped",
+        "wildfire.trapped_in_car"
+      ]
+    }
+  },
+  {
+    "id": "el-fire-trapped-in-car",
+    "description": "Caller in a car on a road, fire on both sides, cannot see for the smoke.",
+    "lang": "el",
+    "phone": "+30 690 100 0007",
+    "channel": "voice",
+    "turns": [
+      "Είμαστε μέσα στο αυτοκίνητο και η φωτιά είναι και από τις δύο μεριές του δρόμου! Δεν βλέπω τίποτα από τον καπνό!"
+    ],
+    "answers": {
+      "area": "Στον δρόμο από τη Δαδιά προς τη Λευκίμμη, στον Έβρο, λίγο μετά τη γέφυρα.",
+      "street": "Στον δρόμο από τη Δαδιά προς τη Λευκίμμη, στον Έβρο, λίγο μετά τη γέφυρα.",
+      "people": "Είμαστε δύο, εγώ και η γυναίκα μου.",
+      "danger": "Η γυναίκα μου βήχει πολύ από τον καπνό.",
+      "name": "Κώστας Ιωάννου.",
+      "yes": "Ναι."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "wildfire",
+      "action": "end",
+      "caller_name": "Ιωάννου",
+      "advice_required": [
+        "wildfire.trapped_in_car"
+      ],
+      "advice_forbidden": [
+        "wildfire.shelter_in_house",
+        "earthquake.trapped"
+      ]
+    }
+  },
+  {
+    "id": "el-flood-elderly-rising",
+    "description": "Storm Daniel style flood in Palamas, water rising to the first floor, father in a wheelchair.",
+    "lang": "el",
+    "phone": "+30 694 100 0008",
+    "channel": "voice",
+    "turns": [
+      "Το νερό μπαίνει στο σπίτι και ανεβαίνει γρήγορα! Είμαστε στον Παλαμά Καρδίτσας, οδός Ελευθερίου Βενιζέλου 20."
+    ],
+    "answers": {
+      "what_happened": "Πλημμύρισε όλη η γειτονιά, το νερό έφτασε ήδη ένα μέτρο στο ισόγειο.",
+      "people": "Είμαστε τρεις, εγώ, η μητέρα μου και ο πατέρας μου που είναι σε αναπηρικό αμαξίδιο.",
+      "danger": "Δεν μπορούμε να τον ανεβάσουμε στον πάνω όροφο, είναι βαρύς. Κανείς δεν είναι τραυματισμένος.",
+      "name": "Σοφία Γεωργίου.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "flood",
+      "action": "end",
+      "address_contains": [
+        "Βενιζέλου",
+        "20"
+      ],
+      "caller_name": "Γεωργίου",
+      "advice_required": [
+        "flood.water_rising_home"
+      ],
+      "advice_forbidden": [
+        "flood.in_car",
+        "earthquake.trapped"
+      ]
+    }
+  },
+  {
+    "id": "el-flood-car",
+    "description": "Car stuck in flood water on a road near Volos, water up to the doors.",
+    "lang": "el",
+    "phone": "+30 699 100 0009",
+    "channel": "voice",
+    "turns": [
+      "Το αυτοκίνητό μου κόλλησε μέσα στο νερό και το νερό φτάνει στις πόρτες!"
+    ],
+    "answers": {
+      "area": "Είμαι στον δρόμο από τον Βόλο προς την Αγριά, κοντά στο ρέμα.",
+      "street": "Είμαι στον δρόμο από τον Βόλο προς την Αγριά, κοντά στο ρέμα.",
+      "people": "Είμαι μόνος μου.",
+      "danger": "Δεν είμαι τραυματισμένος, αλλά το νερό ανεβαίνει.",
+      "name": "Παναγιώτης Σταθόπουλος.",
+      "yes": "Ναι."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "flood",
+      "action": "end",
+      "caller_name": "Σταθόπουλος",
+      "advice_required": [
+        "flood.in_car"
+      ],
+      "advice_forbidden": [
+        "flood.water_rising_home",
+        "earthquake.trapped"
+      ]
+    }
+  },
+  {
+    "id": "el-storm-power-line",
+    "description": "Storm knocked a tree onto a parked car and a power line is down on the road. Nobody hurt.",
+    "lang": "el",
+    "phone": "+30 693 100 0010",
+    "channel": "voice",
+    "turns": [
+      "Με την καταιγίδα έπεσε ένα δέντρο πάνω σε ένα παρκαρισμένο αυτοκίνητο και ένα καλώδιο ρεύματος είναι πεσμένο στον δρόμο."
+    ],
+    "answers": {
+      "area": "Στη Λάρισα, οδός Παπαναστασίου 45.",
+      "street": "Στη Λάρισα, οδός Παπαναστασίου 45.",
+      "people": "Είμαι μόνη μου, στο μπαλκόνι.",
+      "danger": "Όχι, κανείς δεν χτύπησε. Το αυτοκίνητο ήταν άδειο.",
+      "name": "Άννα Μαυρίδου.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "urgent",
+        "needs_help"
+      ],
+      "hazard_type": "storm",
+      "action": "end",
+      "address_contains": [
+        "Παπαναστασίου",
+        "45"
+      ],
+      "caller_name": "Μαυρίδου",
+      "advice_required": [
+        "storm.outdoors"
+      ],
+      "advice_forbidden": [
+        "first_aid.bleeding",
+        "earthquake.trapped"
+      ]
+    }
+  },
+  {
+    "id": "el-handoff-request",
+    "description": "Caller refuses to talk to a machine and insists after being told operators are busy (surge mode).",
+    "lang": "el",
+    "phone": "+30 697 100 0011",
+    "channel": "voice",
+    "turns": [
+      "Δεν θέλω να μιλάω με μηχάνημα. Θέλω να μιλήσω με άνθρωπο, τώρα!",
+      "Δεν με ενδιαφέρει, σας είπα, θέλω άνθρωπο αμέσως!"
+    ],
+    "expect": {
+      "life_threat": null,
+      "action": "handoff",
+      "handoff_reason": [
+        "caller_request"
+      ]
+    }
+  },
+  {
+    "id": "el-out-of-scope-crime",
+    "description": "Burglary in progress, not a disaster call.",
+    "lang": "el",
+    "phone": "+30 694 100 0012",
+    "channel": "voice",
+    "turns": [
+      "Κάποιος μπήκε στο σπίτι μου και ακούω θόρυβο στο σαλόνι, νομίζω ότι είναι διαρρήκτης!",
+      "Είμαι στη Θεσσαλονίκη, κρύβομαι στο υπνοδωμάτιο."
+    ],
+    "expect": {
+      "life_threat": null,
+      "action": "handoff",
+      "handoff_reason": [
+        "out_of_scope"
+      ]
+    }
+  },
+  {
+    "id": "el-sms-head-bleeding",
+    "description": "SMS. Wall collapsed onto a neighbour who is bleeding heavily from the head. The person answers the list of what is missing in one message.",
+    "lang": "el",
+    "phone": "+30 690 100 0013",
+    "channel": "sms",
+    "turns": [
+      "Σεισμός στο Βαθύ Σάμου. Έπεσε ένας τοίχος στη γειτόνισσα, αιμορραγεί πολύ από το κεφάλι!"
+    ],
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "address_contains": [
+        "Λογοθέτη",
+        "40"
+      ],
+      "caller_name": "Παππά",
+      "advice_required": [
+        "first_aid.bleeding"
+      ],
+      "advice_forbidden": [
+        "earthquake.trapped"
+      ],
+      "max_messages": 4
+    },
+    "answers": {
+      "form": "Οδός Λογοθέτη 40, Βαθύ. Είμαστε δύο, εγώ και αυτή. Έχει τις αισθήσεις της αλλά το αίμα δεν σταματάει. Ιωάννα Παππά",
+      "form_again": "Δεν ξέρω.",
+      "yes": "Ναι"
+    }
+  },
+  {
+    "id": "el-failed-call-mistake",
+    "description": "We texted after a failed 112 call; the person says it was a mistake and they are fine.",
+    "lang": "el",
+    "phone": "+30 698 100 0014",
+    "channel": "sms",
+    "trigger": {
+      "type": "failed_112_call",
+      "reason": "busy",
+      "attempted_at": null
+    },
+    "turns": [
+      "Συγγνώμη, πάτησα το 112 κατά λάθος. Είμαστε όλοι καλά."
+    ],
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "information"
+      ],
+      "action": "end"
+    }
+  },
+  {
+    "id": "el-not-breathing",
+    "description": "Man pulled from rubble is not breathing. Needs a trained operator for CPR, so the agent must hand off at once.",
+    "lang": "el",
+    "phone": "+30 697 100 0015",
+    "channel": "voice",
+    "turns": [
+      "Βγάλαμε τον γείτονα από τα συντρίμμια αλλά δεν αναπνέει! Στο Βαθύ Σάμου, οδός Κανάρη 10!",
+      "Δεν κουνιέται, δεν βλέπω να ανεβοκατεβαίνει το στήθος του."
+    ],
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat",
+        null
+      ],
+      "action": "handoff",
+      "handoff_reason": [
+        "not_breathing"
+      ]
+    }
+  },
+  {
+    "id": "el-area-only-follow-up",
+    "description": "Caller names only the neighbourhood (from a live test call). The agent must ask for the street first. Uses a real street in Koukaki (Ορλώφ) with an invented number, since the map check now searches the street inside the area.",
+    "lang": "el",
+    "phone": "+30 694 100 0021",
+    "channel": "voice",
+    "turns": [
+      "Είμαι στο Κουκάκι, στην Αθήνα. Έπεσε ένας τοίχος στον δρόμο από τον σεισμό."
+    ],
+    "answers": {
+      "street": "Οδός Ορλώφ 4, δίπλα στον φούρνο.",
+      "house_number": "Στο 4.",
+      "people": "Είμαι μόνος μου.",
+      "danger": "Δεν τραυματίστηκε κανείς.",
+      "name": "Νίκος Δοκιμάκης."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "urgent",
+        "information"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "first_reply_expects": "location",
+      "address_contains": [
+        "Ορλώφ",
+        "4"
+      ],
+      "caller_name": "Δοκιμάκης",
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-area-street-unknown",
+    "description": "Caller can't name the street even when asked again. The agent asks at most once more, confirms the area, then goes on.",
+    "lang": "el",
+    "phone": "+30 694 100 0022",
+    "channel": "voice",
+    "turns": [
+      "Είμαι κάπου στο Κερατσίνι, δεν ξέρω τον δρόμο. Ο σεισμός έριξε μια κολόνα."
+    ],
+    "answers": {
+      "street": "Δεν ξέρω, δεν βλέπω πινακίδες, είναι σκοτάδι.",
+      "people": "Είμαστε δύο.",
+      "danger": "Κανείς δεν χτύπησε.",
+      "name": "Μαρία Δοκιμάκη."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "urgent",
+        "information"
+      ],
+      "action": "end",
+      "first_reply_expects": "location",
+      "location_asks_max": 3,
+      "area_contains": [
+        "Keratsini"
+      ]
+    }
+  },
+  {
+    "id": "el-cat-surge",
+    "description": "Cat stuck in a tree during a surge (from a live test call): recorded as low priority, no handoff.",
+    "lang": "el",
+    "phone": "+30 694 100 0023",
+    "channel": "voice",
+    "turns": [
+      "Υπάρχει μια γάτα πάνω σε ένα δέντρο και δεν μπορεί να κατέβει."
+    ],
+    "answers": {
+      "area": "Στο Κερατσίνι, οδός Δοκιμής 8.",
+      "street": "Στο Κερατσίνι, οδός Δοκιμής 8.",
+      "people": "Όχι, κανένας άνθρωπος δεν κινδυνεύει.",
+      "danger": "Όχι, κανένας άνθρωπος δεν κινδυνεύει.",
+      "name": "Γιώργος Δοκιμάκης.",
+      "yes": "Ναι."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "information",
+        "needs_help"
+      ],
+      "action": "end"
+    }
+  },
+  {
+    "id": "el-cat-normal",
+    "description": "The same cat outside a surge: not a disaster call, so it goes to a person.",
+    "lang": "el",
+    "phone": "+30 694 100 0024",
+    "channel": "voice",
+    "handoff_mode": "normal",
+    "turns": [
+      "Υπάρχει μια γάτα πάνω σε ένα δέντρο και δεν μπορεί να κατέβει.",
+      "Στο Κερατσίνι, οδός Δοκιμής 8."
+    ],
+    "expect": {
+      "life_threat": false,
+      "action": "handoff",
+      "handoff_reason": [
+        "out_of_scope"
+      ]
+    }
+  },
+  {
+    "id": "el-background-speech",
+    "description": "Someone else talks in the background mid-call (from a live test call). Not a reason to hand off.",
+    "lang": "el",
+    "phone": "+30 694 100 0025",
+    "channel": "voice",
+    "turns": [
+      "Σεισμός, έπεσε ο τοίχος του κήπου στο Βαθύ Σάμου, οδός Δοκιμής 3.",
+      "Θα κρυώσεις, βάλε μπλούζα."
+    ],
+    "answers": {
+      "people": "Συγγνώμη, μιλούσε η μητέρα μου. Είμαστε δύο, κανείς δεν τραυματίστηκε.",
+      "danger": "Συγγνώμη, μιλούσε η μητέρα μου. Είμαστε δύο, κανείς δεν τραυματίστηκε.",
+      "name": "Ελένη Δοκιμάκη.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "urgent",
+        "information"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "address_contains": [
+        "Δοκιμής",
+        "3"
+      ]
+    }
+  },
+  {
+    "id": "el-hesitant-name",
+    "description": "Caller hesitates before the name (from a live test call: 'Εε, Πολιτόπουλος').",
+    "lang": "el",
+    "phone": "+30 694 100 0026",
+    "channel": "voice",
+    "turns": [
+      "Σεισμός στο Βαθύ Σάμου, οδός Δοκιμής 6. Έπεσαν σοβάδες."
+    ],
+    "answers": {
+      "people": "Είμαι μόνη μου και δεν χτύπησα, κανείς δεν κινδυνεύει.",
+      "danger": "Είμαι μόνη μου και δεν χτύπησα, κανείς δεν κινδυνεύει.",
+      "name": "Εε... Παπαδοπούλου.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": false,
+      "action": "end",
+      "caller_name": "Παπαδοπούλου",
+      "name_excludes": [
+        "εε"
+      ]
+    }
+  },
+  {
+    "id": "el-vague-port-voices",
+    "description": "From a live test call: only 'south Athens', then 'a tower with lights near a port'. The agent must keep asking until the place is named, keep every detail, and record voices under rubble as at least one trapped.",
+    "lang": "el",
+    "phone": "+30 694 100 0027",
+    "channel": "voice",
+    "turns": [
+      "Βρίσκομαι κάπου στη Νότια Αθήνα. Έγινε σεισμός και είδα ένα κτίριο να πέφτει μπροστά μου.",
+      "Είμαι κοντά σε έναν πύργο με φωτάκια, κοντά σε ένα λιμάνι.",
+      "Στο λιμάνι του Πειραιά, απέναντι από την πύλη Ε2."
+    ],
+    "answers": {
+      "people": "Είμαι μόνος μου στον δρόμο και δεν χτύπησα. Ακούω φωνές κάτω από τα συντρίμμια, δεν ξέρω πόσοι είναι.",
+      "danger": "Είμαι μόνος μου στον δρόμο και δεν χτύπησα. Ακούω φωνές κάτω από τα συντρίμμια, δεν ξέρω πόσοι είναι.",
+      "name": "Με λένε Ιωάννη Δοκιμάκη.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "first_reply_expects": "location",
+      "location_asks_min": 2,
+      "address_contains": [
+        "Ε2"
+      ],
+      "people_at_least": true,
+      "advice_forbidden": [
+        "earthquake.after_shaking"
+      ],
+      "address_not_personal": true
+    }
+  },
+  {
+    "id": "el-misheard-hospital",
+    "description": "From a live test call: speech-to-text heard 'Τζάνειο Νοσοκομείο' as 'τζάμι ο νοσοκομείο' (glass hospital). The agent must not accept it, suggest the real hospital (map check), and confirm the location word for word before other questions.",
+    "lang": "el",
+    "phone": "+30 694 100 0028",
+    "channel": "voice",
+    "turns": [
+      "Είμαι στον Πειραιά.",
+      "Κοντά στο τζάμι ο νοσοκομείο.",
+      "Το μεγάλο νοσοκομείο, έτσι το λένε.",
+      "Ναι, αυτό, στην κεντρική είσοδο."
+    ],
+    "answers": {
+      "what_happened": "Έπεσε ένα κομμάτι πρόσοψης από πολυκατοικία πάνω σε ένα παρκαρισμένο αυτοκίνητο. Ένας περαστικός χτύπησε ελαφρά στο χέρι.",
+      "people": "Είμαι μόνη μου, εγώ δεν χτύπησα.",
+      "danger": "Είμαι μόνη μου, εγώ δεν χτύπησα.",
+      "name": "Με λένε Ελένη Δοκιμάκη.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "urgent",
+        "needs_help"
+      ],
+      "action": "end",
+      "reply_contains": {
+        "3": [
+          "Τζάνει",
+          "Tzanei"
+        ]
+      },
+      "address_contains": [
+        "Τζάνει"
+      ],
+      "location_confirmed": true,
+      "location_on_map": true,
+      "address_not_personal": true,
+      "reply_not_contains": {
+        "2": [
+          "Μεταξ",
+          "Metax"
+        ]
+      }
+    }
+  },
+  {
+    "id": "el-deaths-name-correction",
+    "description": "From a friend's test call: 'Έχουν πεθάνει 5 κολόβριες και 2 μωρά' (5 [garbled] and 2 babies have died) was turned into '7 people, 1 injured', and the call ended right after the caller corrected their misheard name. Deaths must reach the report as a life threat, and the call must not end on a correction. Καλλιρρόης is in several places in Athens, so the agent first asks which neighbourhood.",
+    "lang": "el",
+    "phone": "+30 694 100 0029",
+    "channel": "voice",
+    "turns": [
+      "Βρίσκομαι στην Αθήνα, Καλλιρρόης 33.",
+      "Πέντε ενήλικες και δύο μωρά έχουν πεθάνει. Κανείς άλλος δεν είναι εγκλωβισμένος."
+    ],
+    "answers": {
+      "neighbourhood": "Στον Νέο Κόσμο.",
+      "area": "Στον Νέο Κόσμο.",
+      "what_happened": "Έπεσε μια πέτρα στο κεφάλι μου και μου άνοιξε το κεφάλι. Έχουν πεθάνει 5 κολόβριες και 2 μωρά.",
+      "people": "Πέντε ενήλικες και δύο μωρά έχουν πεθάνει. Κανείς άλλος δεν είναι εγκλωβισμένος.",
+      "danger": "Κανείς άλλος δεν είναι εγκλωβισμένος.",
+      "name": "Με λένε Αγίας Δοκιμάκης.",
+      "final_readback": "Αιγέας Δοκιμάκης."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "action": "end",
+      "people_dead_min": 5,
+      "caller_name": "Αιγέας",
+      "address_contains": [
+        "Καλλιρρόης",
+        "33"
+      ],
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-street-only-asks-number",
+    "description": "From a test call: 'Athens' and then only 'Ορλώφ' (no number) was read back and accepted. The agent must ask the neighbourhood (Orlof Street is in Akropoli/Koukaki and in Glyfada) and the house number before the read-back.",
+    "lang": "el",
+    "phone": "+30 694 100 0030",
+    "channel": "voice",
+    "turns": [
+      "Έπεσε ένας τοίχος από τον σεισμό. Είμαι στην Αθήνα, στην οδό Ορλώφ."
+    ],
+    "answers": {
+      "neighbourhood": "Στο Κουκάκι, κοντά στην Ακρόπολη.",
+      "area": "Στο Κουκάκι, κοντά στην Ακρόπολη.",
+      "house_number": "Στο νούμερο 12.",
+      "people": "Είμαι μόνος μου.",
+      "danger": "Δεν χτύπησε κανείς.",
+      "name": "Νίκος Δοκιμάκης."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "urgent",
+        "information"
+      ],
+      "hazard_type": "earthquake",
+      "action": "end",
+      "location_asks_min": 3,
+      "address_contains": [
+        "Ορλώφ",
+        "12"
+      ],
+      "location_confirmed": true,
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-street-two-neighbourhoods",
+    "description": "A full address in a whole city: 'Ορλώφ 12, Athens' exists in Akropoli/Koukaki and in Glyfada. The agent asks which neighbourhood before the read-back.",
+    "lang": "el",
+    "phone": "+30 694 100 0031",
+    "channel": "voice",
+    "turns": [
+      "Είμαι στην Αθήνα, Ορλώφ 12. Έπεσε σοβάς από ένα μπαλκόνι πάνω σε ένα αυτοκίνητο."
+    ],
+    "answers": {
+      "neighbourhood": "Στο Κουκάκι.",
+      "area": "Στο Κουκάκι.",
+      "people": "Είμαι μόνη μου.",
+      "danger": "Κανείς δεν χτύπησε.",
+      "name": "Ελένη Δοκιμάκη."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "urgent",
+        "information"
+      ],
+      "action": "end",
+      "reply_contains": {
+        "1": [
+          "περιοχή",
+          "γειτονιά",
+          "συνοικία",
+          "Γλυφάδα",
+          "Glyfada",
+          "Ακρόπολ",
+          "Κουκάκι"
+        ]
+      },
+      "address_contains": [
+        "Ορλώφ",
+        "12"
+      ],
+      "area_contains": [
+        "Koukaki"
+      ],
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-location-refuses",
+    "description": "A passer-by who can't give a street, twice: the agent keeps asking (street, landmark) but moves on after clear 'I don't know's, without looping.",
+    "lang": "el",
+    "phone": "+30 694 100 0032",
+    "channel": "voice",
+    "turns": [
+      "Βγαίνει πολύς καπνός από μια πολυκατοικία στο Παγκράτι."
+    ],
+    "answers": {
+      "street": "Δεν ξέρω τον δρόμο, είμαι περαστικός.",
+      "exact_spot": "Δεν ξέρω, δεν βλέπω καμία πινακίδα.",
+      "people": "Δεν βλέπω κανέναν, είμαι μόνος μου στον δρόμο.",
+      "danger": "Δεν ξέρω αν είναι κάποιος μέσα.",
+      "floor": "Δεν ξέρω, είμαι απ' έξω.",
+      "name": "Γιώργος Δοκιμάκης."
+    },
+    "expect": {
+      "urgency": [
+        "life_threat",
+        "urgent"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "building",
+      "action": "end",
+      "location_asks_max": 5,
+      "area_contains": [
+        "Παγκράτι"
+      ],
+      "advice_forbidden": [
+        "wildfire.approaching",
+        "wildfire.shelter_in_house",
+        "wildfire.trapped_in_car",
+        "wildfire.trapped_outdoors",
+        "wildfire.smoke"
+      ]
+    }
+  },
+  {
+    "id": "el-fire-misheard-one-word",
+    "description": "From a test call: speech-to-text heard «Φωτιά;» (fire?) where nobody said fire, and the agent gave wildfire evacuation advice at once. It must confirm first, give no fire advice, and take the correction.",
+    "lang": "el",
+    "phone": "+30 694 100 0033",
+    "channel": "voice",
+    "turns": [
+      "Είμαι στην Αθήνα, Ορλώφ 12, στο Κουκάκι.",
+      "Όχι, δεν είπα φωτιά. Έπεσε ένα δέντρο πάνω σε ένα παρκαρισμένο αυτοκίνητο, δεν υπάρχει κανείς μέσα."
+    ],
+    "answers": {
+      "what_happened": "Φωτιά;",
+      "people": "Είμαι μόνος μου.",
+      "danger": "Δεν χτύπησε κανείς.",
+      "name": "Πέτρος Δοκιμάκης."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "information",
+        "urgent"
+      ],
+      "hazard_type": "other",
+      "action": "end",
+      "reply_contains": {
+        "2": [
+          "φωτιά",
+          "Φωτιά"
+        ]
+      },
+      "advice_forbidden": [
+        "wildfire.approaching",
+        "wildfire.shelter_in_house",
+        "wildfire.trapped_in_car",
+        "wildfire.trapped_outdoors",
+        "wildfire.smoke",
+        "building_fire.get_out",
+        "building_fire.cannot_get_out",
+        "building_fire.outside_building",
+        "building_fire.clothes_on_fire"
+      ],
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-building-fire-floor",
+    "description": "A flat on fire below the caller, smoke in the stairwell, an elderly mother who can't walk well: a building fire (not a wildfire), life threat, the 'cannot get out' advice.",
+    "lang": "el",
+    "phone": "+30 694 100 0034",
+    "channel": "voice",
+    "turns": [
+      "Καίγεται το διαμέρισμα από κάτω μας! Ορλώφ 12, στο Κουκάκι, στην Αθήνα."
+    ],
+    "answers": {
+      "what_happened": "Καίγεται το διαμέρισμα από κάτω μας και ο καπνός ανεβαίνει.",
+      "people": "Είμαστε δύο, εγώ και η μητέρα μου.",
+      "danger": "Η μητέρα μου είναι 80 χρονών και δεν περπατάει καλά. Κανείς δεν είναι τραυματισμένος.",
+      "floor": "Είμαστε στον τρίτο όροφο. Η σκάλα είναι γεμάτη καπνό, δεν μπορούμε να βγούμε.",
+      "name": "Μαρία Δοκιμάκη."
+    },
+    "expect": {
+      "life_threat": true,
+      "urgency": [
+        "life_threat"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "building",
+      "action": "end",
+      "address_contains": [
+        "Ορλώφ",
+        "12"
+      ],
+      "advice_required": [
+        "building_fire.cannot_get_out"
+      ],
+      "advice_forbidden": [
+        "wildfire.approaching",
+        "wildfire.shelter_in_house",
+        "wildfire.trapped_in_car",
+        "wildfire.trapped_outdoors",
+        "wildfire.smoke"
+      ],
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-street-neighbourhood-said",
+    "description": "From a test call on 2026-10-24: the caller said Koukaki, then 'Ορλώφ', but the area stayed 'Athens' and the map found Orlof in Koukaki and in Glyfada. The street must be narrowed to Koukaki (no Glyfada question) and the house number asked.",
+    "lang": "el",
+    "phone": "+30 694 100 0035",
+    "channel": "voice",
+    "turns": [
+      "Είμαι στην Αθήνα, στο Κουκάκι."
+    ],
+    "answers": {
+      "street": "Στην Ορλώφ. Έπιασε φωτιά ένα κτίριο.",
+      "house_number": "Στο 12.",
+      "what_happened": "Έπιασε φωτιά ένα κτίριο, βγαίνει καπνός από τα παράθυρα.",
+      "people": "Είμαι έξω στον δρόμο, μόνος μου.",
+      "danger": "Δεν είναι κανείς μέσα απ' ό,τι ξέρω.",
+      "floor": "Δεν ξέρω, είμαι απ' έξω.",
+      "name": "Κώστας Δοκιμάκης."
+    },
+    "expect": {
+      "urgency": [
+        "life_threat",
+        "urgent"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "building",
+      "action": "end",
+      "area_contains": [
+        "Koukaki"
+      ],
+      "address_contains": [
+        "Ορλώφ",
+        "12"
+      ],
+      "location_confirmed": true,
+      "reply_not_contains": {
+        "2": [
+          "Γλυφάδ",
+          "Glyfada"
+        ],
+        "3": [
+          "Γλυφάδ",
+          "Glyfada"
+        ]
+      },
+      "advice_forbidden": [
+        "wildfire.approaching",
+        "wildfire.shelter_in_house",
+        "wildfire.trapped_in_car",
+        "wildfire.trapped_outdoors",
+        "wildfire.smoke"
+      ],
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-street-near-landmark",
+    "description": "From the same test call: 'Ορλώφ, near the Acropolis' in Athens. The landmark picks the Koukaki Orlof, not the one in Glyfada.",
+    "lang": "el",
+    "phone": "+30 694 100 0036",
+    "channel": "voice",
+    "turns": [
+      "Βγαίνει καπνός από μια πολυκατοικία στην Αθήνα, στην Ορλώφ, κοντά στην Ακρόπολη."
+    ],
+    "answers": {
+      "neighbourhood": "Ναι, εκεί, στο Κουκάκι.",
+      "area": "Στο Κουκάκι.",
+      "house_number": "Στο 7.",
+      "people": "Είμαι στο απέναντι πεζοδρόμιο, μόνη μου.",
+      "danger": "Δεν ξέρω αν είναι κάποιος μέσα.",
+      "floor": "Δεν ξέρω, είμαι απ' έξω.",
+      "name": "Άννα Δοκιμάκη."
+    },
+    "expect": {
+      "urgency": [
+        "life_threat",
+        "urgent"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "building",
+      "action": "end",
+      "address_contains": [
+        "Ορλώφ",
+        "7"
+      ],
+      "reply_not_contains": {
+        "2": [
+          "Γλυφάδ",
+          "Glyfada"
+        ]
+      },
+      "advice_forbidden": [
+        "wildfire.approaching",
+        "wildfire.shelter_in_house",
+        "wildfire.trapped_in_car",
+        "wildfire.trapped_outdoors",
+        "wildfire.smoke"
+      ],
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-car-fire",
+    "description": "A car on fire in a street, nobody inside (from a test call on 2026-10-26, where it was filed as 'other'). Fire · vehicle, no wildfire or building-fire advice.",
+    "lang": "el",
+    "phone": "+30 694 100 0037",
+    "channel": "voice",
+    "turns": [
+      "Πιάστηκε φωτιά σε ένα αυτοκίνητο στον δρόμο, στην Αθήνα, Ορλώφ 12, στο Κουκάκι."
+    ],
+    "answers": {
+      "what_happened": "Ένα παρκαρισμένο αυτοκίνητο καίγεται, βγαίνουν φλόγες από το καπό.",
+      "people": "Δεν είναι κανείς μέσα, ο οδηγός βγήκε.",
+      "danger": "Κανείς δεν τραυματίστηκε.",
+      "name": "Δημήτρης Δοκιμάκης."
+    },
+    "expect": {
+      "urgency": [
+        "urgent",
+        "life_threat"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "vehicle",
+      "action": "end",
+      "street_found": true,
+      "advice_forbidden": [
+        "wildfire.approaching",
+        "wildfire.shelter_in_house",
+        "wildfire.trapped_in_car",
+        "wildfire.trapped_outdoors",
+        "wildfire.smoke",
+        "building_fire.get_out",
+        "building_fire.cannot_get_out",
+        "building_fire.outside_building",
+        "building_fire.clothes_on_fire"
+      ]
+    }
+  },
+  {
+    "id": "el-flood-in-flat",
+    "description": "Water coming into a ground-floor flat in a storm: Flood · water in a building.",
+    "lang": "el",
+    "phone": "+30 694 100 0038",
+    "channel": "voice",
+    "turns": [
+      "Μπαίνει νερό στο διαμέρισμά μου από την καταιγίδα, Ορλώφ 12, Κουκάκι, Αθήνα."
+    ],
+    "answers": {
+      "what_happened": "Πλημμυρίζει το ισόγειο διαμέρισμα, το νερό φτάνει στον αστράγαλο.",
+      "people": "Είμαι με τη μητέρα μου.",
+      "danger": "Κανείς δεν τραυματίστηκε, μπορούμε να βγούμε.",
+      "name": "Σοφία Δοκιμάκη."
+    },
+    "expect": {
+      "life_threat": false,
+      "urgency": [
+        "needs_help",
+        "urgent"
+      ],
+      "hazard_type": "flood",
+      "hazard_subtype": "building",
+      "action": "end",
+      "street_found": true
+    }
+  },
+  {
+    "id": "el-cat-trapped-fire",
+    "description": "From a test call on 2026-10-26: 'I think a cat is trapped inside the building' was dropped. The animal must reach the report and the read-back, and never count as a person.",
+    "lang": "el",
+    "phone": "+30 694 100 0039",
+    "channel": "voice",
+    "turns": [
+      "Καίγεται ένα διαμέρισμα απέναντι, Ορλώφ 12, Κουκάκι, Αθήνα. Νομίζω ότι μια γάτα έχει παγιδευτεί μέσα."
+    ],
+    "answers": {
+      "people": "Είμαι στον δρόμο, δεν ξέρω αν είναι κάποιος άνθρωπος μέσα.",
+      "danger": "Μόνο τη γάτα ξέρω, ακούω να νιαουρίζει.",
+      "floor": "Είναι στον δεύτερο όροφο, εγώ είμαι απ' έξω.",
+      "name": "Ελένη Δοκιμάκη."
+    },
+    "expect": {
+      "urgency": [
+        "life_threat",
+        "urgent"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "building",
+      "action": "end",
+      "animals_min": 1,
+      "street_found": true,
+      "advice_forbidden": [
+        "wildfire.approaching",
+        "wildfire.shelter_in_house",
+        "wildfire.trapped_in_car",
+        "wildfire.trapped_outdoors",
+        "wildfire.smoke"
+      ]
+    }
+  },
+  {
+    "id": "el-whatsapp-fire-form",
+    "description": "WhatsApp. A flat next door is on fire. The person answers the list of what is missing in one message, then the reminder. A report should take three or four messages from the agent, not a dozen (a WhatsApp test on 2026-10-26).",
+    "lang": "el",
+    "phone": "+30 694 100 0040",
+    "channel": "whatsapp",
+    "turns": [
+      "Καίγεται το διπλανό διαμέρισμα, βγαίνει πολύς καπνός!"
+    ],
+    "answers": {
+      "form": "Ορλώφ 12, Κουκάκι, Αθήνα\nΕίμαστε τρεις, κανείς τραυματίας\nΜαρία Δοκιμάκη",
+      "form_again": "Τέταρτος όροφος, βγήκαμε όλοι έξω.",
+      "yes": "Ναι, σωστά."
+    },
+    "expect": {
+      "urgency": [
+        "life_threat",
+        "urgent"
+      ],
+      "hazard_type": "fire",
+      "hazard_subtype": "building",
+      "action": "end",
+      "address_contains": [
+        "Ορλώφ",
+        "12"
+      ],
+      "caller_name": "Δοκιμάκη",
+      "max_messages": 4,
+      "street_found": true
+    }
+  }
+]

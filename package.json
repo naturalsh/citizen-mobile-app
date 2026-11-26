@@ -1,18 +1,14 @@
 {
   "name": "nature-shield-citizen-mobile",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Mobile-ready civilian web app (PWA) with embedded 112 LiveKit Voice Agent for Nature Shield.",
+  "description": "Mobile-ready civilian web app (PWA) for Nature Shield — safe places, assembly points, hospitals, and offline walking routes.",
   "scripts": {
     "start": "node server.mjs",
-    "start:https": "node server.mjs --https",
-    "start:web-only": "node server.mjs --no-voice-worker",
     "dev": "node server.mjs --port 3000",
-    "voice:worker": "cd voice_agent && .venv/bin/python -m voice.agent start",
-    "voice:check": "cd voice_agent && .venv/bin/python -m voice.check",
-    "test": "node --test tests/citizen/*.test.mjs",
-    "test:voice": "cd voice_agent && .venv/bin/python -m pytest -q tests"
+    "voice": "bash scripts/start-voice-agent.sh",
+    "test": "node --test tests/citizen/*.test.mjs"
   },
   "engines": {
     "node": ">=20"

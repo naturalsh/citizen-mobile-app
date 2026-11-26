@@ -1,22 +1,17 @@
 #!/usr/bin/env node
-/* Unified local-network server for Nature Shield Citizen Mobile App + Embedded Voice Agent.
+/* Standalone mobile-ready server for the Nature Shield Citizen App.
    - Serves citizen_app/ at /app/ (and redirects / -> /app/)
    - Injects the app file manifest & content hash into /app/sw.js for offline PWA caching
+   - Applies the exact same strict Content-Security-Policy & privacy headers as drone_vision/service.py
    - Serves /public/ from the bundled local snapshot (public/), OR proxies /public/ to a live
      drone-vision backend when --api <url> or DRONE_VISION_API=<url> is set
-   - Starts the embedded Voice_Agents LiveKit worker (voice_agent/.venv/bin/python -m voice.agent start)
-     unless --no-voice-worker is passed
-   - Exposes POST /api/voice/token (invokes voice_agent/voice/mint_token.py to mint a fresh LiveKit room JWT)
-     and GET /api/voice/status
-   - Supports --https (auto-generates a local self-signed TLS cert with SANs for localhost & LAN IPs)
-     so phones on the current Wi-Fi network can grant Microphone + GPS access
+   - Binds to 0.0.0.0 by default so phones on the same Wi-Fi can open it directly
 */
 
-import {execFile, execFileSync, spawn} from 'node:child_process';
-import {createHash} from 'node:crypto';
-import {createReadStream, existsSync, mkdirSync, readdirSync, readFileSync, statSync} from 'node:fs';
+import {createHash, createHmac, randomBytes} from 'node:crypto';
+import {spawn} from 'node:child_process';
+import {createReadStream, existsSync, readdirSync, readFileSync, statSync} from 'node:fs';
 import http from 'node:http';
-import https from 'node:https';
 import {networkInterfaces} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -24,9 +19,6 @@ import {fileURLToPath} from 'node:url';
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const APP_DIR = path.join(ROOT, 'citizen_app');
 const PUBLIC_DIR = path.join(ROOT, 'public');
-const VOICE_DIR = path.join(ROOT, 'voice_agent');
-const VOICE_PYTHON = path.join(VOICE_DIR, '.venv', 'bin', 'python');
-const CERT_DIR = path.join(ROOT, '.certs');
 
 const MIME = {
     '.html': 'text/html; charset=utf-8',
@@ -45,54 +37,73 @@ const MIME = {
 const CITIZEN_HEADERS = {
     'Content-Security-Policy':
         "default-src 'self'; img-src 'self' data: blob:; worker-src 'self' blob:; child-src blob:; " +
-        "media-src 'self' blob:; connect-src 'self' wss: https:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+        "connect-src 'self' wss: https:; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     'Referrer-Policy': 'no-referrer',
     'X-Content-Type-Options': 'nosniff',
     'Permissions-Policy': 'geolocation=(self), camera=(), microphone=(self)',
     'Cache-Control': 'no-cache',
 };
 
+function loadDotEnv(filePath) {
+    const env = {};
+    if (!existsSync(filePath)) return env;
+    for (const raw of readFileSync(filePath, 'utf8').split(/\r?\n/)) {
+        const line = raw.trim();
+        if (!line || line.startsWith('#')) continue;
+        const eq = line.indexOf('=');
+        if (eq === -1) continue;
+        const key = line.slice(0, eq).trim();
+        let val = line.slice(eq + 1).trim();
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+            val = val.slice(1, -1);
+        }
+        env[key] = val;
+    }
+    return env;
+}
+
+function base64url(input) {
+    return Buffer.from(input).toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+function createLiveKitToken({apiKey, apiSecret, identity, roomName, ttlSeconds = 3600}) {
+    const now = Math.floor(Date.now() / 1000);
+    const header = base64url(JSON.stringify({alg: 'HS256', typ: 'JWT'}));
+    const payload = base64url(JSON.stringify({
+        iss: apiKey,
+        sub: identity,
+        nbf: now - 5,
+        exp: now + ttlSeconds,
+        jti: identity,
+        video: {
+            roomJoin: true,
+            room: roomName,
+            canPublish: true,
+            canSubscribe: true,
+            canPublishData: true,
+        },
+    }));
+    const sig = createHmac('sha256', apiSecret)
+        .update(`${header}.${payload}`)
+        .digest('base64')
+        .replace(/=/g, '')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_');
+    return `${header}.${payload}.${sig}`;
+}
+
 function parseArgs(argv) {
     let port = Number(process.env.PORT || 3000);
     let host = process.env.HOST || '0.0.0.0';
     let api = process.env.DRONE_VISION_API || '';
-    let useHttps = process.env.USE_HTTPS === '1' || process.env.USE_HTTPS === 'true';
-    let startWorker = process.env.START_VOICE_WORKER !== '0';
+    let withVoice = false;
     for (let i = 2; i < argv.length; i++) {
         if ((argv[i] === '--port' || argv[i] === '-p') && argv[i + 1]) port = Number(argv[++i]);
         else if (argv[i] === '--host' && argv[i + 1]) host = argv[++i];
         else if (argv[i] === '--api' && argv[i + 1]) api = argv[++i];
-        else if (argv[i] === '--https') useHttps = true;
-        else if (argv[i] === '--no-voice-worker') startWorker = false;
+        else if (argv[i] === '--with-voice') withVoice = true;
     }
-    return {port, host, api: api.replace(/\/+$/, ''), useHttps, startWorker};
-}
-
-function lanAddresses() {
-    const out = [];
-    for (const iface of Object.values(networkInterfaces())) {
-        for (const info of iface || []) {
-            if (info.family === 'IPv4' && !info.internal) out.push(info.address);
-        }
-    }
-    return out;
-}
-
-function ensureSelfSignedCert(ips) {
-    mkdirSync(CERT_DIR, {recursive: true});
-    const keyPath = path.join(CERT_DIR, 'local-key.pem');
-    const certPath = path.join(CERT_DIR, 'local-cert.pem');
-    if (!existsSync(keyPath) || !existsSync(certPath)) {
-        const san = ['DNS:localhost', 'IP:127.0.0.1', ...ips.map(ip => `IP:${ip}`)].join(',');
-        execFileSync('openssl', [
-            'req', '-x509', '-newkey', 'rsa:2048', '-nodes',
-            '-keyout', keyPath, '-out', certPath,
-            '-days', '30',
-            '-subj', '/CN=NatureShieldLocal',
-            '-addext', `subjectAltName=${san}`,
-        ], {stdio: 'pipe'});
-    }
-    return {key: readFileSync(keyPath), cert: readFileSync(certPath)};
+    return {port, host, api: api.replace(/\/+$/, ''), withVoice};
 }
 
 function citizenShell(folder) {
@@ -126,11 +137,6 @@ function safePath(baseDir, urlPath) {
     return resolved;
 }
 
-function sendJson(res, status, data) {
-    res.writeHead(status, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
-    res.end(JSON.stringify(data));
-}
-
 function sendFile(res, filePath) {
     const ext = path.extname(filePath).toLowerCase();
     res.writeHead(200, {
@@ -138,25 +144,6 @@ function sendFile(res, filePath) {
         'Content-Type': MIME[ext] || 'application/octet-stream',
     });
     createReadStream(filePath).pipe(res);
-}
-
-function readJsonBody(req) {
-    return new Promise((resolve, reject) => {
-        let raw = '';
-        req.on('data', chunk => {
-            raw += chunk;
-            if (raw.length > 65536) reject(new Error('Body too large'));
-        });
-        req.on('end', () => {
-            if (!raw.trim()) return resolve({});
-            try {
-                resolve(JSON.parse(raw));
-            } catch (err) {
-                reject(err);
-            }
-        });
-        req.on('error', reject);
-    });
 }
 
 async function proxyPublic(req, res, apiBase, urlPath) {
@@ -169,95 +156,49 @@ async function proxyPublic(req, res, apiBase, urlPath) {
         });
         res.end(body);
     } catch (err) {
-        sendJson(res, 502, {error: 'Upstream drone-vision API unreachable', detail: String(err.message || err)});
+        res.writeHead(502, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
+        res.end(JSON.stringify({error: 'Upstream drone-vision API unreachable', detail: String(err.message || err)}));
     }
 }
 
-/* ---- Embedded Voice_Agents LiveKit worker management ---- */
-
-let workerProc = null;
-
-function startVoiceWorker() {
-    if (!existsSync(VOICE_PYTHON)) {
-        console.warn('[voice-worker] Python venv not found at', VOICE_PYTHON, '— skipping auto-start.');
-        return;
-    }
-    if (!existsSync(path.join(VOICE_DIR, '.env'))) {
-        console.warn('[voice-worker] voice_agent/.env not found — skipping auto-start.');
-        return;
-    }
-    console.log('[voice-worker] Starting embedded Voice_Agents LiveKit worker...');
-    workerProc = spawn(VOICE_PYTHON, ['-m', 'voice.agent', 'start'], {
-        cwd: VOICE_DIR,
-        stdio: ['ignore', 'pipe', 'pipe'],
-    });
-    workerProc.stdout.on('data', chunk => process.stdout.write(`[voice-worker] ${chunk}`));
-    workerProc.stderr.on('data', chunk => process.stderr.write(`[voice-worker] ${chunk}`));
-    workerProc.on('exit', (code, signal) => {
-        console.log(`[voice-worker] Exited (code=${code}, signal=${signal})`);
-        workerProc = null;
-    });
-}
-
-function stopVoiceWorker() {
-    if (workerProc && !workerProc.killed) {
-        workerProc.kill('SIGTERM');
-    }
-}
-
-function mintLiveKitToken(lang) {
-    const safeLang = ['el', 'tr', 'en', 'fr'].includes(lang) ? lang : 'en';
-    return new Promise((resolve, reject) => {
-        if (!existsSync(VOICE_PYTHON)) {
-            return reject(new Error('Voice agent Python venv not installed in voice_agent/.venv'));
+function lanAddresses() {
+    const out = [];
+    for (const iface of Object.values(networkInterfaces())) {
+        for (const info of iface || []) {
+            if (info.family === 'IPv4' && !info.internal) out.push(info.address);
         }
-        execFile(
-            VOICE_PYTHON,
-            ['-m', 'voice.mint_token', '--lang', safeLang],
-            {cwd: VOICE_DIR, timeout: 10000},
-            (err, stdout, stderr) => {
-                if (err) {
-                    let detail = stderr.trim() || err.message;
-                    try {
-                        detail = JSON.parse(stderr).error || detail;
-                    } catch {
-                        // plain text stderr
-                    }
-                    return reject(new Error(detail));
-                }
-                try {
-                    resolve(JSON.parse(stdout));
-                } catch {
-                    reject(new Error('Invalid token response from voice.mint_token'));
-                }
-            },
-        );
-    });
+    }
+    return out;
 }
 
-const {port, host, api, useHttps, startWorker} = parseArgs(process.argv);
+const {port, host, api, withVoice} = parseArgs(process.argv);
 
-async function handleRequest(req, res) {
+if (withVoice) {
+    const child = spawn('bash', [path.join(ROOT, 'scripts', 'start-voice-agent.sh')], {
+        cwd: ROOT,
+        stdio: 'inherit',
+    });
+    process.on('exit', () => child.kill('SIGTERM'));
+}
+
+const server = http.createServer(async (req, res) => {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
     const pathname = url.pathname;
 
-    if (pathname === '/api/voice/status' && req.method === 'GET') {
-        return sendJson(res, 200, {
-            workerRunning: !!workerProc,
-            workerPid: workerProc?.pid ?? null,
-            venvReady: existsSync(VOICE_PYTHON),
-            envReady: existsSync(path.join(VOICE_DIR, '.env')),
-        });
-    }
-
-    if (pathname === '/api/voice/token' && req.method === 'POST') {
-        try {
-            const body = await readJsonBody(req);
-            const data = await mintLiveKitToken(body.lang || 'en');
-            return sendJson(res, 200, data);
-        } catch (err) {
-            return sendJson(res, 500, {error: String(err.message || err)});
+    if (pathname === '/api/voice/token' && (req.method === 'GET' || req.method === 'POST')) {
+        const vaEnv = loadDotEnv(path.join(ROOT, 'voice_agents', '.env'));
+        const livekitUrl = process.env.LIVEKIT_URL || vaEnv.LIVEKIT_URL || '';
+        const apiKey = process.env.LIVEKIT_API_KEY || vaEnv.LIVEKIT_API_KEY || '';
+        const apiSecret = process.env.LIVEKIT_API_SECRET || vaEnv.LIVEKIT_API_SECRET || '';
+        if (!livekitUrl || !apiKey || !apiSecret) {
+            res.writeHead(500, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
+            return res.end(JSON.stringify({error: 'LiveKit credentials not configured in voice_agents/.env'}));
         }
+        const identity = `citizen-${randomBytes(4).toString('hex')}`;
+        const room = `citizen-112-${Date.now()}-${randomBytes(3).toString('hex')}`;
+        const token = createLiveKitToken({apiKey, apiSecret, identity, roomName: room});
+        res.writeHead(200, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
+        return res.end(JSON.stringify({url: livekitUrl, token, room, identity}));
     }
 
     if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -308,30 +249,14 @@ async function handleRequest(req, res) {
 
     res.writeHead(404, CITIZEN_HEADERS);
     res.end('Not found');
-}
-
-const ips = lanAddresses();
-const scheme = useHttps ? 'https' : 'http';
-const server = useHttps
-    ? https.createServer(ensureSelfSignedCert(ips), handleRequest)
-    : http.createServer(handleRequest);
-
-if (startWorker) startVoiceWorker();
-
-for (const sig of ['SIGINT', 'SIGTERM']) {
-    process.on(sig, () => {
-        stopVoiceWorker();
-        server.close(() => process.exit(0));
-    });
-}
+});
 
 server.listen(port, host, () => {
-    console.log(`\nNature Shield Citizen Mobile App + Voice Agent running:`);
-    console.log(`  Local:        ${scheme}://127.0.0.1:${port}/app/`);
-    console.log(`  Mobile View:  ${scheme}://127.0.0.1:${port}/app/?view=mobile`);
-    for (const ip of ips) {
-        console.log(`  Phone (LAN):  ${scheme}://${ip}:${port}/app/`);
+    console.log(`\nNature Shield Citizen Mobile App running:`);
+    console.log(`  Local:        http://127.0.0.1:${port}/app/`);
+    console.log(`  Mobile View:  http://127.0.0.1:${port}/app/?view=mobile`);
+    for (const ip of lanAddresses()) {
+        console.log(`  Phone (LAN):  http://${ip}:${port}/app/`);
     }
-    console.log(`  Voice Worker: ${startWorker ? (workerProc ? `running (pid ${workerProc.pid})` : 'not started') : 'external (--no-voice-worker)'}`);
     console.log(`  Data source:  ${api ? `Live proxy -> ${api}` : 'Bundled offline snapshot (public/)'}\n`);
 });

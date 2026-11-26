@@ -1,0 +1,47 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dashboard-demo",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["-m", "dashboard", "--demo", "--port", "8001"],
+      "port": 8001
+    },
+    {
+      "name": "dashboard",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["-m", "dashboard", "--port", "8002"],
+      "port": 8002
+    },
+    {
+      "name": "messaging",
+      "runtimeExecutable": ".venv/bin/uvicorn",
+      "runtimeArgs": ["channels.messaging:app", "--port", "8000"],
+      "port": 8000
+    },
+    {
+      "name": "messaging-8010",
+      "runtimeExecutable": ".venv/bin/uvicorn",
+      "runtimeArgs": ["channels.messaging:app", "--port", "8010"],
+      "port": 8010
+    },
+    {
+      "name": "joint-dashboard",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd '../OPERATOR-JOINT-DASHBOARD' && exec npx vite --port 5180 --strictPort"],
+      "port": 5180
+    },
+    {
+      "name": "joint-hub",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd '../OPERATOR-JOINT-DASHBOARD' && exec .venv/bin/python -m hub"],
+      "port": 8020
+    },
+    {
+      "name": "dashboard-share",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": ["-m", "dashboard", "--share"],
+      "port": 8003
+    }
+  ]
+}

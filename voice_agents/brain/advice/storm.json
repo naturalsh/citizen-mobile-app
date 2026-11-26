@@ -1,0 +1,32 @@
+{
+  "_status": "Built from official Greek and Turkish guidance; sources and decisions per topic in brain/advice/SOURCES.md. Greek and Turkish still need a native-speaker read.",
+  "hazard": "storm",
+  "topics": {
+    "indoors": {
+      "when": "A storm or strong wind is hitting and the caller is indoors, including when the roof or windows are damaged.",
+      "en": "Stay inside and away from windows and glass doors, and do not go out to fix damage during the storm. During lightning, do not touch water pipes or plugged-in electrical devices. If part of the roof or walls is damaged, move everyone to the safest inner room.",
+      "el": "Μείνετε μέσα, μακριά από παράθυρα και τζαμαρίες, και μη βγείτε έξω να επισκευάσετε ζημιές όσο διαρκεί η καταιγίδα. Όσο πέφτουν κεραυνοί, μην ακουμπάτε σωλήνες νερού ή ηλεκτρικές συσκευές στην πρίζα. Αν χάλασε μέρος της σκεπής ή των τοίχων, μετακινηθείτε όλοι στο πιο ασφαλές εσωτερικό δωμάτιο.",
+      "tr": "İçeride, pencerelerden ve cam kapılardan uzakta kalın; fırtına sürerken hasarı onarmak için dışarı çıkmayın. Şimşek çakarken su borularına ve prize takılı elektrikli aletlere dokunmayın. Çatının ya da duvarların bir kısmı hasar gördüyse herkesle birlikte en güvenli iç odaya geçin.",
+      "fr": "Restez à l'intérieur, loin des fenêtres et des baies vitrées, et ne sortez pas réparer les dégâts pendant la tempête. Pendant l'orage, ne touchez pas les tuyaux d'eau ni les appareils branchés. Si une partie du toit ou des murs est endommagée, allez tous dans la pièce intérieure la plus sûre.",
+      "sms": {
+        "en": "Stay in, away from windows. No pipes or plugged-in devices in lightning. Use an inner room.",
+        "el": "Μείνετε μέσα, μακριά από τζάμια. Όχι σωλήνες ή συσκευές στους κεραυνούς. Σε εσωτερικό δωμάτιο.",
+        "tr": "İçeride, camlardan uzak kalın. Şimşekte boru ve prizdeki aletlere dokunmayın. İç odaya geçin.",
+        "fr": "Restez dedans, loin des vitres. Pas de tuyaux ni d'appareils branchés. Pièce intérieure."
+      }
+    },
+    "outdoors": {
+      "when": "A storm is hitting right now and the caller is outdoors, or reports trees or power lines brought down by the storm. Not for a fallen tree or cable without a storm (e.g. during a fire or an earthquake).",
+      "en": "Get into a building or a car if you can. Never shelter under a tall tree, and keep away from power lines, poles, signs and balconies. Stay well away from fallen cables and anything touching them, and do not try to move them.",
+      "el": "Μπείτε σε κτίριο ή αυτοκίνητο αν μπορείτε. Μην καταφύγετε ποτέ κάτω από ψηλό δέντρο και μείνετε μακριά από καλώδια, κολόνες, πινακίδες και μπαλκόνια. Μείνετε μακριά από πεσμένα καλώδια και από ό,τι τα ακουμπάει, και μην προσπαθήσετε να τα μετακινήσετε.",
+      "tr": "Mümkünse bir binaya ya da araca girin. Asla yüksek bir ağacın altına sığınmayın; elektrik hatlarından, direklerden, tabelalardan ve balkonlardan uzak durun. Kopmuş kablolardan ve onlara değen her şeyden uzak durun, onları kaldırmaya çalışmayın.",
+      "fr": "Entrez dans un bâtiment ou une voiture si possible. Ne vous abritez jamais sous un grand arbre, et éloignez-vous des lignes électriques, poteaux, panneaux et balcons. Restez loin des câbles tombés et de ce qui les touche, et n'essayez pas de les déplacer.",
+      "sms": {
+        "en": "Get into a building or car. Not under trees. Stay well away from fallen cables.",
+        "el": "Μπείτε σε κτίριο ή αυτοκίνητο. Όχι κάτω από δέντρα. Μακριά από πεσμένα καλώδια.",
+        "tr": "Bina ya da araca girin. Ağaç altına değil. Kopmuş kablolardan uzak durun.",
+        "fr": "Entrez dans un bâtiment ou une voiture. Pas sous un arbre. Loin des câbles tombés."
+      }
+    }
+  }
+}

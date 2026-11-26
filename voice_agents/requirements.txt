@@ -1,0 +1,15 @@
+google-genai>=2.31
+python-dotenv>=1.0
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+twilio>=9.0
+livekit-agents>=1.8.8
+psutil>=5.9  # voice/load.py; already installed with livekit-agents
+livekit-plugins-soniox>=1.8.8
+livekit-plugins-cartesia>=1.8.8
+livekit-plugins-silero>=1.8.8
+livekit-plugins-azure>=1.8.8
+livekit-plugins-noise-cancellation>=0.3.2
+livekit-plugins-elevenlabs>=1.8.8
+elevenlabs>=2.74

@@ -1,20 +1,11 @@
 .DS_Store
 node_modules/
 dist/
-output/
 *.log
 .env
 .env.*
-.certs/
-
-# Embedded Voice_Agents runtime / secrets / recordings
-voice_agent/.env
-voice_agent/.env.*
-!voice_agent/.env.example
-voice_agent/.venv
-voice_agent/.venv/
-voice_agent/.pytest_cache/
-voice_agent/output/
-voice_agent/voice/recordings/
-voice_agent/**/__pycache__/
-*.pyc
+voice_agents/.env
+voice_agents/.venv/
+voice_agents/output/
+**/__pycache__/
+**/.pytest_cache/

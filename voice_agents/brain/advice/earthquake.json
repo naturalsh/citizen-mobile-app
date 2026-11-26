@@ -1,0 +1,84 @@
+{
+  "_status": "Built from official Greek and Turkish guidance; sources and decisions per topic in brain/advice/SOURCES.md. Greek and Turkish still need a native-speaker read.",
+  "hazard": "earthquake",
+  "topics": {
+    "during_shaking": {
+      "when": "The ground is shaking right now and the caller is indoors.",
+      "en": "Stay inside. Get under a sturdy table, kneel and hold on to its leg. If there is none, get low in the middle of the room and cover your head and neck with your arms. Keep away from windows, and do not go onto the balcony.",
+      "el": "Μείνετε μέσα. Μπείτε κάτω από ένα γερό τραπέζι, γονατίστε και κρατηθείτε από το πόδι του. Αν δεν υπάρχει, σκύψτε χαμηλά στη μέση του δωματίου και προστατέψτε το κεφάλι και τον λαιμό σας με τα χέρια. Μείνετε μακριά από τα παράθυρα και μη βγείτε στο μπαλκόνι.",
+      "tr": "İçeride kalın. Sağlam bir masanın altına girin, diz çökün ve masanın ayağına tutunun. Masa yoksa odanın ortasında yere çökün, başınızı ve boynunuzu kollarınızla koruyun. Pencerelerden uzak durun, balkona çıkmayın.",
+      "fr": "Restez à l'intérieur. Mettez-vous sous une table solide, à genoux, et tenez-en un pied. Sinon, baissez-vous au milieu de la pièce et protégez votre tête et votre nuque avec vos bras. Éloignez-vous des fenêtres et n'allez pas sur le balcon.",
+      "sms": {
+        "en": "Get under a sturdy table, hold its leg. No table: crouch, cover your head. Away from windows.",
+        "el": "Κάτω από γερό τραπέζι, κρατήστε το πόδι του. Αλλιώς σκύψτε, καλύψτε το κεφάλι. Μακριά από παράθυρα.",
+        "tr": "Sağlam masanın altına girin, ayağına tutunun. Yoksa çökün, başınızı koruyun. Pencereden uzak durun.",
+        "fr": "Sous une table solide, tenez un pied. Sinon, baissez-vous, protégez la tête. Loin des fenêtres."
+      }
+    },
+    "outdoors_or_car": {
+      "when": "The ground is shaking right now and the caller is outdoors or driving.",
+      "en": "If you are outside, move away from buildings, power lines and slopes, and cover your head. If you are driving, slow down and stop in an open spot, away from bridges and tunnels, and stay in the car until the shaking stops.",
+      "el": "Αν είστε έξω, απομακρυνθείτε από κτίρια, καλώδια ρεύματος και πλαγιές και καλύψτε το κεφάλι σας. Αν οδηγείτε, κόψτε ταχύτητα και σταματήστε σε ανοιχτό σημείο, μακριά από γέφυρες και σήραγγες, και μείνετε στο αυτοκίνητο μέχρι να σταματήσει η δόνηση.",
+      "tr": "Dışarıdaysanız binalardan, elektrik hatlarından ve yamaçlardan uzaklaşın, başınızı koruyun. Araç kullanıyorsanız yavaşlayın, köprü ve tünellerden uzak açık bir yerde durun ve sarsıntı bitene kadar araçta kalın.",
+      "fr": "Si vous êtes dehors, éloignez-vous des bâtiments, des lignes électriques et des pentes, et protégez votre tête. Si vous conduisez, ralentissez et arrêtez-vous dans un endroit dégagé, loin des ponts et des tunnels, et restez dans la voiture jusqu'à la fin des secousses.",
+      "sms": {
+        "en": "Outside: away from buildings, power lines, slopes. Driving: stop in the open, stay in the car.",
+        "el": "Έξω: μακριά από κτίρια, καλώδια, πλαγιές. Στο αυτοκίνητο: σταματήστε σε ανοιχτό χώρο, μείνετε μέσα.",
+        "tr": "Dışarıda: binalardan, hatlardan, yamaçlardan uzak durun. Araçta: açıkta durun, içeride kalın.",
+        "fr": "Dehors : loin des bâtiments, lignes, pentes. En voiture : arrêtez-vous à découvert, restez dedans."
+      }
+    },
+    "trapped": {
+      "when": "The caller themself is trapped under rubble or inside a damaged building.",
+      "en": "Do not light matches or lighters. Cover your mouth with cloth and move as little as possible. Tap on a pipe or wall so rescuers can hear you, and shout only as a last resort to save your strength.",
+      "el": "Μην ανάβετε σπίρτα ή αναπτήρες. Καλύψτε το στόμα σας με ένα ύφασμα και κινηθείτε όσο λιγότερο γίνεται. Χτυπάτε σε έναν σωλήνα ή στον τοίχο για να σας ακούσουν οι διασώστες, και φωνάξτε μόνο αν δεν υπάρχει άλλη λύση, για να μην εξαντληθείτε.",
+      "tr": "Kibrit veya çakmak yakmayın. Ağzınızı bir bezle kapatın ve olabildiğince az hareket edin. Kurtarma ekiplerinin sizi duyması için bir boruya veya duvara vurun; gücünüzü korumak için ancak son çare olarak bağırın.",
+      "fr": "N'allumez ni allumette ni briquet. Couvrez-vous la bouche avec un tissu et bougez le moins possible. Tapez sur un tuyau ou un mur pour que les secours vous entendent, et ne criez qu'en dernier recours pour garder vos forces.",
+      "sms": {
+        "en": "No flames. Cover your mouth with cloth, move little, tap on pipes or walls.",
+        "el": "Όχι φλόγες. Καλύψτε το στόμα με πανί, κινηθείτε λίγο, χτυπάτε σωλήνες ή τοίχο.",
+        "tr": "Ateş yakmayın. Ağzınızı bezle kapatın, az hareket edin, boruya veya duvara vurun.",
+        "fr": "Pas de flamme. Couvrez votre bouche, bougez peu, tapez sur tuyaux ou murs."
+      }
+    },
+    "others_trapped": {
+      "when": "Someone else (not the caller) is trapped under rubble or inside a damaged building, and the caller is outside it.",
+      "en": "Do not go into the damaged building yourself, because of aftershocks. Stay close enough to hear them, keep talking to them, and tell rescuers exactly where you hear them.",
+      "el": "Μην μπείτε μόνοι σας στο κατεστραμμένο κτίριο, λόγω των μετασεισμών. Μείνετε αρκετά κοντά για να τους ακούτε, συνεχίστε να τους μιλάτε και πείτε στους διασώστες ακριβώς από πού τους ακούτε.",
+      "tr": "Artçı sarsıntılar nedeniyle hasarlı binaya kendiniz girmeyin. Onları duyabileceğiniz kadar yakında kalın, onlarla konuşmaya devam edin ve kurtarma ekiplerine seslerini tam olarak nereden duyduğunuzu söyleyin.",
+      "fr": "N'entrez pas vous-même dans le bâtiment endommagé, à cause des répliques. Restez assez près pour les entendre, continuez à leur parler et indiquez aux secours exactement d'où vous les entendez.",
+      "sms": {
+        "en": "Don't enter the building. Stay near, keep talking to them, show rescuers where.",
+        "el": "Μην μπείτε στο κτίριο. Μείνετε κοντά, μιλάτε τους, δείξτε το σημείο στους διασώστες.",
+        "tr": "Binaya girmeyin. Yakında kalın, onlarla konuşun, yerlerini ekiplere gösterin.",
+        "fr": "N'entrez pas. Restez proche, parlez-leur, montrez l'endroit aux secours."
+      }
+    },
+    "after_shaking": {
+      "when": "The shaking has stopped and the caller said they are inside a building, or smells gas inside one. Not for a caller who is outside or only near a building.",
+      "en": "Leave the building carefully by the stairs, not the lift. Turn off the gas if you can, and if you smell gas, do not use any flame or switch. Go to an open area away from buildings, expect aftershocks, and do not go back into a damaged building.",
+      "el": "Βγείτε προσεκτικά από το κτίριο από τις σκάλες, όχι με τον ανελκυστήρα. Κλείστε το γκάζι αν μπορείτε, και αν μυρίζει γκάζι, μην ανάψετε φλόγα και μην πατήσετε διακόπτες. Πηγαίνετε σε ανοιχτό χώρο μακριά από κτίρια, να περιμένετε μετασεισμούς και μην ξαναμπείτε σε κτίριο με ζημιές.",
+      "tr": "Binadan merdivenleri kullanarak dikkatlice çıkın, asansörü kullanmayın. Yapabiliyorsanız gazı kapatın; gaz kokusu varsa ateş yakmayın ve elektrik düğmelerine dokunmayın. Binalardan uzak açık bir alana gidin, artçı sarsıntılara hazırlıklı olun ve hasarlı binaya geri girmeyin.",
+      "fr": "Sortez prudemment par l'escalier, pas par l'ascenseur. Coupez le gaz si vous le pouvez, et si vous sentez le gaz, n'utilisez ni flamme ni interrupteur. Allez dans un endroit dégagé loin des bâtiments, attendez-vous à des répliques et ne retournez pas dans un bâtiment endommagé.",
+      "sms": {
+        "en": "Leave by the stairs, not the lift. Smell gas? No flames or switches. Go to open ground.",
+        "el": "Βγείτε από τις σκάλες, όχι ασανσέρ. Μυρίζει γκάζι; Όχι φλόγες ή διακόπτες. Σε ανοιχτό χώρο.",
+        "tr": "Merdivenle çıkın, asansörle değil. Gaz kokusu varsa ateş ve düğme yok. Açık alana gidin.",
+        "fr": "Sortez par l'escalier. Odeur de gaz ? Ni flamme ni interrupteur. Allez à découvert."
+      }
+    },
+    "tsunami": {
+      "when": "The caller is near the sea after a strong earthquake, or reports the sea suddenly rising or pulling back.",
+      "en": "Move away from the sea now, inland or to higher ground, on foot if you can. Do not wait for an official warning, and do not go to the shore to watch. Stay away until the authorities say it is safe, because more waves can follow.",
+      "el": "Απομακρυνθείτε τώρα από τη θάλασσα, προς την ενδοχώρα ή σε ψηλότερο σημείο, με τα πόδια αν μπορείτε. Μην περιμένετε επίσημη προειδοποίηση και μην πάτε στην ακτή να δείτε. Μείνετε μακριά μέχρι να πουν οι Αρχές ότι είναι ασφαλές, γιατί μπορεί να έρθουν κι άλλα κύματα.",
+      "tr": "Hemen denizden uzaklaşın, iç kesimlere ya da yüksek bir yere gidin, mümkünse yürüyerek. Resmî uyarıyı beklemeyin ve kıyıya bakmaya gitmeyin. Yetkililer tehlikenin geçtiğini söyleyene kadar uzak durun, çünkü başka dalgalar gelebilir.",
+      "fr": "Éloignez-vous de la mer maintenant, vers l'intérieur ou un endroit en hauteur, à pied si possible. N'attendez pas d'alerte officielle et n'allez pas regarder sur la côte. Restez à l'écart jusqu'à ce que les autorités disent que c'est sûr, car d'autres vagues peuvent suivre.",
+      "sms": {
+        "en": "Leave the shore now, go inland or uphill. Don't wait for a warning. Don't go back yet.",
+        "el": "Φύγετε τώρα από την ακτή, προς τα μέσα ή ψηλά. Μην περιμένετε προειδοποίηση.",
+        "tr": "Hemen kıyıdan uzaklaşın, içeri veya yükseğe gidin. Uyarı beklemeyin.",
+        "fr": "Quittez la côte, allez à l'intérieur ou en hauteur. N'attendez pas l'alerte."
+      }
+    }
+  }
+}

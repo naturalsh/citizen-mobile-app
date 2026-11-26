@@ -1,0 +1,265 @@
+[
+  {
+    "id": "tr-eq-building-collapse",
+    "description": "İzmir earthquake. Apartment building collapsed, voices inside, caller and brother outside, brother's arm bleeding.",
+    "lang": "tr", "phone": "+90 532 200 0001", "channel": "voice",
+    "turns": [
+      "İzmir Bayraklı'dayım, Manas Bulvarı 12, karşımızdaki apartman çöktü!"
+    ],
+    "answers": {
+      "what_happened": "Deprem oldu, bina tamamen yıkıldı. İçeriden sesler geliyor.",
+      "people": "Ben ve kardeşim dışarıdayız. İçeride belki on kişi var.",
+      "danger": "Kardeşimin kolu kanıyor ama yürüyebiliyor.",
+      "name": "Adım Mehmet Yılmaz.",
+      "yes": "Evet, doğru."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "earthquake", "action": "end",
+      "address_contains": ["Manas", "12"], "caller_name": "Yılmaz",
+      "advice_required": ["earthquake.others_trapped"],
+      "advice_forbidden": ["earthquake.trapped"]
+    }
+  },
+  {
+    "id": "tr-eq-caller-trapped",
+    "description": "Caller trapped under rubble with her child.",
+    "lang": "tr", "phone": "+90 533 200 0002", "channel": "voice",
+    "turns": [
+      "Enkaz altındayım, kızımla birlikte! Lütfen yardım edin!"
+    ],
+    "answers": {
+      "area": "İzmir Bornova, Kazımdirik Mahallesi, Lale Sokak No 7.",
+      "street": "İzmir Bornova, Kazımdirik Mahallesi, Lale Sokak No 7.",
+      "people": "İkimiz varız, ben ve altı yaşındaki kızım.",
+      "danger": "Kızım ağlıyor ama yaralı değil gibi. Benim bacağım sıkıştı.",
+      "name": "Zeynep Kaya.",
+      "yes": "Evet."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "earthquake", "action": "end",
+      "address_contains": ["Lale", "7"], "caller_name": "Kaya",
+      "advice_required": ["earthquake.trapped"],
+      "advice_forbidden": ["earthquake.others_trapped", "first_aid.bleeding"]
+    }
+  },
+  {
+    "id": "tr-eq-gas-smell",
+    "description": "Gas smell in the building after the quake, everyone out, nobody hurt. Ambiguous urgency.",
+    "lang": "tr", "phone": "+90 535 200 0003", "channel": "voice",
+    "turns": [
+      "Depremden sonra binada çok yoğun gaz kokusu var."
+    ],
+    "answers": {
+      "area": "İzmir Karşıyaka, Cemal Gürsel Caddesi No 150.",
+      "street": "İzmir Karşıyaka, Cemal Gürsel Caddesi No 150.",
+      "people": "Binada sekiz daire var, herkes dışarı çıktı.",
+      "danger": "Hayır, yaralı yok.",
+      "name": "Ali Demir.",
+      "yes": "Evet, doğru."
+    },
+    "expect": {
+      "life_threat": null, "urgency": ["urgent", "needs_help", "life_threat"], "hazard_type": "earthquake", "action": "end",
+      "address_contains": ["Cemal Gürsel", "150"], "caller_name": "Demir",
+      "advice_required": ["earthquake.after_shaking"],
+      "advice_forbidden": ["earthquake.trapped", "earthquake.others_trapped"]
+    }
+  },
+  {
+    "id": "tr-eq-information-only",
+    "description": "Caller only wants to know if aftershocks are expected. Everyone fine.",
+    "lang": "tr", "phone": "+90 532 200 0004", "channel": "voice",
+    "turns": [
+      "Merhaba, Çeşme'deyim. Sadece artçı deprem olacak mı diye sormak istiyorum."
+    ],
+    "answers": {
+      "what_happened": "Hayır, hepimiz iyiyiz, evde hasar yok.",
+      "people": "Üç kişiyiz.",
+      "danger": "Kimse yaralı değil.",
+      "name": "Ayşe Çelik.",
+      "yes": "Evet."
+    },
+    "expect": {
+      "life_threat": false, "urgency": ["information", "needs_help"], "hazard_type": "earthquake", "action": "end",
+      "advice_forbidden": ["earthquake.trapped", "earthquake.others_trapped", "first_aid.bleeding"]
+    }
+  },
+  {
+    "id": "tr-fire-shelter-house",
+    "description": "Forest fire reached the garden in Marmaris, road blocked, four people inside the house.",
+    "lang": "tr", "phone": "+90 536 200 0005", "channel": "voice",
+    "turns": [
+      "Orman yangını bahçeye kadar geldi, yol kapandı, çıkamıyoruz!"
+    ],
+    "answers": {
+      "area": "Muğla Marmaris, Içmeler Mahallesi, Kayabal Caddesi No 22.",
+      "street": "Muğla Marmaris, Içmeler Mahallesi, Kayabal Caddesi No 22.",
+      "people": "Evde dört kişiyiz, iki yaşlı var.",
+      "danger": "Şimdilik yaralı yok ama duman eve giriyor.",
+      "name": "Hasan Öztürk.",
+      "yes": "Evet, doğru."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "fire", "hazard_subtype": "wildfire", "action": "end",
+      "address_contains": ["Kayabal", "22"], "caller_name": "Öztürk",
+      "advice_required": ["wildfire.shelter_in_house"],
+      "advice_forbidden": ["wildfire.trapped_in_car", "earthquake.trapped"]
+    }
+  },
+  {
+    "id": "tr-fire-trapped-outdoors",
+    "description": "Hiker on foot surrounded by fire in the forest near Manavgat.",
+    "lang": "tr", "phone": "+90 537 200 0006", "channel": "voice",
+    "turns": [
+      "Ormanda yürüyüş yapıyordum, etrafım ateşle sarıldı!"
+    ],
+    "answers": {
+      "area": "Antalya Manavgat, Oymapınar barajının yakınındaki patikadayım.",
+      "street": "Antalya Manavgat, Oymapınar barajının yakınındaki patikadayım.",
+      "people": "Yalnızım.",
+      "danger": "Yaralı değilim ama nefes almak zorlaşıyor.",
+      "name": "Burak Arslan.",
+      "yes": "Evet."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "fire", "hazard_subtype": "wildfire", "action": "end",
+      "caller_name": "Arslan",
+      "advice_required": ["wildfire.trapped_outdoors"],
+      "advice_forbidden": ["wildfire.shelter_in_house", "wildfire.trapped_in_car"]
+    }
+  },
+  {
+    "id": "tr-flood-roof",
+    "description": "Flash flood in Bozkurt, family climbed onto the roof, water still rising.",
+    "lang": "tr", "phone": "+90 538 200 0007", "channel": "voice",
+    "turns": [
+      "Sel bastı, su çok hızlı yükseliyor! Çatıya çıktık!"
+    ],
+    "answers": {
+      "area": "Kastamonu Bozkurt, Ezine Çayı'nın yanındaki Cumhuriyet Caddesi No 9.",
+      "street": "Kastamonu Bozkurt, Ezine Çayı'nın yanındaki Cumhuriyet Caddesi No 9.",
+      "people": "Beş kişiyiz, iki küçük çocuk var.",
+      "danger": "Yaralı yok ama su hâlâ yükseliyor.",
+      "name": "Fatma Şahin.",
+      "yes": "Evet."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "flood", "action": "end",
+      "address_contains": ["Cumhuriyet", "9"], "caller_name": "Şahin",
+      "advice_required": ["flood.water_rising_home"],
+      "advice_forbidden": ["flood.in_car"]
+    }
+  },
+  {
+    "id": "tr-flood-shop-minor",
+    "description": "Rain water flooded a shop on the street. Nobody at risk.",
+    "lang": "tr", "phone": "+90 539 200 0008", "channel": "voice",
+    "turns": [
+      "Yağmurdan dükkanımı su bastı."
+    ],
+    "answers": {
+      "area": "İzmir Konak, Kemeraltı, Anafartalar Caddesi No 80.",
+      "street": "İzmir Konak, Kemeraltı, Anafartalar Caddesi No 80.",
+      "people": "Sadece ben varım, dükkanın önündeyim.",
+      "danger": "Hayır, kimse yaralı değil, sadece mallar ıslandı.",
+      "name": "Emre Koç.",
+      "yes": "Evet, doğru."
+    },
+    "expect": {
+      "life_threat": false, "urgency": ["needs_help", "information"], "hazard_type": "flood", "action": "end",
+      "address_contains": ["Anafartalar", "80"], "caller_name": "Koç",
+      "advice_forbidden": ["flood.water_rising_home", "flood.in_car", "first_aid.bleeding"]
+    }
+  },
+  {
+    "id": "tr-storm-roof-blown",
+    "description": "Storm blew the roof off, family sheltering in one room, one small cut.",
+    "lang": "tr", "phone": "+90 532 200 0009", "channel": "voice",
+    "turns": [
+      "Fırtına evin çatısını uçurdu!"
+    ],
+    "answers": {
+      "area": "Mersin Silifke, Atakent Mahallesi, Gül Sokak No 4.",
+      "street": "Mersin Silifke, Atakent Mahallesi, Gül Sokak No 4.",
+      "people": "Dört kişiyiz, hepimiz bir odada toplandık.",
+      "danger": "Oğlumun elinde küçük bir kesik var, o kadar.",
+      "name": "Murat Aydın.",
+      "yes": "Evet."
+    },
+    "expect": {
+      "life_threat": false, "urgency": ["urgent", "needs_help"], "hazard_type": "storm", "action": "end",
+      "address_contains": ["Gül", "4"], "caller_name": "Aydın",
+      "advice_required": ["storm.indoors"],
+      "advice_forbidden": ["earthquake.trapped"]
+    }
+  },
+  {
+    "id": "tr-unconscious-breathing",
+    "description": "After the quake the caller's father is unconscious but breathing.",
+    "lang": "tr", "phone": "+90 533 200 0010", "channel": "voice",
+    "turns": [
+      "Babam depremde başını çarptı, bayıldı, uyanmıyor!"
+    ],
+    "answers": {
+      "area": "Hatay Antakya, Cumhuriyet Mahallesi, İnönü Caddesi No 33.",
+      "street": "Hatay Antakya, Cumhuriyet Mahallesi, İnönü Caddesi No 33.",
+      "people": "Evde üç kişiyiz.",
+      "danger": "Nefes alıyor ama cevap vermiyor.",
+      "name": "Elif Güneş.",
+      "yes": "Evet."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "earthquake", "action": "end",
+      "address_contains": ["İnönü", "33"], "caller_name": "Güneş",
+      "advice_required": ["first_aid.unconscious_breathing"],
+      "advice_forbidden": ["earthquake.trapped", "earthquake.others_trapped"]
+    }
+  },
+  {
+    "id": "tr-handoff-request",
+    "description": "Caller refuses to talk to a robot and insists after being told operators are busy (surge mode).",
+    "lang": "tr", "phone": "+90 534 200 0011", "channel": "voice",
+    "turns": [
+      "Robotla konuşmak istemiyorum, lütfen bir insana bağlayın.",
+      "Hayır, dinlemiyorum, hemen bir insanla konuşmak istiyorum!"
+    ],
+    "expect": {
+      "life_threat": null, "action": "handoff", "handoff_reason": ["caller_request"]
+    }
+  },
+  {
+    "id": "tr-whatsapp-broken-leg",
+    "description": "WhatsApp. Neighbour fell during the quake, suspected broken leg, not bleeding. Ambiguous urgency.",
+    "lang": "tr", "phone": "+90 535 200 0012", "channel": "whatsapp",
+    "turns": [
+      "Deprem sırasında komşum merdivenden düştü, bacağı kırılmış gibi duruyor."
+    ],
+    "answers": {
+      "form": "İzmir Buca, Şirinyer, Gazi Caddesi No 18. Ben ve komşum, iki kişiyiz. Kanama yok ama bacağını hiç oynatamıyor. Serkan Polat",
+      "form_again": "Bilmiyorum.",
+      "yes": "Evet"
+    },
+    "expect": {
+      "life_threat": null, "urgency": ["urgent", "life_threat"], "hazard_type": "earthquake", "action": "end",
+      "address_contains": ["Gazi", "18"], "caller_name": "Polat", "max_messages": 4,
+      "advice_required": ["first_aid.do_not_move"],
+      "advice_forbidden": ["first_aid.bleeding", "earthquake.trapped"]
+    }
+  },
+  {
+    "id": "tr-cat-surge",
+    "description": "Cat on a roof during a surge: recorded as low priority, no handoff.",
+    "lang": "tr", "phone": "+90 532 100 0021", "channel": "voice",
+    "turns": [
+      "Kedim çatıda kaldı, inemiyor."
+    ],
+    "answers": {
+      "area": "Bayraklı, İzmir, Deneme Sokak 5.",
+      "street": "Bayraklı, İzmir, Deneme Sokak 5.",
+      "people": "Hayır, kimse tehlikede değil.",
+      "danger": "Hayır, kimse tehlikede değil.",
+      "name": "Ahmet Deneme.",
+      "yes": "Evet."
+    },
+    "expect": {"life_threat": false, "urgency": ["information", "needs_help"], "action": "end"}
+  }
+]
