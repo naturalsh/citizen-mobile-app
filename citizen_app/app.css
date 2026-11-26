@@ -424,49 +424,52 @@ a {-webkit-touch-callout: default}                                  /* a long pr
     .ico, .notice::before, .stale::before, .list .item-link .item-inner:before {forced-color-adjust: none; background-color: CanvasText}
 }
 
-/* ---- 9. Mobile 112 Voice Agent call screen */
-.voice-screen {position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; gap: 12px;
-               padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gr) calc(20px + var(--safe-bottom)) var(--gl);
-               background: #0f172a; color: #f8fafc}
-.voice-head {display: flex; align-items: center; gap: 10px; flex: none}
+/* ---- 9. Mobile 112 Voice Agent call screen (matches the app's light iOS/Framework7 palette) */
+.voice-screen {position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column;
+               background: var(--f7-page-bg-color); color: var(--ink)}
+.voice-head {display: flex; align-items: center; gap: 10px; flex: none;
+             padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gr) 10px var(--gl);
+             border-bottom: var(--hair); background: var(--card)}
 .voice-badge {padding: 4px 10px; border-radius: 999px; background: var(--blocked); color: #ffffff; font-size: 13px; font-weight: 700}
-.voice-head h2 {flex: 1; font-size: 18px; font-weight: 700; line-height: 22px}
-.voice-dial {padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: #f8fafc; font-size: 13px;
+.voice-head h2 {flex: 1; font-size: 18px; font-weight: 700; line-height: 22px; color: var(--ink)}
+.voice-dial {padding: 6px 12px; border-radius: 999px; background: #f2f2f7; color: var(--f7-theme-color); font-size: 13px;
              font-weight: 600; text-decoration: none}
-.voice-center {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; flex: 1; min-height: 0}
-.voice-screen.text-mode .voice-center {flex: none; flex-direction: row; justify-content: flex-start; gap: 12px; padding: 4px 0}
-.voice-orb {width: 108px; height: 108px; border-radius: 50%; flex: none;
-            background: radial-gradient(circle at 35% 35%, #38bdf8, #0284c7);
-            box-shadow: 0 0 0 12px rgba(56, 189, 248, 0.14); transition: transform 0.2s ease, box-shadow 0.2s ease}
-.voice-screen.text-mode .voice-orb {width: 34px; height: 34px; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18)}
-.voice-orb.connecting {background: radial-gradient(circle at 35% 35%, #94a3b8, #475569); box-shadow: 0 0 0 12px rgba(148, 163, 184, 0.15)}
-.voice-orb.speaking {background: radial-gradient(circle at 35% 35%, #4ade80, #16a34a); box-shadow: 0 0 0 18px rgba(74, 222, 128, 0.22);
-                     transform: scale(1.06)}
-.voice-orb.error, .voice-orb.ended {background: radial-gradient(circle at 35% 35%, #f87171, #b91c1c); box-shadow: none}
-.voice-status {font-size: 16px; font-weight: 600; text-align: center; max-width: 300px}
-.voice-screen.text-mode .voice-status {flex: 1; text-align: start; font-size: 14px; max-width: none}
-.voice-timer {font-size: 14px; color: #94a3b8; font-variant-numeric: tabular-nums}
-.voice-log {flex: 0 1 150px; min-height: 56px; overflow-y: auto; padding: 10px 12px; border-radius: 12px;
-            background: rgba(255, 255, 255, 0.06); font-size: 14px; line-height: 20px}
+.voice-center {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; flex: 1; min-height: 0;
+               padding: 16px var(--gr) 12px var(--gl)}
+.voice-screen.text-mode .voice-center {flex: none; flex-direction: row; justify-content: flex-start; gap: 12px;
+                                       padding: 12px var(--gr) 8px var(--gl)}
+.voice-orb {width: 96px; height: 96px; border-radius: 50%; flex: none; background: var(--f7-theme-color);
+            box-shadow: 0 0 0 12px rgba(0, 102, 204, 0.12); transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease}
+.voice-screen.text-mode .voice-orb {width: 28px; height: 28px; box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.14)}
+.voice-orb.connecting {background: var(--no-data); box-shadow: 0 0 0 10px rgba(107, 114, 128, 0.14)}
+.voice-orb.speaking {background: var(--checked); box-shadow: 0 0 0 16px rgba(21, 128, 61, 0.16); transform: scale(1.05)}
+.voice-orb.error, .voice-orb.ended {background: var(--blocked); box-shadow: none}
+.voice-status {font-size: 17px; font-weight: 600; text-align: center; max-width: 300px; color: var(--ink)}
+.voice-screen.text-mode .voice-status {flex: 1; text-align: start; font-size: 15px; max-width: none}
+.voice-timer {font-size: 14px; color: var(--quiet); font-variant-numeric: tabular-nums}
+.voice-log {flex: 0 1 150px; min-height: 56px; margin: 0 var(--gr) 12px var(--gl); overflow-y: auto; padding: 12px 14px;
+            border: var(--hair); border-radius: 12px; background: var(--card); font-size: 15px; line-height: 20px; color: var(--ink)}
 .voice-screen.text-mode .voice-log {flex: 1; max-height: none}
-.voice-line + .voice-line {margin-top: 6px}
-.voice-line.agent strong {color: #38bdf8}
-.voice-line.user strong {color: #4ade80}
-.voice-composer {display: flex; align-items: center; gap: 8px; flex: none}
-.voice-input {flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 22px;
-              background: rgba(255, 255, 255, 0.08); color: #ffffff; font: inherit; font-size: 16px}
-.voice-input::placeholder {color: #94a3b8}
+.voice-line + .voice-line {margin-top: 8px}
+.voice-line.agent strong {color: var(--f7-theme-color)}
+.voice-line.user strong {color: var(--checked)}
+.voice-composer {display: flex; align-items: center; gap: 8px; flex: none; padding: 0 var(--gr) 12px var(--gl)}
+.voice-input {flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: var(--hair); border-radius: 22px;
+              background: var(--card); color: var(--ink); font: inherit; font-size: 16px}
+.voice-input::placeholder {color: var(--quiet)}
 .voice-send {display: grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
              background: var(--f7-theme-color); color: #ffffff}
 .voice-send .ico {width: 20px; height: 20px}
 .voice-send:active {opacity: 0.8}
-.voice-controls {display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; flex: none; padding-top: 4px}
-.voice-action {display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 4px 0; border: 0; background: none; color: #e2e8f0}
-.voice-circle {display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: rgba(255, 255, 255, 0.14);
-               color: #ffffff; transition: background 0.15s ease, transform 0.12s ease}
-.voice-circle .ico {width: 24px; height: 24px}
-.voice-action:active .voice-circle {transform: scale(0.94)}
-.voice-action.is-muted .voice-circle {background: #f59e0b; color: #111827}
+.voice-controls {display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; flex: none;
+                 padding: 12px var(--gr) calc(12px + var(--safe-bottom)) var(--gl);
+                 border-top: var(--hair); background: var(--card)}
+.voice-action {display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 2px 0; border: 0; background: none; color: var(--ink)}
+.voice-circle {display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: #f2f2f7;
+               color: var(--ink); transition: background 0.15s ease, transform 0.12s ease}
+.voice-circle .ico {width: 23px; height: 23px}
+.voice-action:active .voice-circle {transform: scale(0.94); background: var(--press)}
+.voice-action.is-muted .voice-circle {background: #fef3c7; color: var(--unchecked)}
 .voice-action.is-active .voice-circle {background: var(--f7-theme-color); color: #ffffff}
 .voice-action-end .voice-circle {background: var(--blocked); color: #ffffff}
-.voice-action-lbl {font-size: 12px; font-weight: 500; line-height: 15px; text-align: center; color: #cbd5e1}
+.voice-action-lbl {font-size: 12px; font-weight: 500; line-height: 15px; text-align: center; color: var(--quiet)}
