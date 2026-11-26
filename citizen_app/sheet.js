@@ -51,7 +51,7 @@ export const receivedLine = view => `${t('received', {when: ago(view.received)})
 function handle(view, on) {
     const place = view.selected, found = place && view.routes.get(place.id);
     /* Of a place that takes nobody, what was reported comes first: a long name is cut at its end. */
-    const name = !place ? (view.noneTakes ? t('allReportedShort') : t(view.position ? 'places' : 'whereTitle'))
+    const name = !place ? (view.noneTakes ? t('allReportedShort') : t(view.position ? 'places' : view.open ? 'whereTitle' : 'whereClosest'))
         : takesPeople(place) ? place.name : `${t(`reportShort.${place.report.state}`)} · ${place.name}`;
     const more = place && takesPeople(place) && found ? walk(found) : '';
     return h('button', {class: 'handle', type: 'button', 'data-key': 'handle', 'aria-expanded': String(view.open), onclick: on.fold},
