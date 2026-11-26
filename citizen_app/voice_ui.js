@@ -246,7 +246,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
         });
 
         const quickChips = !ended && callerTurns === 0 ? h('div', {class: 'voice-chips'},
-            [t('voice.quick.trapped'), t('voice.quick.injured'), t('voice.quick.fire'), t('voice.quick.human')].map(label =>
+            [t('voice.quick.trapped'), t('voice.quick.injured'), t('voice.quick.fire')].map(label =>
                 h('button', {
                     class: 'voice-chip',
                     type: 'button',
