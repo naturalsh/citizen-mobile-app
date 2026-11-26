@@ -275,17 +275,12 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 .card h2 {border-radius: 4px; font-size: 20px; font-weight: 700; line-height: 24px; letter-spacing: -0.01em; overflow-wrap: anywhere}
 .kind {margin-top: 2px; color: var(--quiet); font-size: 15px; line-height: 20px}
 .facilities {display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px}
-.facility {display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border: 1px solid rgba(0, 0, 0, 0.1);
-           border-radius: 999px; background: #f2f4f7; color: var(--ink); font-size: 13px; font-weight: 600; line-height: 18px}
-.facility .ico {width: 15px; height: 15px}
-.fac-water {background: #e0f2fe; border-color: #bae6fd; color: #0369a1}
-.fac-medical {background: #fee2e2; border-color: #fecaca; color: #b91c1c}
-.fac-power {background: #fef3c7; border-color: #fde68a; color: #92400e}
-.fac-shelter {background: #dcfce7; border-color: #bbf7d0; color: #166534}
-.fac-accessible {background: #ede9fe; border-color: #ddd6fe; color: #5b21b6}
-.facilities.compact {gap: 4px; margin-top: 6px}
-.facilities.compact .facility {padding: 2px 7px; font-size: 12px; line-height: 16px}
-.facilities.compact .facility .ico {width: 13px; height: 13px}
+.facility {display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border: 0;
+           border-radius: 7px; background: #f2f2f7; color: #3a3a3c; font-size: 13px; font-weight: 500; line-height: 18px}
+.facility .ico {width: 14px; height: 14px; color: #636366}
+.facilities.compact {gap: 4px 10px; margin-top: 6px}
+.facilities.compact .facility {padding: 0; border-radius: 0; background: none; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px}
+.facilities.compact .facility .ico {width: 13px; height: 13px; color: var(--quiet)}
 .report {display: flex; gap: 8px; margin-top: 12px; font-size: 15px; line-height: 20px}       /* what the operators reported about the place */
 .report.none {color: var(--quiet)}
 .report.in_use {color: var(--checked); font-weight: 600}
