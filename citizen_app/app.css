@@ -279,6 +279,7 @@ a {-webkit-touch-callout: default}                                  /* a long pr
            border-radius: 7px; background: #f2f2f7; color: #3a3a3c; font-size: 13px; font-weight: 500; line-height: 18px}
 .facility .ico {width: 14px; height: 14px; color: #636366}
 .facilities.compact {gap: 4px 10px; margin-top: 6px}
+.list ul ul.facilities {padding-left: 0; background: none; border-radius: 0}
 .facilities.compact .facility {padding: 0; border-radius: 0; background: none; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px}
 .facilities.compact .facility .ico {width: 13px; height: 13px; color: var(--quiet)}
 .report {display: flex; gap: 8px; margin-top: 12px; font-size: 15px; line-height: 20px}       /* what the operators reported about the place */
