@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.mjs",
     "dev": "node server.mjs --port 3000",
+    "build:pages": "node scripts/build-pages.mjs",
     "test": "node --test tests/citizen/*.test.mjs"
   },
   "engines": {
