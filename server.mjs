@@ -47,7 +47,7 @@ function parseArgs(argv) {
     let port = Number(process.env.PORT || 3000);
     let host = process.env.HOST || '0.0.0.0';
     let api = process.env.DRONE_VISION_API || '';
-    let voiceApi = process.env.VOICE_AGENT_API || '';
+    let voiceApi = process.env.VOICE_AGENT_API || 'http://127.0.0.1:8010';
     for (let i = 2; i < argv.length; i++) {
         if ((argv[i] === '--port' || argv[i] === '-p') && argv[i + 1]) port = Number(argv[++i]);
         else if (argv[i] === '--host' && argv[i + 1]) host = argv[++i];

@@ -1,0 +1,46 @@
+{
+  "_comment": "Hesitation sounds speech-to-text writes down. Matched as whole words, ignoring case, accents and repeated letters ('Εεε,' = 'ε', 'ummm' = 'um'). 'anywhere' are dropped wherever they appear; 'leading' are real words used as fillers, dropped only at the start of a turn. Not here on purpose: 'mhm', 'uh-huh', 'hı hı' (they mean yes), 'ναι', 'evet', 'yani', 'λοιπόν'.",
+  "anywhere": {
+    "el": [
+      "ε",
+      "εμ",
+      "μ",
+      "χμ",
+      "εχμ"
+    ],
+    "tr": [
+      "ı",
+      "ıh",
+      "ıhm",
+      "e",
+      "eh",
+      "hm",
+      "ım"
+    ],
+    "en": [
+      "uh",
+      "um",
+      "uhm",
+      "er",
+      "erm",
+      "hm",
+      "m",
+      "ehm",
+      "em"
+    ],
+    "fr": [
+      "euh",
+      "heu",
+      "hum",
+      "euhm"
+    ]
+  },
+  "leading": {
+    "el": [],
+    "tr": [
+      "şey"
+    ],
+    "en": [],
+    "fr": []
+  }
+}

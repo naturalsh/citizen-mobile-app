@@ -1,0 +1,8 @@
+.venv/
+.env
+output/
+__pycache__/
+*.pyc
+.DS_Store
+.pytest_cache/
+voice/recordings/

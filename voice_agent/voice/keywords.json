@@ -1,0 +1,65 @@
+{
+  "_status": "DRAFT: native speakers should check the Greek and Turkish terms; place names follow the demo story (2020 Samos–İzmir earthquake) and the places used in eval/cases. Athens, Piraeus and Thessaloniki neighbourhoods added after a test call misheard Ampelokipoi as 'Belokipos'.",
+  "general": [
+    {"key": "domain", "value": "Emergency call to 112 during a natural disaster"},
+    {"key": "topic", "value": "Earthquake, wildfire, building fire, flood or storm; people trapped or injured"},
+    {"key": "setting", "value": "Greece and Türkiye, mainly Samos and İzmir"},
+    {"key": "languages", "value": "Greek, Turkish, English, French"}
+  ],
+  "terms": {
+    "el": [
+      "112", "ΕΚΑΒ", "Πυροσβεστική", "Πολιτική Προστασία",
+      "σεισμός", "μετασεισμός", "κατέρρευσε", "κατάρρευση", "συντρίμμια", "ρωγμές",
+      "εγκλωβισμένος", "εγκλωβισμένη", "εγκλωβισμένοι", "παγιδευμένος",
+      "τραυματίας", "τραυματισμένος", "αιμορραγεί", "αναίσθητος", "αναίσθητη", "δεν αναπνέει",
+      "φωτιά", "πυρκαγιά", "καπνός", "καίγεται", "διαμέρισμα", "πολυκατοικία", "όροφος", "πλημμύρα", "νερό ανεβαίνει", "καταιγίδα", "κεραυνός",
+      "μυρίζει γκάζι", "αναπηρικό αμαξίδιο"
+    ],
+    "tr": [
+      "112", "AFAD", "itfaiye", "ambulans", "Kızılay",
+      "deprem", "artçı sarsıntı", "bina çöktü", "göçük", "enkaz", "enkaz altında", "çatlak",
+      "mahsur", "mahsur kaldı", "sıkıştı",
+      "yaralı", "kanama", "bilinçsiz", "baygın", "nefes almıyor",
+      "yangın", "orman yangını", "bina yangını", "duman", "daire", "kat", "sel", "su yükseliyor", "fırtına", "yıldırım",
+      "gaz kokusu", "tekerlekli sandalye"
+    ],
+    "en": [
+      "aftershock", "collapsed", "rubble", "trapped", "unconscious", "not breathing", "bleeding",
+      "wildfire", "building fire", "smoke", "flat", "floor", "flood", "storm", "gas leak", "wheelchair"
+    ],
+    "fr": [
+      "réplique", "effondré", "décombres", "coincé", "inconscient", "ne respire pas", "saigne",
+      "incendie", "feu d'immeuble", "fumée", "appartement", "étage", "inondation", "tempête", "fuite de gaz", "fauteuil roulant"
+    ]
+  },
+  "places": [
+    "Σάμος", "Βαθύ", "Καρλόβασι", "Πυθαγόρειο", "Κοκκάρι", "Μαραθόκαμπος",
+    "Samos", "Vathy", "Karlovasi", "Pythagoreio", "Kokkari", "Marathokampos",
+    "İzmir", "Bayraklı", "Bornova", "Karşıyaka", "Buca", "Konak", "Seferihisar", "Sığacık", "Çiğli",
+    "Βόλος", "Θεσσαλία", "Λάρισα", "Έβρος", "Αλεξανδρούπολη", "Ρόδος",
+    "Hatay", "Antakya", "Kastamonu", "Bozkurt",
+    "Αθήνα", "Αμπελόκηποι", "Κυψέλη", "Πατήσια", "Κουκάκι", "Παγκράτι", "Εξάρχεια", "Κολωνάκι", "Πετράλωνα",
+    "Νέος Κόσμος", "Καλλιθέα", "Γλυφάδα", "Μαρούσι", "Κηφισιά", "Χαλάνδρι", "Περιστέρι", "Πειραιάς",
+    "Κερατσίνι", "Νίκαια", "Θεσσαλονίκη", "Καλαμαριά",
+    "Athens", "Ampelokipoi", "Kypseli", "Patisia", "Koukaki", "Pagkrati", "Exarchia", "Kolonaki", "Petralona",
+    "Kallithea", "Glyfada", "Marousi", "Kifisia", "Chalandri", "Peristeri", "Piraeus", "Keratsini", "Nikaia",
+    "Thessaloniki", "Kalamaria",
+    "Karabağlar", "Gaziemir", "Balçova", "Narlıdere", "Alsancak"
+  ],
+  "_landmarks": "Hospitals and big landmarks callers name as a location. Added after a test call misheard 'Τζάνειο Νοσοκομείο' as 'τζάμι ο νοσοκομείο' (glass hospital).",
+  "landmarks": [
+    "Τζάνειο", "Μεταξά", "Ναυτικό Νοσοκομείο", "Άγιος Παντελεήμων", "Ευαγγελισμός", "Αττικόν", "Γεννηματάς",
+    "Λαϊκό", "Σωτηρία", "Ιπποκράτειο", "Αλεξάνδρα", "Αγία Όλγα", "Ερυθρός Σταυρός", "ΚΑΤ", "Παίδων Αγία Σοφία",
+    "Αγλαΐα Κυριακού", "ΑΧΕΠΑ", "Παπαγεωργίου", "Παπανικολάου", "Γενικό Νοσοκομείο Σάμου",
+    "Tzaneio", "Evangelismos", "Attikon", "Gennimatas", "Sotiria", "Ippokrateio", "AHEPA",
+    "Tepecik", "Atatürk Eğitim ve Araştırma", "Dokuz Eylül", "Ege Üniversitesi Hastanesi",
+    "Σύνταγμα", "Ομόνοια", "Μοναστηράκι", "Ακρόπολη", "Λυκαβηττός", "Πεδίον του Άρεως", "Πειραιάς λιμάνι",
+    "Πύλη Ε1", "Πύλη Ε2", "Λευκός Πύργος", "Αριστοτέλους", "Kordon", "Saat Kulesi", "Konak Meydanı"
+  ],
+  "_regions": "Every town, village and neighbourhood in these boxes (south, north, west, east) is added from brain/gazetteer.py, biggest first, in the room left. Added after a test call heard Παιανία as 'Πυρανία': it was not in the list above.",
+  "regions": [
+    {"name": "Attica", "box": [37.6, 38.4, 23.3, 24.2]},
+    {"name": "Samos", "box": [37.6, 37.85, 26.5, 27.1]},
+    {"name": "İzmir", "box": [38.2, 38.6, 26.7, 27.4]}
+  ]
+}

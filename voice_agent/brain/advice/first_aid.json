@@ -1,0 +1,45 @@
+{
+  "_status": "Built from official Greek and Turkish guidance; sources and decisions per topic in brain/advice/SOURCES.md. Greek and Turkish still need a native-speaker read.",
+  "hazard": "first_aid",
+  "topics": {
+    "bleeding": {
+      "when": "Someone is bleeding. Not for broken bones or other injuries without bleeding.",
+      "en": "Press firmly and directly on the wound with a clean cloth or gauze, and keep pressing. If blood soaks through, put more cloth on top, and do not remove the first layer.",
+      "el": "Πιέστε σταθερά και απευθείας πάνω στο τραύμα με ένα καθαρό πανί ή γάζα και συνεχίστε να πιέζετε. Αν το αίμα περάσει, βάλτε κι άλλο πανί από πάνω και μην αφαιρέσετε το πρώτο.",
+      "tr": "Yaranın üzerine temiz bir bez ya da gazlı bezle doğrudan ve sıkıca bastırın, bastırmaya devam edin. Kan bezden geçerse üzerine bir bez daha koyun, ilk bezi kaldırmayın.",
+      "fr": "Appuyez fermement et directement sur la plaie avec un tissu propre ou une compresse, et continuez d'appuyer. Si le sang traverse, ajoutez un tissu par-dessus sans retirer le premier.",
+      "sms": {
+        "en": "Press firmly on the wound with a clean cloth. Soaked? Add more on top, don't remove it.",
+        "el": "Πιέστε σταθερά το τραύμα με καθαρό πανί. Αν ποτίσει, βάλτε κι άλλο από πάνω.",
+        "tr": "Yaraya temiz bezle sıkıca bastırın. Islanırsa üstüne bez ekleyin, kaldırmayın.",
+        "fr": "Appuyez fort sur la plaie, tissu propre. Imbibé ? Ajoutez-en par-dessus."
+      }
+    },
+    "do_not_move": {
+      "when": "Someone may have a broken bone, or a neck, back or head injury, and is not bleeding heavily.",
+      "en": "Do not move the injured person unless they are in immediate danger, for example from fire or a collapse. Keep their head and neck still, leave a broken limb in the position you found it, and give them nothing to eat or drink. Keep them warm and stay with them.",
+      "el": "Μη μετακινήσετε τον τραυματία, εκτός αν κινδυνεύει άμεσα, για παράδειγμα από φωτιά ή κατάρρευση. Κρατήστε ακίνητο το κεφάλι και τον λαιμό του, αφήστε το σπασμένο μέλος στη θέση που το βρήκατε και μην του δώσετε να φάει ή να πιει. Κρατήστε τον ζεστό και μείνετε δίπλα του.",
+      "tr": "Yangın ya da çökme gibi hemen bir tehlike yoksa yaralıyı yerinden oynatmayın. Başını ve boynunu hareketsiz tutun, kırık kolu ya da bacağı bulduğunuz pozisyonda bırakın ve yiyecek ya da içecek vermeyin. Onu sıcak tutun ve yanında kalın.",
+      "fr": "Ne déplacez pas le blessé, sauf danger immédiat comme un feu ou un effondrement. Gardez sa tête et son cou immobiles, laissez le membre cassé dans la position où vous l'avez trouvé et ne lui donnez rien à manger ni à boire. Gardez-le au chaud et restez avec lui.",
+      "sms": {
+        "en": "Don't move them unless in danger. Keep head and neck still. Keep them warm.",
+        "el": "Μην τον μετακινείτε, εκτός αν κινδυνεύει. Ακίνητο κεφάλι και λαιμός. Κρατήστε τον ζεστό.",
+        "tr": "Tehlike yoksa oynatmayın. Baş ve boyun sabit kalsın. Sıcak tutun, yanında kalın.",
+        "fr": "Ne le déplacez pas sauf danger. Tête et cou immobiles. Gardez-le au chaud."
+      }
+    },
+    "unconscious_breathing": {
+      "when": "Someone is unconscious but breathing.",
+      "en": "If they are breathing, turn them gently onto their side, keeping the head, neck and back in line, so their airway stays clear. Stay with them and keep checking that they are breathing. If they stop breathing, tell me immediately.",
+      "el": "Αν αναπνέει, γυρίστε τον απαλά στο πλάι, κρατώντας το κεφάλι, τον λαιμό και την πλάτη στην ίδια ευθεία, ώστε να μένει ανοιχτός ο αεραγωγός. Μείνετε δίπλα του και ελέγχετε συνέχεια ότι αναπνέει. Αν σταματήσει να αναπνέει, πείτε το μου αμέσως.",
+      "tr": "Nefes alıyorsa başını, boynunu ve sırtını aynı hizada tutarak onu yavaşça yan yatırın, böylece hava yolu açık kalır. Yanında kalın ve nefes aldığını sürekli kontrol edin. Nefes almayı bırakırsa bunu hemen söyleyin.",
+      "fr": "S'il respire, tournez-le doucement sur le côté en gardant la tête, le cou et le dos alignés, pour que ses voies respiratoires restent dégagées. Restez avec lui et vérifiez sans cesse qu'il respire. S'il arrête de respirer, dites-le-moi immédiatement.",
+      "sms": {
+        "en": "Breathing? Turn them gently on their side, head and neck in line. Keep checking breathing.",
+        "el": "Αναπνέει; Γυρίστε τον στο πλάι, κεφάλι και λαιμός ευθεία. Ελέγχετε συνέχεια την αναπνοή.",
+        "tr": "Nefes alıyorsa yavaşça yan yatırın, baş ve boyun düz. Nefesini sürekli kontrol edin.",
+        "fr": "Il respire ? Sur le côté, tête et cou alignés. Vérifiez sa respiration."
+      }
+    }
+  }
+}

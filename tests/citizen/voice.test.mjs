@@ -1,48 +1,82 @@
-/* Tests of the on-device 112 Voice Agent triage engine (citizen_app/voice_engine.js). */
+/* Tests of the naturalsh/Voice_Agents API client (citizen_app/voice_engine.js). */
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {ADVICE, PHRASES, createLocalSession} from '../../citizen_app/voice_engine.js';
+import {createVoiceSession, summarizeReport} from '../../citizen_app/voice_engine.js';
 
-test('starts with the official automated 112 greeting in en, tr, and el', async () => {
-    for (const lang of ['en', 'tr', 'el']) {
-        const s = createLocalSession({lang});
-        const first = await s.start();
-        assert.equal(first.action, 'continue');
-        assert.equal(first.reply_text, PHRASES.greeting[lang]);
-    }
+function fakeBridge() {
+    const calls = [];
+    const fetchImpl = async (url, opts) => {
+        calls.push({url, method: opts.method, body: opts.body ? JSON.parse(opts.body) : null});
+        if (url.endsWith('/health')) {
+            return new Response(JSON.stringify({ok: true, gemini_configured: true, livekit_configured: false}), {status: 200});
+        }
+        if (url.endsWith('/start')) {
+            return new Response(JSON.stringify({
+                call_id: 'web-abc123',
+                reply_text: 'You are speaking with the automated emergency assistant of 112.',
+                lang: 'en',
+                action: 'continue',
+                handoff_reason: null,
+                report: {call_id: 'web-abc123', hazard_type: null, location: {aml: {lat: 36.2, lon: 36.15}}, urgency: {suggested: null, reasons: []}},
+            }), {status: 200});
+        }
+        if (url.endsWith('/turn')) {
+            return new Response(JSON.stringify({
+                call_id: 'web-abc123',
+                reply_text: 'I am connecting you to a human operator now.',
+                lang: 'en',
+                action: 'handoff',
+                handoff_reason: 'not_breathing',
+                report: {
+                    call_id: 'web-abc123',
+                    hazard_type: 'earthquake',
+                    hazard_subtype: 'collapse',
+                    location: {street: 'Atatürk Cd.', area: 'Defne'},
+                    urgency: {suggested: 'life_threat', reasons: ['not breathing']},
+                    summary_for_operator: 'Collapse at Atatürk Cd., Defne.',
+                    advice_given: ['trapped'],
+                },
+            }), {status: 200});
+        }
+        if (url.endsWith('/end')) {
+            return new Response(JSON.stringify({call_id: 'web-abc123', status: 'handed_to_human'}), {status: 200});
+        }
+        return new Response('Not found', {status: 404});
+    };
+    return {calls, fetchImpl};
+}
+
+test('connects to naturalsh/Voice_Agents contract (start -> turn -> end)', async () => {
+    const {calls, fetchImpl} = fakeBridge();
+    const session = await createVoiceSession({lang: 'en', aml: {lat: 36.2, lon: 36.15}, baseUrl: 'http://127.0.0.1:8010/voice-api/', fetchImpl});
+    assert.equal(session.mode, 'live');
+    assert.equal(session.callId, 'web-abc123');
+
+    const first = await session.start();
+    assert.equal(first.action, 'continue');
+
+    const reply = await session.turn('Collapsed building, not breathing');
+    assert.equal(reply.action, 'handoff');
+    assert.equal(reply.handoff_reason, 'not_breathing');
+
+    const summary = summarizeReport(reply.report);
+    assert.equal(summary.hazard, 'earthquake / collapse');
+    assert.equal(summary.location, 'Atatürk Cd., Defne');
+    assert.equal(summary.urgency, 'life_threat');
+    assert.deepEqual(summary.reasons, ['not breathing']);
+
+    const finalReport = await session.end('handed_off');
+    assert.equal(finalReport.status, 'handed_to_human');
+    assert.equal(calls.length, 4);
 });
 
-test('hands off immediately when caller reports someone is not breathing or asks for a human', async () => {
-    const s1 = createLocalSession({lang: 'en'});
-    await s1.start();
-    const r1 = await s1.turn('My father is not breathing!');
-    assert.equal(r1.action, 'handoff');
-    assert.equal(r1.handoff_reason, 'life_threat_not_breathing');
-    assert.equal(r1.report.urgency, 'critical');
-
-    const s2 = createLocalSession({lang: 'tr'});
-    await s2.start();
-    const r2 = await s2.turn('Operatör ile görüşmek istiyorum');
-    assert.equal(r2.action, 'handoff');
-    assert.equal(r2.handoff_reason, 'caller_requested_human');
-});
-
-test('gives official verbatim trapped advice and completes report on confirmation', async () => {
-    const s = createLocalSession({lang: 'en', aml: {lat: 36.201, lon: 36.152}});
-    await s.start();
-    const r1 = await s.turn('I am trapped under rubble');
-    assert.equal(r1.action, 'continue');
-    assert.ok(r1.reply_text.includes(ADVICE.trapped.en));
-    assert.equal(r1.report.hazard, 'trapped');
-    assert.equal(r1.report.urgency, 'critical');
-
-    const r2 = await s.turn('Two people, one injured leg');
-    assert.equal(r2.action, 'continue');
-    assert.ok(r2.reply_text.includes(PHRASES.confirm.en));
-
-    const r3 = await s.turn('Yes');
-    assert.equal(r3.action, 'end');
-    assert.equal(r3.reply_text, PHRASES.passedOn.en);
-    assert.equal(r3.report.status, 'completed');
+test('throws clearly when Voice_Agents server is unreachable (no local fallback model)', async () => {
+    const failFetch = async () => {
+        throw new Error('ECONNREFUSED');
+    };
+    await assert.rejects(
+        () => createVoiceSession({lang: 'tr', baseUrl: 'http://127.0.0.1:8010/voice-api/', fetchImpl: failFetch}),
+        /ECONNREFUSED/,
+    );
 });

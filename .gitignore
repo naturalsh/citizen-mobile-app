@@ -4,3 +4,11 @@ dist/
 *.log
 .env
 .env.*
+!.env.example
+!voice_agent/.env.example
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+voice_agent/output/
+voice_agent/voice/recordings/

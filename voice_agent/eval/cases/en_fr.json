@@ -1,0 +1,158 @@
+[
+  {
+    "id": "en-eq-hotel-lift",
+    "description": "UK tourist in a Samos hotel. Friend stuck in the lift after the quake, building damaged.",
+    "lang": "en", "phone": "+44 7700 900001", "channel": "voice",
+    "turns": [
+      "Hi, I'm a tourist in Pythagorio on Samos, at the Hotel Doryssa Bay. There was an earthquake."
+    ],
+    "answers": {
+      "what_happened": "My friend is stuck in the lift between floors and the building has big cracks.",
+      "people": "It's just the two of us, me and my friend in the lift.",
+      "danger": "She is not hurt but she is panicking and the lights are off.",
+      "name": "My name is James Carter.",
+      "yes": "Yes, that's right."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat", "urgent"], "hazard_type": "earthquake", "action": "end",
+      "area_contains": ["Pythagorio"], "caller_name": "Carter",
+      "advice_forbidden": ["earthquake.trapped", "first_aid.bleeding"]
+    }
+  },
+  {
+    "id": "en-fire-tourist-car",
+    "description": "Tourist driving on Rhodes, thick smoke, fire next to the road, cannot see.",
+    "lang": "en", "phone": "+44 7700 900002", "channel": "voice",
+    "turns": [
+      "We're in our rental car on Rhodes and there is fire right next to the road, I can't see anything through the smoke!"
+    ],
+    "answers": {
+      "area": "Between Lindos and Kiotari, on the main coast road.",
+      "street": "Between Lindos and Kiotari, on the main coast road.",
+      "people": "Four of us, two adults and two kids.",
+      "danger": "No one is hurt but the kids are coughing.",
+      "name": "Sarah Collins.",
+      "yes": "Yes."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "fire", "hazard_subtype": "wildfire", "action": "end",
+      "caller_name": "Collins",
+      "advice_required": ["wildfire.trapped_in_car"],
+      "advice_forbidden": ["wildfire.shelter_in_house"]
+    }
+  },
+  {
+    "id": "en-info-ferry",
+    "description": "Tourist asks whether ferries are running after the quake. No danger.",
+    "lang": "en", "phone": "+1 415 555 0103", "channel": "whatsapp",
+    "turns": [
+      "Hello, are the ferries from Samos to Piraeus still running after the earthquake?",
+      "We're fine, no damage at our apartment in Vathy.",
+      "Two of us.",
+      "Nobody.",
+      "Tom Becker",
+      "Yes"
+    ],
+    "expect": {
+      "life_threat": false, "urgency": ["information"], "action": "any",
+      "advice_forbidden": ["earthquake.trapped", "earthquake.others_trapped", "first_aid.bleeding"]
+    }
+  },
+  {
+    "id": "de-unsupported-language",
+    "description": "German speaker; the brain only supports el/tr/en/fr, so it must hand off.",
+    "lang": "de", "phone": "+49 151 0000 0004", "channel": "voice",
+    "turns": [
+      "Hallo, es gab ein Erdbeben, unser Haus ist beschädigt, bitte helfen Sie uns!"
+    ],
+    "expect": {
+      "life_threat": null, "action": "handoff", "handoff_reason": ["unsupported_language"]
+    }
+  },
+  {
+    "id": "fr-eq-partner-under-wall",
+    "description": "French tourist. Partner trapped under a fallen wall in Vathy.",
+    "lang": "fr", "phone": "+33 6 12 00 00 05", "channel": "voice",
+    "turns": [
+      "Au secours ! Un mur est tombé sur mon compagnon après le séisme !"
+    ],
+    "answers": {
+      "area": "Nous sommes à Vathy, sur l'île de Samos, près du port.",
+      "street": "Nous sommes à Vathy, sur l'île de Samos, près du port.",
+      "people": "Nous sommes deux.",
+      "danger": "Il est conscient mais ses jambes sont coincées sous le mur.",
+      "name": "Je m'appelle Claire Dubois.",
+      "yes": "Oui, c'est ça."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "earthquake", "action": "end",
+      "area_contains": ["Vathy"], "caller_name": "Dubois",
+      "advice_required": ["earthquake.others_trapped"],
+      "advice_forbidden": ["earthquake.trapped"]
+    }
+  },
+  {
+    "id": "fr-flood-campsite",
+    "description": "French family at a campsite, flood water rising, they climbed onto the car roof.",
+    "lang": "fr", "phone": "+33 6 12 00 00 06", "channel": "voice",
+    "turns": [
+      "L'eau monte très vite au camping, nous sommes montés sur le toit de la voiture !"
+    ],
+    "answers": {
+      "area": "Camping près d'Agria, à côté de Volos.",
+      "street": "Camping près d'Agria, à côté de Volos.",
+      "people": "Nous sommes quatre, avec deux enfants.",
+      "danger": "Personne n'est blessé mais l'eau continue de monter.",
+      "name": "Julien Martin.",
+      "yes": "Oui."
+    },
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "hazard_type": "flood", "action": "end",
+      "caller_name": "Martin",
+      "advice_forbidden": ["flood.water_rising_home", "earthquake.trapped"]
+    }
+  },
+  {
+    "id": "fr-storm-power-line",
+    "description": "French resident, power line down next to the house after the storm, nobody hurt.",
+    "lang": "fr", "phone": "+33 6 12 00 00 07", "channel": "voice",
+    "turns": [
+      "Avec la tempête, une ligne électrique est tombée devant notre maison."
+    ],
+    "answers": {
+      "area": "À Volos, 12 rue Iasonos.",
+      "street": "À Volos, 12 rue Iasonos.",
+      "people": "Nous sommes trois à la maison.",
+      "danger": "Non, personne n'est blessé.",
+      "name": "Marie Laurent.",
+      "yes": "Oui, c'est correct."
+    },
+    "expect": {
+      "life_threat": false, "urgency": ["urgent", "needs_help"], "hazard_type": "storm", "action": "end",
+      "caller_name": "Laurent",
+      "advice_required": ["storm.outdoors"],
+      "advice_forbidden": ["first_aid.bleeding"]
+    }
+  },
+  {
+    "id": "en-misheard-area-fire-tree",
+    "description": "From a live test call: speech-to-text heard 'Belokipos' for Ampelokipoi (not on the map), a building fire, a person under a fallen tree, then voices in another building added after the read-back. Checks the map check, separate people entries, no guessed injuries, no wildfire or storm advice.",
+    "lang": "en", "phone": "+44 7700 900021", "channel": "voice",
+    "turns": [
+      "I'm in the north of Athens, in a place called Kifisia, I think.",
+      "Oh no, not Kifisia actually, I'm in Belokipos, Michail Mela 13.",
+      "Yes, Ampelokipoi, sorry. There was a fire in one building, but I'm outside in the street.",
+      "I saw some people running from the fire, I don't know if anybody is hurt.",
+      "Oh, a tree just fell onto a person, I see them stuck beneath the tree.",
+      "My name is Politopoulos.",
+      "No, there is also a building where I hear people yelling from inside, I don't know how many.",
+      "Yes, that's right."
+    ],
+    "expect": {
+      "life_threat": true, "urgency": ["life_threat"], "action": "end",
+      "area_contains": ["Ampelokipoi"], "address_contains": ["Mela", "13"],
+      "people_groups_min": 2, "people_at_least": true, "people_injured_max": 0,
+      "advice_forbidden": ["wildfire.approaching", "storm.outdoors"]
+    }
+  }
+]

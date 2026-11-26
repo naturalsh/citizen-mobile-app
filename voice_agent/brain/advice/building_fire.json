@@ -1,0 +1,58 @@
+{
+  "_status": "DRAFT: unreviewed. Researched on 2026-10-24 from the Hellenic Fire Service leaflet «Πρόληψη – Αντιμετώπιση Πυρκαγιών», the AFAD fire page, London Fire Brigade escape-plan pages, the US Fire Administration apartment sheet, ready.gov home fires and NHS burns; sources and decisions per topic in brain/advice/SOURCES.md. Greek, Turkish and French are AI translations: native speakers must read them aloud before use.",
+  "hazard": "building_fire",
+  "topics": {
+    "get_out": {
+      "when": "There is fire or smoke inside the building the caller is in (house, flat or apartment block, not a wildfire), and the caller has not said that fire, thick smoke or a hot door blocks their way out.",
+      "en": "Get everyone out now and leave your belongings. Before you open a door, touch it with the back of your hand, and if it is hot, use another way. Take the stairs, not the lift, close doors behind you, and stay low under any smoke. Once you are out, do not go back in.",
+      "el": "Βγείτε έξω τώρα, όλοι μαζί, και αφήστε τα πράγματά σας. Πριν ανοίξετε μια πόρτα, αγγίξτε την με την πίσω πλευρά του χεριού σας, και αν είναι ζεστή, βγείτε από άλλο δρόμο. Χρησιμοποιήστε τις σκάλες, όχι τον ανελκυστήρα, κλείνετε τις πόρτες πίσω σας και μείνετε χαμηλά αν υπάρχει καπνός. Μόλις βγείτε, μην ξαναμπείτε μέσα.",
+      "tr": "Herkesle birlikte hemen dışarı çıkın ve eşyalarınızı bırakın. Bir kapıyı açmadan önce elinizin tersiyle dokunun; sıcaksa başka bir yol kullanın. Asansörü değil merdiveni kullanın, geçtiğiniz kapıları arkanızdan kapatın ve duman varsa eğilerek alçakta kalın. Dışarı çıktıktan sonra içeri geri girmeyin.",
+      "fr": "Faites sortir tout le monde maintenant et laissez vos affaires. Avant d'ouvrir une porte, touchez-la du dos de la main, et si elle est chaude, passez par un autre chemin. Prenez l'escalier, pas l'ascenseur, fermez les portes derrière vous et restez près du sol s'il y a de la fumée. Une fois dehors, ne retournez pas à l'intérieur.",
+      "sms": {
+        "en": "Get out now, leave belongings. Hot door: use another way. Stairs, not lift. Stay low in smoke. Don't go back in.",
+        "el": "Βγείτε τώρα, αφήστε τα πράγματα. Ζεστή πόρτα: άλλος δρόμος. Σκάλες, όχι ασανσέρ. Χαμηλά στον καπνό. Μην ξαναμπείτε.",
+        "tr": "Hemen çıkın, eşyayı bırakın. Kapı sıcaksa başka yol. Asansör değil merdiven. Dumanda eğilin. Geri girmeyin.",
+        "fr": "Sortez, laissez vos affaires. Porte chaude : autre chemin. Escalier, pas ascenseur. Restez bas. Ne rentrez pas."
+      }
+    },
+    "cannot_get_out": {
+      "when": "The caller is inside a burning building (house, flat or apartment block, not a wildfire) and cannot get out: fire or thick smoke blocks the door, corridor or stairs, or the door is hot.",
+      "en": "Stay in a room with a window and shut the door. Block the gaps around the door with towels or bedding, wet if you can. Go to the window and wave a light-coloured cloth or a torch so firefighters can see you, and stay low if smoke gets in. Do not hide, and do not jump from an upper floor.",
+      "el": "Μείνετε σε ένα δωμάτιο με παράθυρο και κλείστε την πόρτα. Φράξτε τις χαραμάδες γύρω από την πόρτα με πετσέτες ή σεντόνια, βρεγμένα αν μπορείτε. Πηγαίνετε στο παράθυρο και κάντε σήμα με ένα ανοιχτόχρωμο ρούχο ή έναν φακό για να σας δουν οι πυροσβέστες, και μείνετε χαμηλά αν μπει καπνός. Μην κρυφτείτε και μην πηδήξετε από ψηλό όροφο.",
+      "tr": "Penceresi olan bir odada kalın ve kapıyı kapatın. Kapının etrafındaki aralıkları havlu ya da çarşafla, mümkünse ıslatarak tıkayın. Pencereye gidin ve itfaiyecilerin sizi görmesi için açık renkli bir bez ya da el feneri sallayın; duman girerse eğilerek alçakta kalın. Bir yere saklanmayın ve üst katlardan atlamayın.",
+      "fr": "Restez dans une pièce avec une fenêtre et fermez la porte. Bouchez les fentes autour de la porte avec des serviettes ou des draps, mouillés si possible. Allez à la fenêtre et agitez un tissu clair ou une lampe pour que les pompiers vous voient, et restez près du sol si la fumée entre. Ne vous cachez pas et ne sautez pas d'un étage élevé.",
+      "sms": {
+        "en": "Room with a window, door shut, wet towels in the gaps. Signal at the window. Stay low. Don't hide, don't jump.",
+        "el": "Δωμάτιο με παράθυρο, κλειστή πόρτα, βρεγμένες πετσέτες στις χαραμάδες. Σήμα στο παράθυρο. Μην πηδήξετε.",
+        "tr": "Pencereli odada kalın, kapıyı kapatın, aralıklara ıslak havlu. Pencereden işaret verin. Atlamayın.",
+        "fr": "Pièce avec fenêtre, porte fermée, linges mouillés aux fentes. Faites signe à la fenêtre. Ne sautez pas."
+      }
+    },
+    "outside_building": {
+      "when": "A house, flat or apartment block is on fire (not a wildfire) and the caller is not inside that building: they have got out, or they are a neighbour or passer-by outside it.",
+      "en": "Stay well away from the building and out of the smoke, and keep the street clear for fire engines. Do not go back in, and do not go in to help anyone. If you think someone is still inside, tell me now where they are, so the firefighters know.",
+      "el": "Μείνετε μακριά από το κτίριο και έξω από τον καπνό, και αφήστε τον δρόμο ελεύθερο για τα πυροσβεστικά οχήματα. Μην μπείτε μέσα, ούτε για να βοηθήσετε κάποιον. Αν πιστεύετε ότι κάποιος είναι ακόμα μέσα, πείτε μου τώρα πού βρίσκεται, για να το ξέρουν οι πυροσβέστες.",
+      "tr": "Binadan ve dumandan uzak durun, itfaiye araçları için yolu açık bırakın. İçeri girmeyin, birine yardım etmek için bile. İçeride hâlâ biri olduğunu düşünüyorsanız, itfaiyeciler bilsin diye nerede olduğunu bana şimdi söyleyin.",
+      "fr": "Restez bien à l'écart du bâtiment et hors de la fumée, et laissez la rue libre pour les pompiers. Ne rentrez pas, même pour aider quelqu'un. Si vous pensez que quelqu'un est encore à l'intérieur, dites-moi maintenant où il se trouve, pour que les pompiers le sachent.",
+      "sms": {
+        "en": "Stay away from the building and smoke. Keep the street clear. Don't go in. Tell firefighters if anyone is inside.",
+        "el": "Μακριά από το κτίριο και τον καπνό. Ελεύθερος δρόμος. Μην μπείτε. Πείτε στους πυροσβέστες αν μένει κάποιος μέσα.",
+        "tr": "Binadan ve dumandan uzak durun. Yolu açık bırakın. İçeri girmeyin. İçeride kalan varsa itfaiyeye söyleyin.",
+        "fr": "Restez loin du bâtiment et de la fumée. Rue libre. N'entrez pas. Signalez aux pompiers qui est encore dedans."
+      }
+    },
+    "clothes_on_fire": {
+      "when": "During a building fire, the caller's or someone else's clothes are on fire right now.",
+      "en": "Stop and do not run. Drop to the ground, cover the face with the hands, and roll over and over until the flames are out, or smother them with a blanket or a heavy cloth. Then cool the burn under cool running water for twenty minutes, and do not pull off anything stuck to the skin.",
+      "el": "Σταματήστε και μην τρέξετε. Πέστε στο έδαφος, καλύψτε το πρόσωπο με τα χέρια και κυλιστείτε ξανά και ξανά μέχρι να σβήσουν οι φλόγες, ή σβήστε τες με μια κουβέρτα ή ένα χοντρό ύφασμα. Μετά βάλτε το έγκαυμα κάτω από δροσερό τρεχούμενο νερό για είκοσι λεπτά, και μην τραβήξετε ό,τι έχει κολλήσει στο δέρμα.",
+      "tr": "Durun, koşmayın. Yere yatın, yüzü ellerle kapatın ve alevler sönene kadar yerde yuvarlanın, ya da alevleri bir battaniye veya kalın bir kumaşla boğun. Sonra yanığı yirmi dakika serin akan suyun altında tutun ve deriye yapışan hiçbir şeyi çekip çıkarmayın.",
+      "fr": "Arrêtez-vous et ne courez pas. Couchez-vous au sol, couvrez le visage avec les mains et roulez sur vous-même jusqu'à ce que les flammes s'éteignent, ou étouffez-les avec une couverture ou un tissu épais. Ensuite, refroidissez la brûlure sous l'eau courante fraîche pendant vingt minutes, et ne retirez rien de ce qui colle à la peau.",
+      "sms": {
+        "en": "Stop, drop and roll, face covered, or smother with a blanket. Cool the burn 20 min under running water.",
+        "el": "Σταματήστε, πέστε κάτω, κυλιστείτε, καλύψτε το πρόσωπο. Δροσερό τρεχούμενο νερό στο έγκαυμα 20 λεπτά.",
+        "tr": "Durun, yere yatın, yuvarlanın, yüzü kapatın. Yanığı 20 dakika serin akan suyun altında tutun.",
+        "fr": "Arrêtez-vous, couchez-vous, roulez, visage couvert. Refroidissez la brûlure 20 min à l'eau courante."
+      }
+    }
+  }
+}

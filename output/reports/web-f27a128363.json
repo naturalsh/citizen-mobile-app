@@ -1,0 +1,47 @@
+{
+  "call_id": "web-f27a128363",
+  "event_id": null,
+  "created_at": "2026-11-26T13:42:11Z",
+  "updated_at": "2026-11-26T13:42:11Z",
+  "status": "in_progress",
+  "handoff_reason": null,
+  "caller_language": "en",
+  "caller": {
+    "name": null,
+    "phone": "+90 500 000 0000",
+    "relation": null
+  },
+  "location": {
+    "aml": {
+      "lat": 36.2,
+      "lon": 36.15
+    },
+    "spoken_address": null,
+    "street": null,
+    "cross_street": null,
+    "area": null,
+    "landmark": null,
+    "map_suggestion": null,
+    "confirmed_with_caller": false,
+    "on_map": null
+  },
+  "hazard_type": null,
+  "hazard_subtype": null,
+  "situation": null,
+  "people": [],
+  "animals": [],
+  "urgency": {
+    "suggested": null,
+    "confidence": null,
+    "reasons": [],
+    "confirmed_by_operator": null
+  },
+  "new_event_suggested": null,
+  "summary_for_operator": null,
+  "summary_en": null,
+  "transcript_ref": "transcripts/web-f27a128363",
+  "source": "voice_agent",
+  "trigger": null,
+  "advice_given": [],
+  "observed_at": "2026-11-26T13:42:11Z"
+}

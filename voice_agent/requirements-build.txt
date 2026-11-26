@@ -1,0 +1,2 @@
+# Only to build the local OpenStreetMap index (brain/osm_index.py); the running services don't need it.
+osmium==4.3.2

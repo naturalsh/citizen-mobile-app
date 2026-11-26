@@ -1,38 +1,51 @@
 #!/usr/bin/env python3
-"""Optional HTTP bridge connecting citizen-mobile-app's /voice-api/* to Voice_Agents/brain/contract.py.
+"""HTTP bridge connecting citizen-mobile-app's /voice-api/* directly to the embedded
+naturalsh/Voice_Agents repo (voice_agent/brain/contract.py & voice_agent/voice/link.py).
 
-Run from the Voice_Agents venv:
+Run with the Voice_Agents Python environment:
     /Users/efe/Projects/Greek-Turkish/Voice_Agents/.venv/bin/python scripts/voice_bridge.py
 
-Then start citizen-mobile-app with:
-    node server.mjs --voice-api http://127.0.0.1:8010
+Then start citizen-mobile-app:
+    npm start
 """
 import os
 import sys
 import uuid
 from typing import Optional
 
+from dotenv import load_dotenv
+
 VOICE_REPO = os.environ.get(
     "VOICE_AGENTS_REPO",
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Voice_Agents")),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "voice_agent")),
 )
 if VOICE_REPO not in sys.path:
     sys.path.insert(0, VOICE_REPO)
 
-from fastapi import FastAPI
+# Load voice_agent/.env so GEMINI_API_KEY, LIVEKIT_*, SONIOX_API_KEY, CARTESIA_API_KEY are active
+load_dotenv(os.path.join(VOICE_REPO, ".env"))
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 
 from brain.contract import CallInfo
 from brain.core import start_call, turn, end_call
 
-app = FastAPI(title="Nature Shield 112 Voice Bridge")
+app = FastAPI(title="Nature Shield 112 Voice Agent Bridge")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 
 class StartReq(BaseModel):
     lang: str = "en"
     channel: str = "voice"
-    phone: str = "web-mobile"
+    phone: str = "+90 500 000 0000"
     aml: Optional[dict] = None
 
 
@@ -47,15 +60,31 @@ class EndReq(BaseModel):
     reason: str = "hung_up"
 
 
+class LiveKitReq(BaseModel):
+    lang: str = "en"
+    hours: float = 1.0
+
+
 @app.get("/voice-api/health")
 def health():
-    return {"ok": True}
+    return {
+        "ok": True,
+        "gemini_configured": bool(os.getenv("GEMINI_API_KEY")),
+        "livekit_configured": bool(
+            os.getenv("LIVEKIT_URL") and os.getenv("LIVEKIT_API_KEY") and os.getenv("LIVEKIT_API_SECRET")
+        ),
+        "soniox_configured": bool(os.getenv("SONIOX_API_KEY")),
+        "tts_provider": os.getenv("VOICE_TTS", "cartesia"),
+    }
 
 
 @app.post("/voice-api/start")
 def api_start(req: StartReq):
     call_id = f"web-{uuid.uuid4().hex[:10]}"
-    res = start_call(CallInfo(call_id=call_id, channel="voice", phone=req.phone, lang_guess=req.lang, aml=req.aml))
+    phone = req.phone
+    if req.lang == "el" and phone == "+90 500 000 0000":
+        phone = "+30 690 000 0000"
+    res = start_call(CallInfo(call_id=call_id, channel="voice", phone=phone, lang_guess=req.lang, aml=req.aml))
     return {
         "call_id": call_id,
         "reply_text": res.reply_text,
@@ -84,5 +113,16 @@ def api_end(req: EndReq):
     return end_call(req.call_id, req.reason)
 
 
+@app.post("/voice-api/livekit")
+def api_livekit(req: LiveKitReq):
+    if not (os.getenv("LIVEKIT_URL") and os.getenv("LIVEKIT_API_KEY") and os.getenv("LIVEKIT_API_SECRET")):
+        raise HTTPException(503, "LiveKit credentials are not configured in voice_agent/.env")
+    from voice.link import make_link
+
+    room, url = make_link(lang=req.lang, hours=req.hours)
+    return {"room": room, "url": url}
+
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=int(os.environ.get("VOICE_BRIDGE_PORT", "8010")))
+    os.chdir(VOICE_REPO)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("VOICE_BRIDGE_PORT", "8010")))

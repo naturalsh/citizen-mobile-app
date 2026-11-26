@@ -1,14 +1,15 @@
-/* Mobile 112 Voice Agent UI overlay.
+/* Mobile 112 Voice Agent UI overlay connected directly to naturalsh/Voice_Agents.
    Opens when the citizen taps the 112 button. Supports:
-   - Browser Web Speech API speech-to-text (tap mic to speak) in en / tr / el
-   - SpeechSynthesis text-to-speech replies (with mute toggle)
+   - Live Voice_Agents brain (brain/contract.py: start_call / turn / end_call)
+   - LiveKit WebRTC room launch when LIVEKIT_* keys are configured in voice_agent/.env
+   - Browser Web Speech API speech-to-text (tap mic to speak) + speechSynthesis TTS
    - Text input and quick emergency chips for silent or unsupported devices
    - Direct "tel:112" escape button at all times
    Zero inline styles or scripts (CSP-compliant via dom.js h()). */
 
 import {t, language} from './i18n.js';
 import {h} from './dom.js';
-import {createVoiceSession} from './voice_engine.js';
+import {createVoiceSession, summarizeReport} from './voice_engine.js';
 
 const SPEECH_LANG = {en: 'en-US', tr: 'tr-TR', el: 'el-GR'};
 const SpeechRec = globalThis.SpeechRecognition || globalThis.webkitSpeechRecognition || null;
@@ -30,6 +31,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
     let busy = false;
     let ended = false;
     let handoff = false;
+    let connectError = null;
     let seconds = 0;
     let timer = null;
     let rec = null;
@@ -78,6 +80,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
     }
 
     function statusText() {
+        if (connectError) return t('voice.statusOffline');
         if (handoff) return t('voice.statusHandoff');
         if (ended) return t('voice.statusEnded');
         if (busy) return t('voice.statusThinking');
@@ -112,7 +115,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
     }
 
     function toggleMic() {
-        if (ended || busy) return;
+        if (ended || busy || !session) return;
         if (listening) {
             stopMic();
             render();
@@ -154,6 +157,12 @@ export function createVoiceUI(container, {getPosition, onClose}) {
         }
     }
 
+    async function openLiveKit() {
+        if (!session) return;
+        const info = await session.livekitLink();
+        if (info?.url) window.open(info.url, '_blank', 'noopener,noreferrer');
+    }
+
     async function endCall() {
         stopMic();
         stopSpeech();
@@ -187,6 +196,8 @@ export function createVoiceUI(container, {getPosition, onClose}) {
         open = true;
         ended = false;
         handoff = false;
+        connectError = null;
+        session = null;
         busy = true;
         seconds = 0;
         messages = [];
@@ -197,45 +208,54 @@ export function createVoiceUI(container, {getPosition, onClose}) {
 
         const pos = getPosition?.();
         const aml = pos ? {lat: pos.lonLat[1], lon: pos.lonLat[0], accuracy_m: pos.accuracy || null} : null;
-        session = await createVoiceSession({lang: language(), aml});
-        const first = await session.start();
-        messages.push({who: 'agent', text: first.reply_text, action: first.action});
-        report = first.report || null;
-        busy = false;
-        timer = setInterval(() => {
-            if (!ended && open) {
-                seconds += 1;
-                const el = container.querySelector('.voice-timer');
-                if (el) el.textContent = formatTimer(seconds);
-            }
-        }, 1000);
-        render();
-        speak(first.reply_text);
+        try {
+            session = await createVoiceSession({lang: language(), aml});
+            const first = await session.start();
+            messages.push({who: 'agent', text: first.reply_text, action: first.action});
+            report = first.report || null;
+            busy = false;
+            timer = setInterval(() => {
+                if (!ended && open) {
+                    seconds += 1;
+                    const el = container.querySelector('.voice-timer');
+                    if (el) el.textContent = formatTimer(seconds);
+                }
+            }, 1000);
+            render();
+            speak(first.reply_text);
+        } catch (err) {
+            busy = false;
+            ended = true;
+            connectError = String(err?.message || err);
+            render();
+        }
     }
 
     function renderReport() {
-        if (!report || (!report.hazard && !report.location && !report.injuries && !report.advice_given)) return null;
+        const info = summarizeReport(report);
+        if (!info) return null;
         const rows = [];
-        if (report.hazard) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldHazard')}: `}), report.hazard));
-        if (report.location) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldLocation')}: `}), report.location));
-        if (report.urgency) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldUrgency')}: `}), report.urgency));
+        if (info.hazard) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldHazard')}: `}), info.hazard));
+        if (info.location) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldLocation')}: `}), info.location));
+        if (info.urgency) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldUrgency')}: `}),
+            info.reasons.length ? `${info.urgency} (${info.reasons.join(', ')})` : info.urgency));
         return h('div', {class: 'voice-report'},
             h('div', {class: 'voice-report-title', text: t('voice.reportTitle')}),
             rows.length > 0 && h('ul', {class: 'voice-report-list'}, rows),
-            report.advice_given && h('p', {class: 'voice-advice', text: report.advice_given}));
+            info.summary && h('p', {class: 'voice-advice', text: info.summary}));
     }
 
     function render() {
         if (!open) return;
         const callerTurns = messages.filter(m => m.who === 'caller').length;
-        const modeLabel = session?.mode === 'live' ? t('voice.modeLive') : t('voice.modeLocal');
+        const modeLabel = connectError ? t('voice.statusOffline') : t('voice.modeLive');
 
         const inputEl = h('input', {
             class: 'voice-input',
             type: 'text',
             placeholder: t('voice.inputPlaceholder'),
             value: draft,
-            disabled: busy || ended,
+            disabled: busy || ended || !session,
             oninput: e => (draft = e.currentTarget.value),
             onkeydown: e => {
                 if (e.key === 'Enter') {
@@ -245,7 +265,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
             },
         });
 
-        const quickChips = !ended && callerTurns === 0 ? h('div', {class: 'voice-chips'},
+        const quickChips = !ended && session && callerTurns === 0 ? h('div', {class: 'voice-chips'},
             [t('voice.quick.trapped'), t('voice.quick.injured'), t('voice.quick.fire')].map(label =>
                 h('button', {
                     class: 'voice-chip',
@@ -254,10 +274,17 @@ export function createVoiceUI(container, {getPosition, onClose}) {
                 }, label))) : null;
 
         const transcript = h('div', {class: 'voice-chat'},
+            connectError && h('div', {class: 'voice-msg agent handoff'},
+                h('p', {text: t('voice.offlineExplain')})),
             messages.map(msg =>
                 h('div', {class: `voice-msg ${msg.who}${msg.action === 'handoff' ? ' handoff' : ''}`},
                     h('p', {text: msg.text}))),
             renderReport(),
+            session?.health?.livekit_configured && !ended && h('button', {
+                class: 'voice-chip',
+                type: 'button',
+                onclick: openLiveKit,
+            }, t('voice.openLiveKit')),
             quickChips);
 
         const body = h('div', {class: 'voice-shell'},
@@ -266,7 +293,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
                 h('div', {class: 'voice-title-box'},
                     h('h2', {text: t('voice.title')}),
                     h('span', {class: 'voice-sub'},
-                        h('span', {class: `voice-dot${ended ? ' off' : ''}`, 'aria-hidden': 'true'}),
+                        h('span', {class: `voice-dot${ended || connectError ? ' off' : ''}`, 'aria-hidden': 'true'}),
                         h('span', {class: 'voice-timer', text: formatTimer(seconds)}),
                         ' · ',
                         modeLabel)),
@@ -278,7 +305,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
 
             h('footer', {class: 'voice-dock'},
                 h('p', {class: `voice-status${listening ? ' live' : ''}`, text: statusText()}),
-                !ended && h('div', {class: 'voice-controls'},
+                !ended && session && h('div', {class: 'voice-controls'},
                     h('button', {
                         class: `voice-side${muted ? ' muted' : ''}`,
                         type: 'button',
@@ -303,7 +330,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
                         'aria-label': t('voice.endCall'),
                         onclick: endCall,
                     }, glyph('close'))),
-                !ended ? h('div', {class: 'voice-form'},
+                !ended && session ? h('div', {class: 'voice-form'},
                     inputEl,
                     h('button', {
                         class: 'voice-send',
@@ -313,7 +340,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
                         onclick: () => sendUtterance(draft),
                     }, glyph('send')))
                 : h('div', {class: 'voice-ended-actions'},
-                    h('button', {class: 'button button-fill button-large main', type: 'button', onclick: start}, t('voice.newCall')),
+                    h('button', {class: 'button button-fill button-large main', type: 'button', onclick: start}, t(connectError ? 'retry' : 'voice.newCall')),
                     h('button', {class: 'plain', type: 'button', onclick: close}, t('close')))));
 
         container.replaceChildren(body);
