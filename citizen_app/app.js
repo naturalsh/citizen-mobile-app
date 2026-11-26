@@ -13,6 +13,7 @@ import {createMap} from './map.js';
 import {drawSheet, drawFailure, exerciseWindow, aboutWindow, receivedLine, answer} from './sheet.js';
 import {createStore} from './store.js';
 import {h} from './dom.js';
+import {createVoiceUI} from './voice_ui.js';
 
 const PUBLIC = new URL('../public/', location.href);            // what the service lets every citizen read
 const FORMAT = 1;                                               // the kind of pack this page understands (contracts.py: AreaPack.format)
@@ -601,6 +602,9 @@ window.addEventListener('appinstalled', () => {
     $('install-btn').hidden = true;
 });
 
+const voiceUI = createVoiceUI($('voice-view'), {getPosition: () => state.position});
+$('call').addEventListener('click', () => voiceUI.open());
+
 /* ---- start ---- */
 
 setLanguage(firstLanguage());
@@ -610,6 +614,7 @@ $('language').addEventListener('change', event => {
     setLanguage(event.currentTarget.value);
     if ($('dialog').open) close();
     words();
+    voiceUI.relabel();
     map?.relabel();
     if (state.pack) render();
     else if (state.failed) fail(state.failed);

@@ -39,7 +39,7 @@ const CITIZEN_HEADERS = {
         "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     'Referrer-Policy': 'no-referrer',
     'X-Content-Type-Options': 'nosniff',
-    'Permissions-Policy': 'geolocation=(self), camera=(), microphone=()',
+    'Permissions-Policy': 'geolocation=(self), camera=(), microphone=(self)',
     'Cache-Control': 'no-cache',
 };
 
@@ -47,12 +47,14 @@ function parseArgs(argv) {
     let port = Number(process.env.PORT || 3000);
     let host = process.env.HOST || '0.0.0.0';
     let api = process.env.DRONE_VISION_API || '';
+    let voiceApi = process.env.VOICE_AGENT_API || '';
     for (let i = 2; i < argv.length; i++) {
         if ((argv[i] === '--port' || argv[i] === '-p') && argv[i + 1]) port = Number(argv[++i]);
         else if (argv[i] === '--host' && argv[i + 1]) host = argv[++i];
         else if (argv[i] === '--api' && argv[i + 1]) api = argv[++i];
+        else if (argv[i] === '--voice-api' && argv[i + 1]) voiceApi = argv[++i];
     }
-    return {port, host, api: api.replace(/\/+$/, '')};
+    return {port, host, api: api.replace(/\/+$/, ''), voiceApi: voiceApi.replace(/\/+$/, '')};
 }
 
 function citizenShell(folder) {
@@ -110,6 +112,28 @@ async function proxyPublic(req, res, apiBase, urlPath) {
     }
 }
 
+async function proxyVoice(req, res, voiceBase, urlPath) {
+    try {
+        const chunks = [];
+        for await (const chunk of req) chunks.push(chunk);
+        const body = chunks.length ? Buffer.concat(chunks) : undefined;
+        const upstream = await fetch(`${voiceBase}${urlPath}`, {
+            method: req.method,
+            headers: {'Content-Type': req.headers['content-type'] || 'application/json', Accept: 'application/json'},
+            body: req.method === 'POST' ? body : undefined,
+        });
+        const out = Buffer.from(await upstream.arrayBuffer());
+        res.writeHead(upstream.status, {
+            ...CITIZEN_HEADERS,
+            'Content-Type': upstream.headers.get('content-type') || 'application/json; charset=utf-8',
+        });
+        res.end(out);
+    } catch (err) {
+        res.writeHead(502, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
+        res.end(JSON.stringify({error: 'Voice agent API unreachable', detail: String(err.message || err)}));
+    }
+}
+
 function lanAddresses() {
     const out = [];
     for (const iface of Object.values(networkInterfaces())) {
@@ -120,11 +144,19 @@ function lanAddresses() {
     return out;
 }
 
-const {port, host, api} = parseArgs(process.argv);
+const {port, host, api, voiceApi} = parseArgs(process.argv);
 
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
     const pathname = url.pathname;
+
+    if (pathname.startsWith('/voice-api/')) {
+        if (!voiceApi) {
+            res.writeHead(503, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
+            return res.end(JSON.stringify({error: 'Voice API not configured; using on-device fallback'}));
+        }
+        return proxyVoice(req, res, voiceApi, pathname + url.search);
+    }
 
     if (req.method !== 'GET' && req.method !== 'HEAD') {
         res.writeHead(405, {...CITIZEN_HEADERS, 'Content-Type': 'text/plain; charset=utf-8'});
