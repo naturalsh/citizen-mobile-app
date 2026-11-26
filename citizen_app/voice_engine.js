@@ -20,6 +20,10 @@ export function resolveVoiceApiBase() {
         }
         return base;
     }
+    // On local dev / LAN server (non-GitHub-Pages), always prefer same-origin ../voice-api/ unless ?voice_api= is explicit
+    if (location.hostname === '127.0.0.1' || location.hostname === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(location.hostname)) {
+        return new URL('../voice-api/', location.href).href;
+    }
     try {
         const saved = localStorage.getItem('voiceApiBase');
         if (saved) return saved;

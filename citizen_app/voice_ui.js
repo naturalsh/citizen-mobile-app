@@ -207,7 +207,8 @@ export function createVoiceUI(container, {onClose}) {
 
         const transcript = h('div', {class: 'voice-chat'},
             connectError && h('div', {class: 'voice-msg agent handoff'},
-                h('p', {text: t('voice.offlineExplain')})),
+                h('p', {text: t('voice.offlineExplain')}),
+                h('p', {class: 'when', text: connectError})),
             !connectError && !messages.length && h('div', {class: 'voice-msg agent'},
                 h('p', {text: statusText()})),
             messages.map(msg =>
