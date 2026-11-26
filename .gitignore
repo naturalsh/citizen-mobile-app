@@ -11,4 +11,5 @@ __pycache__/
 .venv/
 .pytest_cache/
 voice_agent/output/
+output/
 voice_agent/voice/recordings/
