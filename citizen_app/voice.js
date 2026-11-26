@@ -214,10 +214,27 @@ export async function openVoiceAgent(container) {
 
         if (typeof room.registerTextStreamHandler === 'function') {
             room.registerTextStreamHandler('lk.chat', async (reader, participantInfo) => {
+                if (participantInfo?.identity === room.localParticipant?.identity) return;
+                let item = null;
+                let textNode = null;
+                let acc = '';
                 try {
-                    const text = (await reader.readAll()).trim();
-                    if (text && participantInfo?.identity !== room.localParticipant?.identity) {
-                        appendLine('agent', text);
+                    for await (const chunk of reader) {
+                        if (!chunk) continue;
+                        acc += chunk;
+                        if (!item && logEl) {
+                            textNode = document.createTextNode(acc);
+                            item = h('p', {class: 'voice-line agent'}, h('strong', {text: '112: '}), textNode);
+                            logEl.append(item);
+                        } else if (textNode) {
+                            textNode.nodeValue = acc;
+                        }
+                        if (logEl) logEl.scrollTop = logEl.scrollHeight;
+                    }
+                    const cleaned = acc.trim();
+                    if (cleaned) {
+                        if (textNode) textNode.nodeValue = cleaned;
+                        lastLine = `agent:${cleaned}`;
                     }
                 } catch {}
             });

@@ -185,25 +185,41 @@ class IntakeAgent(Agent):
         voices.switch(self.session.tts, lang)
 
         final = action in ("end", "handoff")
-        spoken_chunks: list[str] = []
         try:
             # The last line (read-back confirmation, handoff notice) must be heard in full.
             if isinstance(text, str):
-                spoken_chunks.append(text)
+                asyncio.create_task(self._send_chat_text(text))
                 fixed = self._fixed.get(lang, [])
                 handles = [self._say_part(part, rec, not final) for part, rec in recordings.split(text, lang, fixed)]
             else:
+                writer = None
+                try:
+                    writer = await get_job_context().room.local_participant.stream_text(topic="lk.chat")
+                except Exception:
+                    writer = None
+
                 async def _capture(src: AsyncIterable[str]) -> AsyncIterable[str]:
-                    async for piece in src:
-                        spoken_chunks.append(piece)
-                        yield piece
+                    try:
+                        async for piece in src:
+                            if writer is not None and piece:
+                                try:
+                                    await writer.write(piece)
+                                except Exception:
+                                    pass
+                            yield piece
+                    finally:
+                        if writer is not None:
+                            try:
+                                await writer.aclose()
+                            except Exception:
+                                pass
+
                 handles = await self._say_pieces(_capture(text), lang, interruptible=not final)
         except RuntimeError:
             # The caller hung up while the brain was still answering; the reply is in the
             # transcript but nobody is left to hear it.
             log.info("call %s closed before the reply could be spoken", self.flow.call_id)
             return
-        await self._send_chat_text("".join(spoken_chunks))
         self._last_reply = handles
         if not final or not handles:
             return
