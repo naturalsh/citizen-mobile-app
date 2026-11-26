@@ -70,9 +70,17 @@ class IntakeAgent(Agent):
         await self._speak(self.flow.start())
 
     async def on_user_turn_completed(self, turn_ctx: ChatContext, new_message: ChatMessage) -> None:
-        heard = (new_message.text_content or "").strip()
+        await self.handle_user_text((new_message.text_content or "").strip())
+
+    async def handle_user_text(self, heard: str, from_text: bool = False) -> None:
+        if from_text and heard:
+            self.languages.heard(heard, None)
+            try:
+                self.session.interrupt()
+            except Exception:
+                pass
         lang = self.languages.decide()
-        text = fillers.clean(heard) if config.FILLER_FILTER else heard
+        text = fillers.clean(heard) if (config.FILLER_FILTER and not from_text) else heard
         if heard and not text:
             # Only "εε…": the caller is thinking. Stay silent and keep listening.
             log.info("call %s: only fillers, still listening", self.flow.call_id)
@@ -162,22 +170,40 @@ class IntakeAgent(Agent):
     async def _speak(self, result) -> None:
         await self._say(result.reply_text, result.lang, result.action, result.handoff_reason)
 
+    async def _send_chat_text(self, text: str) -> None:
+        """Send the agent's reply as text over lk.chat so text-mode clients always see it."""
+        cleaned = (text or "").strip()
+        if not cleaned:
+            return
+        try:
+            room = get_job_context().room
+            await room.local_participant.send_text(cleaned, topic="lk.chat")
+        except Exception:
+            pass
+
     async def _say(self, text: str | AsyncIterable[str], lang: str, action: str, handoff_reason: str | None) -> None:
         voices.switch(self.session.tts, lang)
 
         final = action in ("end", "handoff")
+        spoken_chunks: list[str] = []
         try:
             # The last line (read-back confirmation, handoff notice) must be heard in full.
             if isinstance(text, str):
+                spoken_chunks.append(text)
                 fixed = self._fixed.get(lang, [])
                 handles = [self._say_part(part, rec, not final) for part, rec in recordings.split(text, lang, fixed)]
             else:
-                handles = await self._say_pieces(text, lang, interruptible=not final)
+                async def _capture(src: AsyncIterable[str]) -> AsyncIterable[str]:
+                    async for piece in src:
+                        spoken_chunks.append(piece)
+                        yield piece
+                handles = await self._say_pieces(_capture(text), lang, interruptible=not final)
         except RuntimeError:
             # The caller hung up while the brain was still answering; the reply is in the
             # transcript but nobody is left to hear it.
             log.info("call %s closed before the reply could be spoken", self.flow.call_id)
             return
+        await self._send_chat_text("".join(spoken_chunks))
         self._last_reply = handles
         if not final or not handles:
             return
@@ -315,12 +341,21 @@ async def entrypoint(ctx: JobContext) -> None:
 
     # Shutdown callbacks run however the job ends, so end_call() always runs exactly once.
     ctx.add_shutdown_callback(_finish)
+    intake = IntakeAgent(flow, participant, times)
+
+    def _on_text_input(_sess: AgentSession, ev: room_io.TextInputEvent) -> None:
+        text = (ev.text or "").strip()
+        if text:
+            log.info("call %s received text input: %s", flow.call_id, text)
+            asyncio.create_task(intake.handle_user_text(text, from_text=True))
+
     room_options = room_io.RoomOptions(
         # LiveKit Cloud only; VOICE_NOISE_CANCELLATION=off for a self-hosted server.
         audio_input=room_io.AudioInputOptions(noise_cancellation=telephony.noise_filter)
         if config.NOISE_CANCELLATION else True,
+        text_input=room_io.TextInputOptions(text_input_cb=_on_text_input),
     )
-    await session.start(IntakeAgent(flow, participant, times), room=ctx.room, room_options=room_options)
+    await session.start(intake, room=ctx.room, room_options=room_options)
 
 
 if __name__ == "__main__":

@@ -49,9 +49,14 @@ export async function openVoiceAgent(container) {
         if (orbEl) orbEl.className = `voice-orb ${mode}`.trim();
     };
 
+    let lastLine = '';
     const appendLine = (who, text) => {
-        if (!logEl || !text) return;
-        const item = h('p', {class: `voice-line ${who}`}, h('strong', {text: who === 'agent' ? '112: ' : 'You: '}), text);
+        const cleaned = (text || '').trim();
+        if (!logEl || !cleaned) return;
+        const key = `${who}:${cleaned}`;
+        if (key === lastLine) return;
+        lastLine = key;
+        const item = h('p', {class: `voice-line ${who}`}, h('strong', {text: who === 'agent' ? '112: ' : 'You: '}), cleaned);
         logEl.append(item);
         logEl.scrollTop = logEl.scrollHeight;
     };
@@ -204,6 +209,24 @@ export async function openVoiceAgent(container) {
             const text = segments.map(s => s.text).join(' ').trim();
             if (text && segments.some(s => s.final)) {
                 appendLine(participant?.isLocal ? 'user' : 'agent', text);
+            }
+        });
+
+        if (typeof room.registerTextStreamHandler === 'function') {
+            room.registerTextStreamHandler('lk.chat', async (reader, participantInfo) => {
+                try {
+                    const text = (await reader.readAll()).trim();
+                    if (text && participantInfo?.identity !== room.localParticipant?.identity) {
+                        appendLine('agent', text);
+                    }
+                } catch {}
+            });
+        }
+
+        room.on(LK.RoomEvent.DataReceived, (payload, participant, _kind, topic) => {
+            if (topic === 'lk.chat' && !participant?.isLocal) {
+                const text = new TextDecoder().decode(payload).trim();
+                if (text) appendLine('agent', text);
             }
         });
 
