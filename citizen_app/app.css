@@ -112,12 +112,9 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 .sheet {grid-row: 6}
 .mobile-nav {grid-row: 7}
 
-.exercise {min-height: calc(44px + env(safe-area-inset-top, 0px)); padding: calc(8px + env(safe-area-inset-top, 0px)) var(--gr) 8px var(--gl);
-           border: 0; border-radius: 0; background: var(--exercise); color: #ffffff; font-size: 15px; font-weight: 600; line-height: 20px;
-           letter-spacing: 0.02em; text-align: center}
+.exercise {display: none !important}
 .exercise:focus-visible {outline-color: #ffffff}
-.top {display: flex; align-items: center; gap: 4px; padding: 6px var(--gr) 6px var(--gl); border-bottom: var(--hair); background: var(--card)}
-.exercise[hidden] + .top {padding-top: calc(6px + env(safe-area-inset-top, 0px))}       /* no banner: the title bar is the first line */
+.top {display: flex; align-items: center; gap: 4px; padding: calc(6px + env(safe-area-inset-top, 0px)) var(--gr) 6px var(--gl); border-bottom: var(--hair); background: var(--card)}
 .top h1 {flex: 1; min-width: 0; font-size: 20px; font-weight: 700; line-height: 24px; letter-spacing: -0.01em;
          overflow-wrap: anywhere}                                                        /* a long name takes a second line, it is not cut */
 .area {display: block; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px; letter-spacing: 0}
@@ -146,7 +143,7 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 }
 .install-btn {color: var(--f7-theme-color)}
 /* 112 is the only filled shape of the title bar, and the only red one */
-.call {flex: none; min-width: 64px; height: 44px; margin-left: 4px; padding: 0 16px; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
+.call {flex: none; width: auto; min-width: 64px; height: 44px; margin-left: 4px; padding: 0 16px; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
        --f7-button-fill-bg-color: var(--blocked); --f7-button-border-radius: 22px}
 
 /* what the operations room says to everybody, and under it the line that says the information is old */
