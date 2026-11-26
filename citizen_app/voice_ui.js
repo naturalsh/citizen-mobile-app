@@ -1,18 +1,12 @@
-/* Mobile 112 Voice Agent UI overlay connected directly to naturalsh/Voice_Agents.
-   Opens when the citizen taps the 112 button. Supports:
-   - Live Voice_Agents brain (brain/contract.py: start_call / turn / end_call)
-   - LiveKit WebRTC room launch when LIVEKIT_* keys are configured in voice_agent/.env
-   - Browser Web Speech API speech-to-text (tap mic to speak) + speechSynthesis TTS
-   - Text input and quick emergency chips for silent or unsupported devices
-   - Direct "tel:112" escape button at all times
+/* Mobile 112 Voice Agent UI overlay connected directly to naturalsh/Voice_Agents via LiveKit WebRTC.
+   Tapping 112 joins a fresh LiveKit Cloud room where voice_agent/voice/agent.py answers with:
+   Silero VAD + Soniox STT -> brain.turn_stream() (Gemini) -> ElevenLabs/Cartesia TTS.
+   Live transcriptions stream into the chat view; mic mute, speaker mute, and end call work natively.
    Zero inline styles or scripts (CSP-compliant via dom.js h()). */
 
 import {t, language} from './i18n.js';
 import {h} from './dom.js';
-import {createVoiceSession, summarizeReport} from './voice_engine.js';
-
-const SPEECH_LANG = {en: 'en-US', tr: 'tr-TR', el: 'el-GR'};
-const SpeechRec = globalThis.SpeechRecognition || globalThis.webkitSpeechRecognition || null;
+import {fetchLiveKitToken} from './voice_engine.js';
 
 const glyph = name => h('span', {class: `ico ico-${name}`, 'aria-hidden': 'true'});
 
@@ -22,198 +16,175 @@ function formatTimer(sec) {
     return `${m}:${s}`;
 }
 
-export function createVoiceUI(container, {getPosition, onClose}) {
-    let session = null;
+export function createVoiceUI(container, {onClose}) {
+    let room = null;
     let open = false;
-    let muted = false;
-    let listening = false;
-    let speaking = false;
-    let busy = false;
+    let connecting = false;
+    let connected = false;
+    let agentJoined = false;
+    let agentSpeaking = false;
+    let micMuted = false;
+    let speakerMuted = false;
     let ended = false;
-    let handoff = false;
     let connectError = null;
     let seconds = 0;
     let timer = null;
-    let rec = null;
     let messages = [];
-    let report = null;
-    let draft = '';
+    let audioEls = [];
 
-    function stopSpeech() {
-        try {
-            globalThis.speechSynthesis?.cancel();
-        } catch {
-            // ignore
-        }
-        speaking = false;
-    }
-
-    function stopMic() {
-        if (rec) {
+    function cleanupRoom() {
+        for (const el of audioEls) {
             try {
-                rec.abort();
+                el.pause();
+                el.remove();
             } catch {
                 // ignore
             }
-            rec = null;
         }
-        listening = false;
-    }
-
-    function speak(text) {
-        if (muted || !globalThis.speechSynthesis || !text) return;
-        stopSpeech();
-        try {
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = SPEECH_LANG[language()] || 'en-US';
-            utter.rate = 0.98;
-            speaking = true;
-            render();
-            utter.onend = utter.onerror = () => {
-                speaking = false;
-                render();
-            };
-            globalThis.speechSynthesis.speak(utter);
-        } catch {
-            speaking = false;
+        audioEls = [];
+        if (room) {
+            try {
+                room.disconnect();
+            } catch {
+                // ignore
+            }
+            room = null;
         }
+        connected = false;
+        connecting = false;
+        agentJoined = false;
+        agentSpeaking = false;
     }
 
     function statusText() {
         if (connectError) return t('voice.statusOffline');
-        if (handoff) return t('voice.statusHandoff');
         if (ended) return t('voice.statusEnded');
-        if (busy) return t('voice.statusThinking');
-        if (listening) return t('voice.statusListening');
-        if (speaking) return t('voice.statusSpeaking');
-        return SpeechRec ? t('voice.statusReady') : t('voice.statusType');
+        if (connecting) return t('voice.statusThinking');
+        if (agentSpeaking) return t('voice.statusSpeaking');
+        if (micMuted) return t('voice.mute');
+        if (connected && !agentJoined) return t('voice.statusThinking');
+        return t('voice.statusListening');
     }
 
-    async function sendUtterance(text) {
+    function upsertTranscript(id, who, text) {
         const clean = String(text || '').trim();
-        if (!clean || !session || busy || ended) return;
-        stopMic();
-        stopSpeech();
-        draft = '';
-        messages.push({who: 'caller', text: clean});
-        busy = true;
+        if (!clean) return;
+        const existing = messages.find(m => m.id === id);
+        if (existing) existing.text = clean;
+        else messages.push({id, who, text: clean});
         render();
+    }
+
+    async function toggleMic() {
+        if (!room || !connected || ended) return;
+        micMuted = !micMuted;
         try {
-            const result = await session.turn(clean);
-            messages.push({who: 'agent', text: result.reply_text, action: result.action});
-            report = result.report || report;
-            if (result.action === 'handoff') handoff = true;
-            if (result.action === 'end') ended = true;
-            busy = false;
-            render();
-            speak(result.reply_text);
+            await room.localParticipant.setMicrophoneEnabled(!micMuted);
         } catch {
-            busy = false;
-            messages.push({who: 'agent', text: t('voice.error')});
-            render();
+            micMuted = !micMuted;
         }
+        render();
     }
 
-    function toggleMic() {
-        if (ended || busy || !session) return;
-        if (listening) {
-            stopMic();
-            render();
-            return;
-        }
-        if (!SpeechRec) return;
-        stopSpeech();
-        try {
-            rec = new SpeechRec();
-            rec.lang = SPEECH_LANG[language()] || 'en-US';
-            rec.interimResults = false;
-            rec.maxAlternatives = 1;
-            listening = true;
-            render();
-            rec.onresult = event => {
-                const spoken = event.results?.[0]?.[0]?.transcript || '';
-                listening = false;
-                rec = null;
-                if (spoken) sendUtterance(spoken);
-                else render();
-            };
-            rec.onerror = () => {
-                listening = false;
-                rec = null;
-                render();
-            };
-            rec.onend = () => {
-                if (listening) {
-                    listening = false;
-                    rec = null;
-                    render();
-                }
-            };
-            rec.start();
-        } catch {
-            listening = false;
-            rec = null;
-            render();
-        }
+    function toggleSpeaker() {
+        speakerMuted = !speakerMuted;
+        for (const el of audioEls) el.muted = speakerMuted;
+        render();
     }
 
-    async function openLiveKit() {
-        if (!session) return;
-        const info = await session.livekitLink();
-        if (info?.url) window.open(info.url, '_blank', 'noopener,noreferrer');
-    }
-
-    async function endCall() {
-        stopMic();
-        stopSpeech();
+    function endCall() {
         if (timer) clearInterval(timer);
         timer = null;
-        if (session && !ended) {
-            try {
-                report = await session.end(handoff ? 'handed_off' : 'hung_up');
-            } catch {
-                // ignore
-            }
-        }
+        cleanupRoom();
         ended = true;
         render();
     }
 
     function close() {
-        stopMic();
-        stopSpeech();
         if (timer) clearInterval(timer);
         timer = null;
+        cleanupRoom();
         open = false;
         container.hidden = true;
         onClose?.();
     }
 
     async function start() {
-        stopMic();
-        stopSpeech();
         if (timer) clearInterval(timer);
+        cleanupRoom();
         open = true;
+        connecting = true;
         ended = false;
-        handoff = false;
+        micMuted = false;
+        speakerMuted = false;
         connectError = null;
-        session = null;
-        busy = true;
         seconds = 0;
         messages = [];
-        report = null;
-        draft = '';
         container.hidden = false;
         render();
 
-        const pos = getPosition?.();
-        const aml = pos ? {lat: pos.lonLat[1], lon: pos.lonLat[0], accuracy_m: pos.accuracy || null} : null;
+        const LK = globalThis.LivekitClient;
+        if (!LK) {
+            connecting = false;
+            ended = true;
+            connectError = 'LiveKit client not loaded';
+            render();
+            return;
+        }
+
         try {
-            session = await createVoiceSession({lang: language(), aml});
-            const first = await session.start();
-            messages.push({who: 'agent', text: first.reply_text, action: first.action});
-            report = first.report || null;
-            busy = false;
+            const {livekit_url, token} = await fetchLiveKitToken({lang: language()});
+            room = new LK.Room({adaptiveStream: true, dynacast: true});
+
+            room.on(LK.RoomEvent.ParticipantConnected, () => {
+                agentJoined = true;
+                render();
+            });
+
+            room.on(LK.RoomEvent.TrackSubscribed, track => {
+                if (track.kind === LK.Track.Kind.Audio) {
+                    const audio = track.attach();
+                    audio.autoplay = true;
+                    audio.muted = speakerMuted;
+                    audio.className = 'unseen';
+                    document.body.appendChild(audio);
+                    audioEls.push(audio);
+                    agentJoined = true;
+                    render();
+                }
+            });
+
+            room.on(LK.RoomEvent.TrackUnsubscribed, track => {
+                track.detach().forEach(el => el.remove());
+            });
+
+            room.on(LK.RoomEvent.ActiveSpeakersChanged, speakers => {
+                agentSpeaking = speakers.some(p => p.identity !== room?.localParticipant?.identity);
+                render();
+            });
+
+            room.on(LK.RoomEvent.TranscriptionReceived, (segments, participant) => {
+                const who = participant?.identity === room?.localParticipant?.identity ? 'caller' : 'agent';
+                for (const seg of segments) {
+                    upsertTranscript(seg.id, who, seg.text);
+                }
+            });
+
+            room.on(LK.RoomEvent.Disconnected, () => {
+                if (open && !ended) {
+                    if (timer) clearInterval(timer);
+                    timer = null;
+                    cleanupRoom();
+                    ended = true;
+                    render();
+                }
+            });
+
+            await room.connect(livekit_url, token);
+            await room.localParticipant.setMicrophoneEnabled(true);
+
+            connecting = false;
+            connected = true;
             timer = setInterval(() => {
                 if (!ended && open) {
                     seconds += 1;
@@ -222,70 +193,26 @@ export function createVoiceUI(container, {getPosition, onClose}) {
                 }
             }, 1000);
             render();
-            speak(first.reply_text);
         } catch (err) {
-            busy = false;
+            cleanupRoom();
             ended = true;
             connectError = String(err?.message || err);
             render();
         }
     }
 
-    function renderReport() {
-        const info = summarizeReport(report);
-        if (!info) return null;
-        const rows = [];
-        if (info.hazard) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldHazard')}: `}), info.hazard));
-        if (info.location) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldLocation')}: `}), info.location));
-        if (info.urgency) rows.push(h('li', {}, h('strong', {text: `${t('voice.fieldUrgency')}: `}),
-            info.reasons.length ? `${info.urgency} (${info.reasons.join(', ')})` : info.urgency));
-        return h('div', {class: 'voice-report'},
-            h('div', {class: 'voice-report-title', text: t('voice.reportTitle')}),
-            rows.length > 0 && h('ul', {class: 'voice-report-list'}, rows),
-            info.summary && h('p', {class: 'voice-advice', text: info.summary}));
-    }
-
     function render() {
         if (!open) return;
-        const callerTurns = messages.filter(m => m.who === 'caller').length;
         const modeLabel = connectError ? t('voice.statusOffline') : t('voice.modeLive');
-
-        const inputEl = h('input', {
-            class: 'voice-input',
-            type: 'text',
-            placeholder: t('voice.inputPlaceholder'),
-            value: draft,
-            disabled: busy || ended || !session,
-            oninput: e => (draft = e.currentTarget.value),
-            onkeydown: e => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendUtterance(draft);
-                }
-            },
-        });
-
-        const quickChips = !ended && session && callerTurns === 0 ? h('div', {class: 'voice-chips'},
-            [t('voice.quick.trapped'), t('voice.quick.injured'), t('voice.quick.fire')].map(label =>
-                h('button', {
-                    class: 'voice-chip',
-                    type: 'button',
-                    onclick: () => sendUtterance(label),
-                }, label))) : null;
 
         const transcript = h('div', {class: 'voice-chat'},
             connectError && h('div', {class: 'voice-msg agent handoff'},
                 h('p', {text: t('voice.offlineExplain')})),
+            !connectError && !messages.length && h('div', {class: 'voice-msg agent'},
+                h('p', {text: statusText()})),
             messages.map(msg =>
-                h('div', {class: `voice-msg ${msg.who}${msg.action === 'handoff' ? ' handoff' : ''}`},
-                    h('p', {text: msg.text}))),
-            renderReport(),
-            session?.health?.livekit_configured && !ended && h('button', {
-                class: 'voice-chip',
-                type: 'button',
-                onclick: openLiveKit,
-            }, t('voice.openLiveKit')),
-            quickChips);
+                h('div', {class: `voice-msg ${msg.who}`},
+                    h('p', {text: msg.text}))));
 
         const body = h('div', {class: 'voice-shell'},
             h('header', {class: 'voice-top'},
@@ -304,24 +231,21 @@ export function createVoiceUI(container, {getPosition, onClose}) {
             transcript,
 
             h('footer', {class: 'voice-dock'},
-                h('p', {class: `voice-status${listening ? ' live' : ''}`, text: statusText()}),
-                !ended && session && h('div', {class: 'voice-controls'},
+                h('p', {class: `voice-status${connected && !micMuted && !ended ? ' live' : ''}`, text: statusText()}),
+                !ended ? h('div', {class: 'voice-controls'},
                     h('button', {
-                        class: `voice-side${muted ? ' muted' : ''}`,
+                        class: `voice-side${speakerMuted ? ' muted' : ''}`,
                         type: 'button',
-                        'aria-label': t(muted ? 'voice.unmute' : 'voice.mute'),
-                        'aria-pressed': String(muted),
-                        onclick: () => {
-                            muted = !muted;
-                            if (muted) stopSpeech();
-                            render();
-                        },
-                    }, glyph(muted ? 'volume-off' : 'volume')),
+                        'aria-label': t(speakerMuted ? 'voice.unmute' : 'voice.mute'),
+                        'aria-pressed': String(speakerMuted),
+                        onclick: toggleSpeaker,
+                    }, glyph(speakerMuted ? 'volume-off' : 'volume')),
                     h('button', {
-                        class: `voice-mic${listening ? ' listening' : ''}`,
+                        class: `voice-mic${connected && !micMuted ? ' listening' : ''}`,
                         type: 'button',
-                        disabled: !SpeechRec || busy,
-                        'aria-label': t(listening ? 'voice.stopMic' : 'voice.startMic'),
+                        disabled: connecting,
+                        'aria-label': t(micMuted ? 'voice.startMic' : 'voice.stopMic'),
+                        'aria-pressed': String(!micMuted),
                         onclick: toggleMic,
                     }, glyph('mic')),
                     h('button', {
@@ -329,16 +253,7 @@ export function createVoiceUI(container, {getPosition, onClose}) {
                         type: 'button',
                         'aria-label': t('voice.endCall'),
                         onclick: endCall,
-                    }, glyph('close'))),
-                !ended && session ? h('div', {class: 'voice-form'},
-                    inputEl,
-                    h('button', {
-                        class: 'voice-send',
-                        type: 'button',
-                        disabled: busy,
-                        'aria-label': t('voice.send'),
-                        onclick: () => sendUtterance(draft),
-                    }, glyph('send')))
+                    }, glyph('close')))
                 : h('div', {class: 'voice-ended-actions'},
                     h('button', {class: 'button button-fill button-large main', type: 'button', onclick: start}, t(connectError ? 'retry' : 'voice.newCall')),
                     h('button', {class: 'plain', type: 'button', onclick: close}, t('close')))));

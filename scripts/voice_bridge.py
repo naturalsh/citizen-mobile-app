@@ -113,6 +113,30 @@ def api_end(req: EndReq):
     return end_call(req.call_id, req.reason)
 
 
+@app.post("/voice-api/token")
+def api_token(req: LiveKitReq):
+    """Mint a fresh LiveKit room + participant JWT, identical to voice_agent/voice/link.py."""
+    url = os.getenv("LIVEKIT_URL")
+    if not (url and os.getenv("LIVEKIT_API_KEY") and os.getenv("LIVEKIT_API_SECRET")):
+        raise HTTPException(503, "LiveKit credentials are not configured in voice_agent/.env")
+    import secrets
+    from datetime import timedelta
+    from livekit import api as lk_api
+
+    room = f"mobile-112-{secrets.token_hex(4)}"
+    token = (
+        lk_api.AccessToken()
+        .with_identity(f"caller-{secrets.token_hex(3)}")
+        .with_name("112 Caller")
+        .with_attributes({"lang": req.lang})
+        .with_room_config(lk_api.RoomConfiguration(departure_timeout=1, empty_timeout=60))
+        .with_ttl(timedelta(hours=req.hours))
+        .with_grants(lk_api.VideoGrants(room_join=True, room=room, can_publish=True, can_subscribe=True))
+        .to_jwt()
+    )
+    return {"livekit_url": url, "token": token, "room": room, "lang": req.lang}
+
+
 @app.post("/voice-api/livekit")
 def api_livekit(req: LiveKitReq):
     if not (os.getenv("LIVEKIT_URL") and os.getenv("LIVEKIT_API_KEY") and os.getenv("LIVEKIT_API_SECRET")):

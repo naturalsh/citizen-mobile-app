@@ -35,8 +35,8 @@ const MIME = {
 
 const CITIZEN_HEADERS = {
     'Content-Security-Policy':
-        "default-src 'self'; img-src 'self' data: blob:; worker-src 'self' blob:; child-src blob:; " +
-        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+        "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; worker-src 'self' blob:; child-src blob:; " +
+        "connect-src 'self' wss: https:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     'Referrer-Policy': 'no-referrer',
     'X-Content-Type-Options': 'nosniff',
     'Permissions-Policy': 'geolocation=(self), camera=(), microphone=(self)',

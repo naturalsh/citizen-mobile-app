@@ -49,6 +49,22 @@ export function summarizeReport(report) {
     return {hazard, location: locationText, urgency, reasons, adviceTopics, summary};
 }
 
+/* Fetches a fresh LiveKit room + JWT token from scripts/voice_bridge.py so the mobile UI
+   joins the exact same LiveKit Cloud room as Voice_Agents (Soniox STT + Gemini + ElevenLabs TTS). */
+export async function fetchLiveKitToken({lang = 'en', baseUrl = resolveVoiceApiBase(), fetchImpl = globalThis.fetch} = {}) {
+    const endpoint = path => new URL(path, baseUrl).href;
+    const res = await fetchImpl(endpoint('token'), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', Accept: 'application/json'},
+        body: JSON.stringify({lang, hours: 1}),
+    });
+    if (!res.ok) {
+        const detail = await res.text().catch(() => '');
+        throw new Error(`LiveKit token failed (${res.status}): ${detail}`);
+    }
+    return await res.json();
+}
+
 /* Connects to the real Voice_Agents bridge (scripts/voice_bridge.py -> brain/contract.py).
    Throws if the server is unreachable or returns an error. */
 export async function createVoiceSession({lang = 'en', aml = null, baseUrl = resolveVoiceApiBase(), fetchImpl = globalThis.fetch} = {}) {
