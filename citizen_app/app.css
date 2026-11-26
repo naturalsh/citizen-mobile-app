@@ -251,8 +251,8 @@ a {-webkit-touch-callout: default}                                  /* a long pr
       box-shadow: 0 0 0 2px var(--f7-theme-color)}                      /* the mark of "you" on the map, small */
 .plain {flex: none; width: auto; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--f7-theme-color)}
 
-/* assembly points, or hospitals: the library's switch, as high as a finger and with words that may take two lines */
-.tabs {margin: 16px var(--gr) 16px var(--gl); --f7-button-border-radius: 10px}
+/* assembly points, or hospitals: hidden on mobile (where bottom nav handles switching), shown on desktop/landscape */
+.tabs {display: none; margin: 16px var(--gr) 16px var(--gl); --f7-button-border-radius: 10px}
 .tabs .tab {height: auto; min-height: 44px; padding: 4px 8px; line-height: 18px; white-space: normal}
 
 /* a place in a list: its sign, its name, how far it is, what was reported about it, what is known about the way */
@@ -395,6 +395,7 @@ a {-webkit-touch-callout: default}                                  /* a long pr
                                    border-radius: 0; box-shadow: none; padding-bottom: var(--safe-bottom); --safe-right: 0px}
     html:not(.mobile-view) .stage {grid-column: 2; grid-row: 5; --safe-left: 0px; --safe-bottom: env(safe-area-inset-bottom, 0px)}
     html:not(.mobile-view) .handle, html:not(.mobile-view) .mobile-nav {display: none}
+    html:not(.mobile-view) .tabs {display: flex}
     html:not(.mobile-view) .body {padding-top: 16px}
     html:not(.mobile-view) .echo {position: static; width: auto; height: auto; clip-path: none; white-space: normal}
 }
