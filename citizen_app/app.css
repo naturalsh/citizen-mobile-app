@@ -151,7 +151,7 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 }
 .install-btn {color: var(--f7-theme-color)}
 /* 112 is the only filled shape of the title bar, and the only red one */
-.call {flex: none; min-width: 64px; height: 44px; margin-left: 4px; padding: 0 16px; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
+.call {flex: none; width: auto; min-width: 64px; height: 44px; margin-left: 4px; padding: 0 16px; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
        --f7-button-fill-bg-color: var(--blocked); --f7-button-border-radius: 22px}
 
 /* what the operations room says to everybody, and under it the line that says the information is old */
@@ -427,7 +427,7 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 .voice-sub {display: flex; align-items: center; gap: 6px; color: var(--quiet); font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums}
 .voice-dot {width: 8px; height: 8px; border-radius: 50%; background: var(--checked)}
 .voice-dot.off {background: var(--no-data)}
-.voice-dial {flex: none; display: inline-flex; align-items: center; gap: 5px; height: 36px; padding: 0 12px; font-size: 14px; font-weight: 700;
+.voice-dial {flex: none; width: auto; display: inline-flex; align-items: center; gap: 5px; height: 36px; padding: 0 12px; font-size: 14px; font-weight: 700;
              --f7-button-fill-bg-color: var(--blocked); --f7-button-border-radius: 18px}
 .voice-dial .ico {width: 15px; height: 15px}
 .voice-disclosure {padding: 8px var(--gr) 8px var(--gl); border-bottom: var(--hair); background: #fff4cc; color: var(--ink);
@@ -447,7 +447,7 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 .voice-advice {margin-top: 8px; padding-top: 8px; border-top: var(--hair); color: var(--ink); font-weight: 500}
 
 .voice-chips {display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px}
-.voice-chip {min-height: 38px; padding: 6px 12px; border: var(--hair); border-radius: 10px; background: var(--card);
+.voice-chip {width: auto; min-height: 38px; padding: 6px 12px; border: var(--hair); border-radius: 10px; background: var(--card);
              color: var(--ink); font-size: 14px; font-weight: 500; text-align: start}
 .voice-chip:active {background: var(--press)}
 
