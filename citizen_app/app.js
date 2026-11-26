@@ -12,6 +12,7 @@ import {buildNetwork, nearest, reach, route, changes, noticed, rank, reported, t
 import {createMap} from './map.js';
 import {drawSheet, drawFailure, exerciseWindow, aboutWindow, receivedLine, answer} from './sheet.js';
 import {createStore} from './store.js';
+import {createVoicePanel} from './voice.js';
 import {h} from './dom.js';
 
 const PUBLIC = new URL('../public/', location.href);            // what the service lets every citizen read
@@ -455,6 +456,8 @@ function show(body) {
 $('dialog').addEventListener('click', event => {
     if (event.target === event.currentTarget) close();          // a tap beside the window
 });
+const voice = createVoicePanel($('voice-panel'));
+$('call').addEventListener('click', () => voice.open());
 $('exercise').addEventListener('click', () => show(exerciseWindow(state.pack, close)));
 $('about').addEventListener('click', () => show(aboutWindow(state.pack, state.received, close, holds)));
 
@@ -611,6 +614,7 @@ $('language').addEventListener('change', event => {
     if ($('dialog').open) close();
     words();
     map?.relabel();
+    if (!$('voice-panel').hidden) voice.relabel();
     if (state.pack) render();
     else if (state.failed) fail(state.failed);
 });

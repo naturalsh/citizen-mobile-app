@@ -1,426 +1,279 @@
-/* Mobile 112 Voice Agent chat + spoken readout client.
-   Talks to the embedded Voice_Agents brain (/api/voice/start, /turn, /end)
-   and reads every agent reply out loud using the browser's Web Speech API. */
+/* Mobile 112 Voice Agent interface: connects directly to the embedded Voice_Agents LiveKit run.
+   Flow:
+     1. POST /api/voice/token {lang} -> {url, token, room}
+     2. Connect with LivekitClient.Room directly to LiveKit Cloud (same room the voice.agent worker joins)
+     3. Publish microphone audio, subscribe to agent audio, show live agent state & transcripts. */
 
-import {firstLanguage, setLanguage, language, t, clock} from './i18n.js';
+import {t, language} from './i18n.js';
 import {h} from './dom.js';
 
-const $ = id => document.getElementById(id);
-const LOCALE = {en: 'en-US', tr: 'tr-TR', el: 'el-GR', fr: 'fr-FR'};
+const TOKEN_API = new URL('../api/voice/token', location.href).href;
 
-/* Optional external voice backend override (?voice_api=https://...), else same-origin /api/voice */
-const apiBase = (() => {
-    const param = new URLSearchParams(location.search).get('voice_api');
-    if (param) return param.replace(/\/+$/, '');
-    return new URL('../api/voice', location.href).href;
-})();
+export function createVoicePanel(container) {
+    let room = null;
+    let status = 'idle';            // 'idle' | 'connecting' | 'connected' | 'ended' | 'error'
+    let agentState = 'waiting';     // 'waiting' | 'listening' | 'thinking' | 'speaking'
+    let muted = false;
+    let errorDetail = '';
+    let startedAt = null;
+    let timerId = null;
+    let audioEls = [];
+    const lines = new Map();        // segmentId -> {who: 'caller' | 'agent', text}
 
-const state = {
-    callId: null,
-    lang: firstLanguage(),
-    soundOn: true,
-    busy: false,
-    ended: false,
-    speakingEl: null,
-    recognition: null,
-    listening: false,
-};
-
-/* ---- Web Speech API: Voice readout (TTS) ---- */
-
-const canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
-
-function pickVoice(langCode) {
-    if (!canSpeak) return null;
-    const target = (LOCALE[langCode] || langCode || 'en-US').toLowerCase();
-    const prefix = target.slice(0, 2);
-    const voices = speechSynthesis.getVoices();
-    return voices.find(v => v.lang.toLowerCase() === target) ||
-           voices.find(v => v.lang.toLowerCase().startsWith(prefix)) ||
-           null;
-}
-
-function stopSpeaking() {
-    if (canSpeak) speechSynthesis.cancel();
-    if (state.speakingEl) {
-        state.speakingEl.classList.remove('speaking');
-        state.speakingEl = null;
+    function formatElapsed() {
+        if (!startedAt) return '00:00';
+        const sec = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(sec % 60).padStart(2, '0');
+        return `${m}:${s}`;
     }
-}
 
-function speak(text, langCode, msgEl = null) {
-    if (!canSpeak || !text) return;
-    stopSpeaking();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = LOCALE[langCode] || 'en-US';
-    const voice = pickVoice(langCode);
-    if (voice) utter.voice = voice;
-    utter.rate = 1.0;
-
-    if (msgEl) {
-        state.speakingEl = msgEl;
-        msgEl.classList.add('speaking');
+    function clearAudio() {
+        for (const el of audioEls) {
+            el.pause?.();
+            el.remove();
+        }
+        audioEls = [];
     }
-    const clear = () => {
-        if (msgEl) msgEl.classList.remove('speaking');
-        if (state.speakingEl === msgEl) state.speakingEl = null;
-    };
-    utter.onend = clear;
-    utter.onerror = clear;
-    try {
-        speechSynthesis.speak(utter);
-    } catch {
-        clear();
-    }
-}
 
-/* ---- Optional Speech-to-Text (dictation) ---- */
-
-const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-function stopListening() {
-    if (state.recognition) {
-        try {
-            state.recognition.stop();
-        } catch {
-            // already stopped
+    function stopTimer() {
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
         }
     }
-    state.listening = false;
-    $('voice-mic').classList.remove('listening');
-    $('voice-mic').setAttribute('aria-pressed', 'false');
-}
 
-function toggleListening() {
-    if (!SpeechRec || state.ended || state.busy) return;
-    if (state.listening) return stopListening();
-    stopSpeaking();
-
-    const rec = new SpeechRec();
-    rec.lang = LOCALE[state.lang] || 'en-US';
-    rec.interimResults = false;
-    rec.maxAlternatives = 1;
-    state.recognition = rec;
-    state.listening = true;
-    $('voice-mic').classList.add('listening');
-    $('voice-mic').setAttribute('aria-pressed', 'true');
-    $('chat-input').placeholder = t('voiceListening');
-
-    rec.onresult = event => {
-        const transcript = event.results?.[0]?.[0]?.transcript?.trim();
-        if (transcript) {
-            $('chat-input').value = transcript;
-            syncSendState();
-            sendMessage(transcript);
-        }
-    };
-    rec.onerror = () => stopListening();
-    rec.onend = () => {
-        stopListening();
-        $('chat-input').placeholder = t('voicePlaceholder');
-    };
-    try {
-        rec.start();
-    } catch {
-        stopListening();
-    }
-}
-
-/* ---- UI helpers ---- */
-
-function scrollBottom() {
-    const box = $('chat-scroll');
-    box.scrollTop = box.scrollHeight;
-}
-
-function syncSendState() {
-    const hasText = $('chat-input').value.trim().length > 0;
-    $('chat-send').disabled = state.busy || state.ended || !hasText;
-    $('chat-input').disabled = state.ended;
-    $('voice-mic').disabled = state.busy || state.ended;
-}
-
-function syncWords() {
-    document.documentElement.lang = language();
-    document.title = `${t('voiceTitle')} · Nature Shield`;
-    $('voice-title').textContent = t('voiceTitle');
-    $('voice-sub').textContent = state.soundOn ? t('voiceSubtitle') : t('voiceSoundOff');
-    $('voice-back').setAttribute('aria-label', t('voiceBack'));
-    $('voice-dial').setAttribute('aria-label', t('voiceDial'));
-    $('voice-sound').setAttribute('aria-label', t(state.soundOn ? 'voiceSoundOn' : 'voiceSoundOff'));
-    $('voice-sound').setAttribute('aria-pressed', String(state.soundOn));
-    $('voice-sound').classList.toggle('active', state.soundOn);
-    $('voice-sound').classList.toggle('muted', !state.soundOn);
-    $('voice-sound').replaceChildren(h('span', {class: `ico ico-${state.soundOn ? 'volume' : 'mute'}`, 'aria-hidden': 'true'}));
-    $('chat-input').placeholder = state.listening ? t('voiceListening') : t('voicePlaceholder');
-    $('chat-send').setAttribute('aria-label', t('voiceSend'));
-    $('voice-mic').setAttribute('aria-label', t('voiceMic'));
-
-    const mobileOn = document.documentElement.classList.contains('mobile-view');
-    $('view-toggle').setAttribute('aria-label', t(mobileOn ? 'desktopView' : 'mobileView'));
-    $('view-toggle').setAttribute('aria-pressed', String(mobileOn));
-    $('view-toggle').title = t(mobileOn ? 'desktopView' : 'mobileView');
-}
-
-function updateMeta(summary) {
-    const bar = $('voice-meta');
-    if (!summary) {
-        bar.hidden = true;
-        return;
-    }
-    const chips = [];
-    if (summary.hazard && summary.hazard !== 'unknown') {
-        chips.push(h('span', {class: 'meta-chip', text: summary.hazard.replace(/_/g, ' ')}));
-    }
-    if (summary.urgency && summary.urgency !== 'unknown') {
-        const cls = summary.urgency === 'critical' ? 'meta-chip urgent' : summary.urgency === 'high' ? 'meta-chip high' : 'meta-chip';
-        chips.push(h('span', {class: cls, text: summary.urgency}));
-    }
-    if (summary.area || summary.address) {
-        chips.push(h('span', {class: 'meta-chip', text: [summary.address, summary.area].filter(Boolean).join(', ')}));
-    }
-    bar.hidden = chips.length === 0;
-    bar.replaceChildren(...chips);
-}
-
-function appendMessage(role, text, msgLang = state.lang, autoSpeak = false) {
-    const now = clock(Date.now());
-    const foot = [h('span', {text: now})];
-    const msgEl = h('div', {class: `msg ${role}`}, h('div', {class: 'bubble', text}));
-
-    if (role === 'agent' && canSpeak) {
-        const replay = h('button', {
-            class: 'replay-btn',
-            type: 'button',
-            onclick: () => {
-                if (state.speakingEl === msgEl) stopSpeaking();
-                else speak(text, msgLang, msgEl);
-            },
-        }, h('span', {class: 'ico ico-volume', 'aria-hidden': 'true'}), h('span', {text: t('voiceReplay')}));
-        foot.push(replay);
-    }
-
-    msgEl.append(h('div', {class: 'msg-foot'}, ...foot));
-    $('chat-log').append(msgEl);
-    scrollBottom();
-
-    if (role === 'agent' && autoSpeak && state.soundOn) {
-        speak(text, msgLang, msgEl);
-    }
-    return msgEl;
-}
-
-let thinkingEl = null;
-function setThinking(on) {
-    if (on && !thinkingEl) {
-        thinkingEl = h('div', {class: 'msg agent', 'aria-label': t('voiceThinking')},
-            h('div', {class: 'bubble thinking'},
-                h('span', {class: 'thinking-dot'}),
-                h('span', {class: 'thinking-dot'}),
-                h('span', {class: 'thinking-dot'})));
-        $('chat-log').append(thinkingEl);
-        scrollBottom();
-    } else if (!on && thinkingEl) {
-        thinkingEl.remove();
-        thinkingEl = null;
-    }
-}
-
-function appendSystemCard({kind = '', title, body, showDial = false, showRestart = true}) {
-    const actions = [];
-    if (showDial) {
-        actions.push(h('a', {class: 'button button-fill call-now', href: 'tel:112', text: t('call')}));
-    }
-    if (showRestart) {
-        actions.push(h('button', {class: 'button button-outline', type: 'button', onclick: () => startSession(), text: t('voiceNewChat')}));
-    }
-    actions.push(h('a', {class: 'button button-outline', href: './', text: t('voiceBackToMap')}));
-
-    const card = h('section', {class: `sys-card ${kind}`.trim()},
-        h('h2', {text: title}),
-        body && h('p', {text: body}),
-        h('div', {class: 'sys-actions'}, ...actions));
-    $('chat-log').append(card);
-    scrollBottom();
-}
-
-/* ---- API calls to embedded Voice_Agents brain ---- */
-
-async function postJson(path, payload) {
-    const res = await fetch(`${apiBase}${path}`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
-}
-
-function endCallBeacon(reason = 'hung_up') {
-    if (!state.callId) return;
-    const callId = state.callId;
-    state.callId = null;
-    try {
-        fetch(`${apiBase}/end`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({call_id: callId, reason}),
-            keepalive: true,
-        }).catch(() => {});
-    } catch {
-        // ignore on unload
-    }
-}
-
-async function startSession() {
-    stopSpeaking();
-    stopListening();
-    if (state.callId) endCallBeacon('hung_up');
-
-    state.ended = false;
-    state.busy = true;
-    $('chat-log').replaceChildren();
-    updateMeta(null);
-    syncSendState();
-    setThinking(true);
-
-    try {
-        const data = await postJson('/start', {lang: state.lang});
-        setThinking(false);
-        state.callId = data.call_id;
-        state.lang = data.lang || state.lang;
-        if (['en', 'tr', 'el'].includes(state.lang)) {
-            setLanguage(state.lang);
-            syncWords();
-        }
-        updateMeta(data.summary);
-        appendMessage('agent', data.reply_text, state.lang, true);
-
-        if (data.action === 'handoff') {
-            state.ended = true;
-            state.callId = null;
-            appendSystemCard({kind: 'handoff', title: t('voiceHandoffTitle'), body: t('voiceHandoffBody'), showDial: true});
-        }
-    } catch {
-        setThinking(false);
-        state.ended = true;
-        appendSystemCard({kind: 'handoff', title: t('voiceOfflineTitle'), body: t('voiceOfflineBody'), showDial: true});
-    } finally {
-        state.busy = false;
-        syncSendState();
-    }
-}
-
-async function sendMessage(rawText) {
-    const text = rawText.trim();
-    if (!text || state.busy || state.ended || !state.callId) return;
-
-    stopSpeaking();
-    $('chat-input').value = '';
-    $('chat-input').style.height = '';
-    state.busy = true;
-    syncSendState();
-
-    appendMessage('user', text, state.lang, false);
-    setThinking(true);
-
-    try {
-        const data = await postJson('/turn', {call_id: state.callId, text, lang: state.lang});
-        setThinking(false);
-        if (data.lang && data.lang !== state.lang) {
-            state.lang = data.lang;
-            if (['en', 'tr', 'el'].includes(state.lang)) {
-                setLanguage(state.lang);
-                syncWords();
+    async function disconnect(nextStatus = 'ended') {
+        stopTimer();
+        clearAudio();
+        const active = room;
+        room = null;
+        if (active) {
+            try {
+                await active.disconnect();
+            } catch {
+                // already disconnected
             }
         }
-        updateMeta(data.summary);
-        appendMessage('agent', data.reply_text, state.lang, true);
+        muted = false;
+        status = nextStatus;
+        agentState = 'waiting';
+        render();
+    }
 
-        if (data.action === 'handoff') {
-            state.ended = true;
-            state.callId = null;
-            appendSystemCard({kind: 'handoff', title: t('voiceHandoffTitle'), body: t('voiceHandoffBody'), showDial: true});
-        } else if (data.action === 'end') {
-            state.ended = true;
-            state.callId = null;
-            appendSystemCard({title: t('voiceEndedTitle'), body: '', showDial: false});
+    async function toggleMute() {
+        if (!room || status !== 'connected') return;
+        muted = !muted;
+        try {
+            await room.localParticipant.setMicrophoneEnabled(!muted);
+        } catch {
+            muted = !muted;
         }
-    } catch {
-        setThinking(false);
-        appendMessage('agent', t('voiceError'), state.lang, false);
-    } finally {
-        state.busy = false;
-        syncSendState();
-        if (!state.ended) $('chat-input').focus();
+        render();
     }
+
+    function statusLabel() {
+        if (status === 'connecting') return t('voiceConnecting');
+        if (status === 'error') return t('voiceError');
+        if (status === 'ended') return t('voiceEnded');
+        if (status === 'connected') {
+            if (muted) return t('voiceMuted');
+            if (agentState === 'speaking') return t('voiceSpeaking');
+            if (agentState === 'thinking') return t('voiceThinking');
+            if (agentState === 'listening') return t('voiceListening');
+            return t('voiceWaitingAgent');
+        }
+        return t('voiceReady');
+    }
+
+    async function startCall() {
+        if (status === 'connecting' || status === 'connected') return;
+        const LK = window.LivekitClient;
+        if (!LK) {
+            status = 'error';
+            errorDetail = t('voiceSdkMissing');
+            render();
+            return;
+        }
+        status = 'connecting';
+        agentState = 'waiting';
+        errorDetail = '';
+        muted = false;
+        lines.clear();
+        render();
+
+        try {
+            const resp = await fetch(TOKEN_API, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({lang: language()}),
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.url || !data.token) {
+                throw new Error(data.error || `HTTP ${resp.status}`);
+            }
+
+            const nextRoom = new LK.Room({
+                adaptiveStream: true,
+                dynacast: true,
+                audioCaptureDefaults: {echoCancellation: true, noiseSuppression: true, autoGainControl: true},
+            });
+            room = nextRoom;
+
+            nextRoom.on(LK.RoomEvent.TrackSubscribed, track => {
+                if (track.kind === LK.Track.Kind.Audio) {
+                    const el = track.attach();
+                    el.autoplay = true;
+                    el.playsInline = true;
+                    document.body.appendChild(el);
+                    audioEls.push(el);
+                    el.play?.().catch(() => {});
+                }
+            });
+
+            nextRoom.on(LK.RoomEvent.TrackUnsubscribed, track => {
+                track.detach().forEach(el => el.remove());
+            });
+
+            nextRoom.on(LK.RoomEvent.ParticipantAttributesChanged, (changed, participant) => {
+                if (participant?.isLocal) return;
+                const stateAttr = changed?.['lk.agent.state'] || participant?.attributes?.['lk.agent.state'];
+                if (stateAttr) {
+                    agentState = stateAttr;
+                    render();
+                }
+            });
+
+            nextRoom.on(LK.RoomEvent.ActiveSpeakersChanged, speakers => {
+                if (status !== 'connected') return;
+                const agentTalking = speakers.some(p => !p.isLocal);
+                if (agentTalking) {
+                    agentState = 'speaking';
+                    render();
+                } else if (agentState === 'speaking') {
+                    agentState = 'listening';
+                    render();
+                }
+            });
+
+            nextRoom.on(LK.RoomEvent.ParticipantConnected, participant => {
+                if (!participant.isLocal && agentState === 'waiting') {
+                    agentState = 'listening';
+                    render();
+                }
+            });
+
+            if (LK.RoomEvent.TranscriptionReceived) {
+                nextRoom.on(LK.RoomEvent.TranscriptionReceived, (segments, participant) => {
+                    const who = participant?.isLocal ? 'caller' : 'agent';
+                    let changed = false;
+                    for (const seg of segments) {
+                        const text = (seg.text || '').trim();
+                        if (!text) continue;
+                        lines.set(seg.id || `${who}-${lines.size}`, {who, text});
+                        changed = true;
+                    }
+                    if (changed) render();
+                });
+            }
+
+            nextRoom.on(LK.RoomEvent.Disconnected, () => {
+                if (room === nextRoom) disconnect('ended');
+            });
+
+            await nextRoom.connect(data.url, data.token);
+            await nextRoom.localParticipant.setMicrophoneEnabled(true);
+            try {
+                await nextRoom.startAudio();
+            } catch {
+                // audio already unlocked by user click
+            }
+
+            status = 'connected';
+            agentState = nextRoom.remoteParticipants.size > 0 ? 'listening' : 'waiting';
+            startedAt = Date.now();
+            stopTimer();
+            timerId = setInterval(() => {
+                const clockEl = container.querySelector('.voice-timer');
+                if (clockEl) clockEl.textContent = formatElapsed();
+            }, 1000);
+            render();
+        } catch (err) {
+            console.error('112 Voice Agent connection failed:', err);
+            await disconnect('error');
+            errorDetail = err?.name === 'NotAllowedError'
+                ? t('voiceMicDenied')
+                : (err?.message || t('voiceError'));
+            render();
+        }
+    }
+
+    function open() {
+        container.hidden = false;
+        render();
+        startCall();
+    }
+
+    async function close() {
+        await disconnect('idle');
+        container.hidden = true;
+    }
+
+    function render() {
+        const orbState = status === 'connected' ? (muted ? 'muted' : agentState) : status;
+        const transcriptItems = [...lines.values()].slice(-8);
+
+        container.replaceChildren(
+            h('div', {class: 'voice-shell'},
+                h('header', {class: 'voice-head'},
+                    h('div', {class: 'voice-title-box'},
+                        h('span', {class: 'voice-badge', text: '112'}),
+                        h('div', {},
+                            h('h2', {text: t('voiceTitle')}),
+                            h('p', {class: 'voice-sub', text: t('voiceAutomated')}))),
+                    h('button', {class: 'shut voice-close', type: 'button', 'aria-label': t('close'), onclick: close},
+                        h('span', {class: 'ico ico-close', 'aria-hidden': 'true'}))),
+
+                h('div', {class: 'voice-stage'},
+                    h('div', {class: `voice-orb ${orbState}`, 'aria-hidden': 'true'},
+                        h('span', {class: 'voice-ring'}),
+                        h('span', {class: `ico ico-${muted ? 'mic-off' : 'mic'}`})),
+                    h('p', {class: 'voice-status', role: 'status', text: statusLabel()}),
+                    status === 'connected' && h('p', {class: 'voice-timer', text: formatElapsed()}),
+                    errorDetail && h('p', {class: 'voice-error', text: errorDetail})),
+
+                h('div', {class: 'voice-feed', 'aria-live': 'polite'},
+                    transcriptItems.length
+                        ? transcriptItems.map(item =>
+                            h('p', {class: `voice-msg ${item.who}`},
+                                h('span', {class: 'voice-who', text: t(item.who === 'caller' ? 'voiceYou' : 'voiceAgent')}),
+                                item.text))
+                        : h('p', {class: 'voice-hint', text: t('voiceHint')})),
+
+                h('footer', {class: 'voice-controls'},
+                    status === 'connected' || status === 'connecting'
+                        ? [
+                            h('button', {
+                                class: `voice-btn voice-mute ${muted ? 'is-muted' : ''}`,
+                                type: 'button',
+                                'aria-pressed': String(muted),
+                                'aria-label': t(muted ? 'voiceUnmute' : 'voiceMute'),
+                                onclick: toggleMute,
+                            }, h('span', {class: `ico ico-${muted ? 'mic-off' : 'mic'}`, 'aria-hidden': 'true'})),
+                            h('button', {
+                                class: 'voice-btn voice-hangup',
+                                type: 'button',
+                                'aria-label': t('voiceEnd'),
+                                onclick: () => disconnect('ended'),
+                            }, h('span', {class: 'ico ico-hangup', 'aria-hidden': 'true'})),
+                        ]
+                        : [
+                            h('button', {class: 'button button-fill button-large main voice-start', type: 'button', onclick: startCall},
+                                t(status === 'ended' || status === 'error' ? 'voiceCallAgain' : 'voiceStart')),
+                        ],
+                    h('a', {class: 'voice-dial-fallback', href: 'tel:112', text: t('voiceDialDirect')}))),
+        );
+    }
+
+    return {open, close, relabel: render};
 }
-
-/* ---- View mode & events ---- */
-
-{
-    const param = new URLSearchParams(location.search).get('view');
-    let stored = null;
-    try {
-        stored = localStorage.getItem('viewMode');
-    } catch {
-        // private window
-    }
-    if (param === 'mobile' || (param !== 'desktop' && stored === 'mobile')) {
-        document.documentElement.classList.add('mobile-view');
-    }
-}
-
-$('view-toggle').addEventListener('click', () => {
-    const on = !document.documentElement.classList.contains('mobile-view');
-    document.documentElement.classList.toggle('mobile-view', on);
-    try {
-        localStorage.setItem('viewMode', on ? 'mobile' : 'desktop');
-    } catch {
-        // ignore
-    }
-    syncWords();
-});
-
-$('voice-sound').addEventListener('click', () => {
-    state.soundOn = !state.soundOn;
-    if (!state.soundOn) stopSpeaking();
-    syncWords();
-});
-
-if (SpeechRec) {
-    $('voice-mic').hidden = false;
-    $('voice-mic').addEventListener('click', toggleListening);
-}
-
-$('chat-input').addEventListener('input', () => syncSendState());
-$('chat-input').addEventListener('keydown', event => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage($('chat-input').value);
-    }
-});
-
-$('composer').addEventListener('submit', event => {
-    event.preventDefault();
-    sendMessage($('chat-input').value);
-});
-
-$('voice-back').addEventListener('click', () => {
-    stopSpeaking();
-    endCallBeacon('hung_up');
-});
-
-window.addEventListener('pagehide', () => {
-    stopSpeaking();
-    endCallBeacon('hung_up');
-});
-
-if (canSpeak) {
-    speechSynthesis.getVoices();
-    speechSynthesis.addEventListener?.('voiceschanged', () => speechSynthesis.getVoices());
-}
-
-setLanguage(state.lang);
-syncWords();
-startSession();

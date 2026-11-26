@@ -1,0 +1,49 @@
+{
+  "call_id": "mob-813b69de",
+  "event_id": null,
+  "created_at": "2026-11-26T15:12:50Z",
+  "updated_at": "2026-11-26T15:13:06Z",
+  "status": "in_progress",
+  "handoff_reason": null,
+  "caller_language": "en",
+  "caller": {
+    "name": null,
+    "phone": "web-mobile-112",
+    "relation": null
+  },
+  "location": {
+    "aml": null,
+    "spoken_address": null,
+    "street": null,
+    "cross_street": null,
+    "area": null,
+    "landmark": null,
+    "map_suggestion": null,
+    "confirmed_with_caller": false,
+    "on_map": null
+  },
+  "hazard_type": "fire",
+  "hazard_subtype": "wildfire",
+  "situation": "Wildfire near Defne, with smoke getting close to the caller.",
+  "people": [],
+  "animals": [],
+  "urgency": {
+    "suggested": "urgent",
+    "confidence": 0.8,
+    "reasons": [
+      "wildfire approaching",
+      "smoke nearby"
+    ],
+    "confirmed_by_operator": null
+  },
+  "new_event_suggested": null,
+  "summary_for_operator": null,
+  "summary_en": null,
+  "transcript_ref": "transcripts/mob-813b69de",
+  "source": "voice_agent",
+  "trigger": null,
+  "advice_given": [
+    "wildfire.smoke"
+  ],
+  "observed_at": "2026-11-26T15:12:50Z"
+}

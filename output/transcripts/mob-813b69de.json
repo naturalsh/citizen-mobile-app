@@ -1,0 +1,23 @@
+[
+  {
+    "role": "agent",
+    "text": "You are speaking with the automated emergency assistant of 112. All operators are busy, so I will take your details and pass them on right away. Tell me what happened, and where.",
+    "lang": "en",
+    "at": "2026-11-26T15:12:50Z",
+    "text_en": "You are speaking with the automated emergency assistant of 112. All operators are busy, so I will take your details and pass them on right away. Tell me what happened, and where."
+  },
+  {
+    "role": "caller",
+    "text": "There is a wildfire near Defne, smoke is getting close",
+    "lang": "en",
+    "at": "2026-11-26T15:13:03Z",
+    "text_en": "There is a wildfire near Defne, smoke is getting close"
+  },
+  {
+    "role": "agent",
+    "text": "Stay indoors with the doors and windows shut, and block the gaps with wet cloths. If smoke gets in, cover your mouth and nose with a wet cloth and stay low. If you must go out, wear an FFP2 mask if you have one. If anyone has trouble breathing or chest pain, tell me now. I understand. What is the name of the street or the nearest landmark where you are?",
+    "lang": "en",
+    "at": "2026-11-26T15:13:06Z",
+    "text_en": "Stay indoors with the doors and windows shut, and block the gaps with wet cloths. If smoke gets in, cover your mouth and nose with a wet cloth and stay low. If you must go out, wear an FFP2 mask if you have one. If anyone has trouble breathing or chest pain, tell me now. I understand. What is the name of the street or the nearest landmark where you are?"
+  }
+]

@@ -1,50 +1,38 @@
-# Nature Shield — Citizen Mobile App
+# Nature Shield — Citizen Mobile App + 112 Voice Agent
 
-Standalone, mobile-ready offline PWA for civilians, extracted and enhanced from `drone-vision/citizen_app`.
+Unified, mobile-ready civilian web app with an embedded **112 LiveKit Voice Agent** (`voice_agent/`, copied from `Voice_Agents`).
 
-Shows nearby assembly points, shelters, hospitals, and health centres with walking routes computed **locally on the phone** (your position never leaves the device).
+- **Safe places & offline walking routes** (`citizen_app/`): assembly points, shelters, hospitals, and street-level passability computed locally on the device.
+- **112 Voice Agent** (`voice_agent/` + `citizen_app/voice.js`): tapping the **112** button opens a mobile emergency voice call screen and connects directly to the running LiveKit `voice.agent` worker.
+- **Responsive by device**: automatically displays the mobile UI (bottom navigation, draggable bottom sheet, floating map controls) on phones and split-screen layout on desktop (with an optional Mobile View frame toggle).
 
-## Features
+## Quick Start (Current Network)
 
-- **Mobile-first UI & touch gestures**
-  - Draggable bottom sheet with grabber handle (`peek` / `half` / `full` snap states via swipe or tap)
-  - Thumb-friendly mobile bottom navigation bar (**Map**, **Assembly**, **Hospitals**)
-  - Floating map action buttons (**Find my location** GPS FAB & **Recenter route** FAB)
-  - Full safe-area inset support (`viewport-fit=cover`, `100dvh`, `overscroll-behavior-y: none`)
-- **Desktop Mobile View mode**
-  - Click the phone icon in the header (or open `/app/?view=mobile`) to preview and demo the exact 390×844 mobile experience inside a phone frame on desktop screens
-- **Offline-first PWA**
-  - Service worker (`sw.js`) caches the entire app shell and MapLibre vector style/fonts
-  - Area pack (`pack.json`) is cached on-device (`store.js`) so routing continues working without a network
-  - Supports **Add to Home Screen / Install app** (`beforeinstallprompt` + iOS Safari instructions)
-- **Multilingual**: English (`en`), Turkish (`tr`), Greek (`el`)
-- **Strict security & privacy**: zero inline scripts/styles (strict CSP), zero tracking, no user coordinates ever sent to any server
+Requires **Node.js 20+** and the Python virtualenv in `voice_agent/.venv` (with `voice_agent/.env` configured).
 
-## Quick Start
-
-Requires Node.js 20+ (no `npm install` needed — zero external dependencies).
+### Start everything (Web Server + Embedded LiveKit Voice Worker)
 
 ```bash
 npm start
 ```
 
-Then open:
-- **Mobile View (on desktop)**: `http://127.0.0.1:3000/app/?view=mobile`
-- **Responsive / Desktop**: `http://127.0.0.1:3000/app/`
-- **On a real phone (same Wi-Fi)**: use the `Phone (LAN)` URL printed in the terminal
-
-### Connecting to a live `drone-vision` backend
-
-By default, the server serves the bundled offline snapshot in `public/` (Antakya – Defne, Hatay). To connect to a live `drone-vision` instance so operator street confirmations, notices, and place reports stream in real time:
+Or with **HTTPS** (recommended for testing on a real phone over Wi-Fi so iOS/Android allow Microphone + GPS):
 
 ```bash
-node server.mjs --api http://127.0.0.1:8000
+npm run start:https
 ```
 
-## Tests
+This single command:
+1. Starts the embedded `voice_agent` LiveKit worker (`voice_agent/.venv/bin/python -m voice.agent start`)
+2. Starts the local network server bound to `0.0.0.0:3000`
+3. Prints `Local`, `Mobile View`, and `Phone (LAN)` URLs
+4. Serves `POST /api/voice/token` (invokes `voice_agent/voice/mint_token.py` to mint a fresh LiveKit room JWT for each 112 call)
 
-```bash
-npm test
-```
+### Useful commands
 
-Runs all unit tests in `tests/citizen/` (`i18n`, `route`, `store`, `sw`).
+- `npm run start:web-only` — start only the web server (if you run the voice worker separately)
+- `npm run voice:worker` — start only the embedded `Voice_Agents` LiveKit worker
+- `npm run voice:check` — verify `voice_agent/.env` API keys
+- `npm test` — run citizen web app unit tests (44 tests)
+- `npm run test:voice` — run embedded `voice_agent` pytest suite (423 tests)
+- `node server.mjs --api http://127.0.0.1:8000` — proxy `/public/` to a live `drone-vision` backend

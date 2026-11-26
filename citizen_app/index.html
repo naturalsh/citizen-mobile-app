@@ -35,7 +35,7 @@
             <select id="language" class="language" aria-label="Language"></select>
         </span>
         <button id="about" class="round" type="button" aria-label="About and legend"><span class="ico ico-info" aria-hidden="true"></span></button>
-        <a id="call" class="button button-fill call" href="voice.html" aria-label="Call 112">112</a>
+        <button id="call" class="button button-fill call" type="button" aria-label="Call 112">112</button>
     </header>
 
     <p id="notice" class="notice" hidden></p>
@@ -69,6 +69,8 @@
             <span class="nav-label">Hospitals</span>
         </button>
     </nav>
+
+    <section id="voice-panel" class="voice-panel" aria-label="112 Voice Assistant" hidden></section>
 </div>
 
 <p id="live" class="unseen" aria-live="polite"></p>
@@ -81,6 +83,7 @@
 </noscript>
 
 <script src="vendor/maplibre-gl.js" defer></script>
+<script src="vendor/livekit-client.umd.min.js" defer></script>
 <script type="module" src="app.js"></script>
 </body>
 </html>
