@@ -35,8 +35,8 @@ const MIME = {
 
 const CITIZEN_HEADERS = {
     'Content-Security-Policy':
-        "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; worker-src 'self' blob:; child-src blob:; " +
-        "connect-src 'self' wss: https:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+        "default-src 'self'; img-src 'self' data: blob:; worker-src 'self' blob:; child-src blob:; " +
+        "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     'Referrer-Policy': 'no-referrer',
     'X-Content-Type-Options': 'nosniff',
     'Permissions-Policy': 'geolocation=(self), camera=(), microphone=(self)',
@@ -47,7 +47,7 @@ function parseArgs(argv) {
     let port = Number(process.env.PORT || 3000);
     let host = process.env.HOST || '0.0.0.0';
     let api = process.env.DRONE_VISION_API || '';
-    let voiceApi = process.env.VOICE_AGENT_API || 'http://127.0.0.1:8010';
+    let voiceApi = process.env.VOICE_API_URL || 'http://127.0.0.1:8001';
     for (let i = 2; i < argv.length; i++) {
         if ((argv[i] === '--port' || argv[i] === '-p') && argv[i + 1]) port = Number(argv[++i]);
         else if (argv[i] === '--host' && argv[i + 1]) host = argv[++i];
@@ -120,17 +120,17 @@ async function proxyVoice(req, res, voiceBase, urlPath) {
         const upstream = await fetch(`${voiceBase}${urlPath}`, {
             method: req.method,
             headers: {'Content-Type': req.headers['content-type'] || 'application/json', Accept: 'application/json'},
-            body: req.method === 'POST' ? body : undefined,
+            body: req.method === 'GET' || req.method === 'HEAD' ? undefined : body,
         });
-        const out = Buffer.from(await upstream.arrayBuffer());
+        const reply = Buffer.from(await upstream.arrayBuffer());
         res.writeHead(upstream.status, {
             ...CITIZEN_HEADERS,
             'Content-Type': upstream.headers.get('content-type') || 'application/json; charset=utf-8',
         });
-        res.end(out);
+        res.end(reply);
     } catch (err) {
         res.writeHead(502, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
-        res.end(JSON.stringify({error: 'Voice agent API unreachable', detail: String(err.message || err)}));
+        res.end(JSON.stringify({error: 'Voice agent service unreachable', detail: String(err.message || err)}));
     }
 }
 
@@ -150,10 +150,10 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
     const pathname = url.pathname;
 
-    if (pathname.startsWith('/voice-api/')) {
-        if (!voiceApi) {
-            res.writeHead(503, {...CITIZEN_HEADERS, 'Content-Type': 'application/json; charset=utf-8'});
-            return res.end(JSON.stringify({error: 'Voice API not configured; using on-device fallback'}));
+    if (pathname.startsWith('/api/voice/')) {
+        if (req.method !== 'GET' && req.method !== 'POST') {
+            res.writeHead(405, {...CITIZEN_HEADERS, 'Content-Type': 'text/plain; charset=utf-8'});
+            return res.end('Method Not Allowed');
         }
         return proxyVoice(req, res, voiceApi, pathname + url.search);
     }
@@ -215,5 +215,6 @@ server.listen(port, host, () => {
     for (const ip of lanAddresses()) {
         console.log(`  Phone (LAN):  http://${ip}:${port}/app/`);
     }
-    console.log(`  Data source:  ${api ? `Live proxy -> ${api}` : 'Bundled offline snapshot (public/)'}\n`);
+    console.log(`  Data source:  ${api ? `Live proxy -> ${api}` : 'Bundled offline snapshot (public/)'}`);
+    console.log(`  Voice Agent:  ${voiceApi}\n`);
 });

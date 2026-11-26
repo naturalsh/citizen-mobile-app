@@ -7,7 +7,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#4a2a7a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -24,6 +24,8 @@
 </head>
 <body>
 <div class="app">
+    <button id="exercise" class="exercise" type="button" hidden></button>
+
     <header class="top">
         <h1 id="name">Safe places</h1>
         <button id="install-btn" class="round install-btn" type="button" aria-label="Install app" hidden><span class="ico ico-install" aria-hidden="true"></span></button>
@@ -33,7 +35,7 @@
             <select id="language" class="language" aria-label="Language"></select>
         </span>
         <button id="about" class="round" type="button" aria-label="About and legend"><span class="ico ico-info" aria-hidden="true"></span></button>
-        <button id="call" class="button button-fill call" type="button" aria-label="112 Voice Assistant">112</button>
+        <a id="call" class="button button-fill call" href="voice.html" aria-label="Call 112">112</a>
     </header>
 
     <p id="notice" class="notice" hidden></p>
@@ -67,8 +69,6 @@
             <span class="nav-label">Hospitals</span>
         </button>
     </nav>
-
-    <section id="voice-view" class="voice-view" hidden></section>
 </div>
 
 <p id="live" class="unseen" aria-live="polite"></p>
@@ -81,7 +81,6 @@
 </noscript>
 
 <script src="vendor/maplibre-gl.js" defer></script>
-<script src="vendor/livekit-client.umd.js" defer></script>
 <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -13,7 +13,6 @@ import {createMap} from './map.js';
 import {drawSheet, drawFailure, exerciseWindow, aboutWindow, receivedLine, answer} from './sheet.js';
 import {createStore} from './store.js';
 import {h} from './dom.js';
-import {createVoiceUI} from './voice_ui.js';
 
 const PUBLIC = new URL('../public/', location.href);            // what the service lets every citizen read
 const FORMAT = 1;                                               // the kind of pack this page understands (contracts.py: AreaPack.format)
@@ -231,6 +230,8 @@ function words() {
     $('nav-map').querySelector('.nav-label').textContent = t('navMap');
     $('nav-assembly').querySelector('.nav-label').textContent = t('navAssembly');
     $('nav-medical').querySelector('.nav-label').textContent = t('navMedical');
+    $('exercise').hidden = !pack?.exercise;
+    $('exercise').textContent = `${t('exercise')} · ${t('exerciseShort')}`;
     $('notice').hidden = !pack?.notice;
     if (pack?.notice) {
         $('notice').replaceChildren(h('strong', {text: `${t('notice')} · ${pack.notice.issued_by} · ${clock(pack.notice.issued_at)}`}),
@@ -454,6 +455,7 @@ function show(body) {
 $('dialog').addEventListener('click', event => {
     if (event.target === event.currentTarget) close();          // a tap beside the window
 });
+$('exercise').addEventListener('click', () => show(exerciseWindow(state.pack, close)));
 $('about').addEventListener('click', () => show(aboutWindow(state.pack, state.received, close, holds)));
 
 /* ---- the app on the phone ---- */
@@ -599,9 +601,6 @@ window.addEventListener('appinstalled', () => {
     $('install-btn').hidden = true;
 });
 
-const voiceUI = createVoiceUI($('voice-view'), {getPosition: () => state.position});
-$('call').addEventListener('click', () => voiceUI.open());
-
 /* ---- start ---- */
 
 setLanguage(firstLanguage());
@@ -611,7 +610,6 @@ $('language').addEventListener('change', event => {
     setLanguage(event.currentTarget.value);
     if ($('dialog').open) close();
     words();
-    voiceUI.relabel();
     map?.relabel();
     if (state.pack) render();
     else if (state.failed) fail(state.failed);

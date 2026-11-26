@@ -1,0 +1,11 @@
+{
+  "_status": "DRAFT: Greek acknowledgements the model slipped into non-Greek replies, and what the caller hears instead (brain/translit.py). Native speakers should check tr/fr.",
+  "acknowledgements": {
+    "εντάξει": {"en": "Okay", "tr": "Tamam", "fr": "D'accord"},
+    "κατάλαβα": {"en": "I understand", "tr": "Anladım", "fr": "Je comprends"},
+    "μάλιστα": {"en": "Okay", "tr": "Tamam", "fr": "Bien"},
+    "σας ακούω": {"en": "I'm listening", "tr": "Sizi dinliyorum", "fr": "Je vous écoute"},
+    "ευχαριστώ": {"en": "Thank you", "tr": "Teşekkürler", "fr": "Merci"},
+    "ναι": {"en": "Yes", "tr": "Evet", "fr": "Oui"}
+  }
+}

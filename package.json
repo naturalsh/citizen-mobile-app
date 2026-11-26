@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.mjs",
     "dev": "node server.mjs --port 3000",
+    "voice": "uvicorn voice_api:app --host 127.0.0.1 --port 8001",
     "build:pages": "node scripts/build-pages.mjs",
     "test": "node --test tests/citizen/*.test.mjs"
   },

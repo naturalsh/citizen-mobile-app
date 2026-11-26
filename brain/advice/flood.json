@@ -1,0 +1,45 @@
+{
+  "_status": "Built from official Greek and Turkish guidance; sources and decisions per topic in brain/advice/SOURCES.md. Greek and Turkish still need a native-speaker read.",
+  "hazard": "flood",
+  "topics": {
+    "water_rising_home": {
+      "when": "People are in a building where flood water is rising, or have climbed to an upper floor or the roof to escape it. Not when only property is flooded and nobody is at risk.",
+      "en": "If you can still leave safely, go to high ground now, without waiting for instructions, and keep away from stream beds. If the water is already too deep, go to the highest floor, not a closed attic where you could be trapped, and onto the roof only if the water keeps rising. Turn off the electricity at the mains if you can do it without touching water.",
+      "el": "Αν μπορείτε ακόμα να φύγετε με ασφάλεια, πηγαίνετε τώρα σε ψηλό σημείο, χωρίς να περιμένετε οδηγίες, και μακριά από ρέματα. Αν το νερό είναι ήδη πολύ βαθύ, ανεβείτε στον ψηλότερο όροφο, όχι σε κλειστή σοφίτα όπου μπορεί να παγιδευτείτε, και στη σκεπή μόνο αν το νερό συνεχίζει να ανεβαίνει. Κλείστε τον γενικό διακόπτη του ρεύματος, αν μπορείτε χωρίς να ακουμπήσετε νερό.",
+      "tr": "Hâlâ güvenle çıkabiliyorsanız talimat beklemeden hemen yüksek ve güvenli bir yere gidin, dere yataklarından uzak durun. Su zaten çok derinse en üst kata çıkın, mahsur kalabileceğiniz kapalı bir çatı arasına değil; su yükselmeye devam ederse ancak o zaman çatıya çıkın. Suya dokunmadan yapabiliyorsanız elektrik ana şalterini kapatın.",
+      "fr": "Si vous pouvez encore partir en sécurité, allez maintenant sur un point haut, sans attendre d'instructions, et loin des lits de ruisseaux. Si l'eau est déjà trop profonde, montez au plus haut étage, pas dans un grenier fermé où vous pourriez être piégé, et sur le toit seulement si l'eau continue de monter. Coupez le courant au disjoncteur si vous pouvez le faire sans toucher l'eau.",
+      "sms": {
+        "en": "If safe, go to high ground now. Too deep: top floor, not a closed attic. Roof only if it rises.",
+        "el": "Αν είναι ασφαλές, φύγετε τώρα ψηλά. Αν όχι: πάνω όροφος, όχι κλειστή σοφίτα.",
+        "tr": "Güvenliyse hemen yükseğe gidin. Değilse en üst kat, kapalı çatı arası değil.",
+        "fr": "Si c'est sûr, allez en hauteur. Sinon : dernier étage, pas le grenier fermé."
+      }
+    },
+    "in_car": {
+      "when": "The caller is in a car that is in flood water, or is about to drive into flood water.",
+      "en": "Do not drive or walk any further into the water. If the car has stopped and the water around it is shallow and still, leave it and go to higher ground. If fast-moving water surrounds the car, stay inside, and climb onto the roof if water comes in.",
+      "el": "Μην προχωρήσετε άλλο μέσα στο νερό, ούτε με το αυτοκίνητο ούτε με τα πόδια. Αν το αυτοκίνητο σταμάτησε και το νερό γύρω είναι ρηχό και δεν κινείται, αφήστε το και πηγαίνετε σε ψηλότερο σημείο. Αν γύρω από το αυτοκίνητο κυλάει ορμητικό νερό, μείνετε μέσα και ανεβείτε στην οροφή αν μπει νερό.",
+      "tr": "Suya ne araçla ne yürüyerek daha fazla girmeyin. Araç durduysa ve etrafındaki su sığ ve durgunsa aracı bırakıp daha yüksek bir yere gidin. Aracın etrafında hızlı akan su varsa içeride kalın, içeri su girerse aracın tavanına çıkın.",
+      "fr": "N'avancez plus dans l'eau, ni en voiture ni à pied. Si la voiture est arrêtée et que l'eau autour est peu profonde et calme, quittez-la et allez vers un endroit plus haut. Si un courant rapide entoure la voiture, restez dedans et montez sur le toit si l'eau entre.",
+      "sms": {
+        "en": "Don't go further into water. Shallow, still water: leave the car, go uphill. Fast water: stay in.",
+        "el": "Μην προχωράτε στο νερό. Ρηχό, ήρεμο: φύγετε ψηλά. Ορμητικό: μείνετε μέσα, οροφή αν μπει νερό.",
+        "tr": "Suya ilerlemeyin. Sığ ve durgunsa çıkıp yükseğe gidin. Hızlıysa içeride kalın, su girerse tavana.",
+        "fr": "N'avancez plus. Eau calme : sortez, montez. Courant : restez, toit si l'eau entre."
+      }
+    },
+    "outdoors": {
+      "when": "The caller is outdoors near flood water, a stream or a flooded road.",
+      "en": "Keep away from flowing water, stream beds and flooded roads, and do not cross them on foot, even if the water looks shallow. Stay off bridges over fast water and away from slopes that could slide. Keep away from power lines, and do not touch water near fallen cables.",
+      "el": "Μείνετε μακριά από νερό που κυλάει, κοίτες ρεμάτων και πλημμυρισμένους δρόμους, και μην τους διασχίσετε με τα πόδια, ακόμα κι αν το νερό φαίνεται ρηχό. Μη στέκεστε σε γέφυρες πάνω από ορμητικό νερό και μείνετε μακριά από πλαγιές που μπορεί να κατολισθήσουν. Μείνετε μακριά από καλώδια ρεύματος και μην αγγίζετε νερό κοντά σε πεσμένα καλώδια.",
+      "tr": "Akan sudan, dere yataklarından ve su basmış yollardan uzak durun; su sığ görünse bile yürüyerek geçmeyin. Hızlı akan suyun üzerindeki köprülerde durmayın, kayabilecek yamaçlardan uzak durun. Elektrik hatlarından uzak durun ve kopmuş kabloların yakınındaki suya dokunmayın.",
+      "fr": "Restez loin de l'eau qui coule, des lits de ruisseaux et des routes inondées, et ne les traversez pas à pied, même si l'eau semble peu profonde. N'allez pas sur les ponts au-dessus d'un courant rapide et éloignez-vous des pentes qui peuvent glisser. Restez loin des lignes électriques et ne touchez pas l'eau près de câbles tombés.",
+      "sms": {
+        "en": "Keep away from moving water, streams, flooded roads. Don't cross on foot. Avoid fallen cables.",
+        "el": "Μακριά από νερό που κυλάει, ρέματα, πλημμυρισμένους δρόμους. Μην περνάτε. Μακριά από καλώδια.",
+        "tr": "Akan sudan, derelerden, su basmış yollardan uzak durun. Yürüyerek geçmeyin. Kablolardan uzak durun.",
+        "fr": "Loin de l'eau qui coule, ruisseaux, routes inondées. Ne traversez pas. Loin des câbles."
+      }
+    }
+  }
+}

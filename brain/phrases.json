@@ -1,0 +1,161 @@
+{
+  "_status": "DRAFT: native speakers should review the Greek and Turkish.",
+  "greeting": {
+    "en": "You are speaking with the automated emergency assistant of 112. All operators are busy, so I will take your details and pass them on right away. Tell me what happened, and where.",
+    "el": "Είστε συνδεδεμένοι με τον αυτόματο βοηθό έκτακτης ανάγκης του 112. Όλοι οι χειριστές είναι απασχολημένοι, γι' αυτό θα καταγράψω τα στοιχεία σας και θα τα διαβιβάσω αμέσως. Πείτε μου τι συνέβη και πού.",
+    "tr": "112'nin otomatik acil durum asistanına bağlandınız. Tüm operatörler meşgul, bu yüzden bilgilerinizi alıp hemen iletiyorum. Ne olduğunu ve nerede olduğunu anlatın.",
+    "fr": "Vous êtes en ligne avec l'assistant automatique d'urgence du 112. Tous les opérateurs sont occupés, je vais donc prendre vos informations et les transmettre immédiatement. Dites-moi ce qui s'est passé, et où."
+  },
+  "greeting_text": {
+    "en": "This is the automated emergency assistant of 112. All operators are busy, so I will take your details by message and pass them on right away.",
+    "el": "Αυτός είναι ο αυτόματος βοηθός έκτακτης ανάγκης του 112. Όλοι οι χειριστές είναι απασχολημένοι, γι' αυτό θα καταγράψω τα στοιχεία σας με μηνύματα και θα τα διαβιβάσω αμέσως.",
+    "tr": "Bu, 112'nin otomatik acil durum asistanıdır. Tüm operatörler meşgul, bu yüzden bilgilerinizi mesajla alıp hemen iletiyorum.",
+    "fr": "Ici l'assistant automatique d'urgence du 112. Tous les opérateurs sont occupés, je vais donc prendre vos informations par message et les transmettre immédiatement."
+  },
+  "handoff_text": {
+    "en": "I am passing your conversation to a human operator, who will contact you as soon as possible. If someone is in immediate danger, keep trying to call 112.",
+    "el": "Διαβιβάζω τη συνομιλία σας σε έναν χειριστή, ο οποίος θα επικοινωνήσει μαζί σας το συντομότερο δυνατό. Αν κάποιος κινδυνεύει άμεσα, συνεχίστε να καλείτε το 112.",
+    "tr": "Görüşmenizi bir operatöre aktarıyorum, en kısa sürede sizinle iletişime geçecek. Birinin hayatı hemen tehlikedeyse 112'yi aramaya devam edin.",
+    "fr": "Je transmets votre conversation à un opérateur, qui vous contactera dès que possible. Si quelqu'un est en danger immédiat, continuez d'appeler le 112."
+  },
+  "greeting_sms": {
+    "en": "112 automated assistant: operators are busy, I will take your details.",
+    "el": "Αυτόματος βοηθός 112: οι χειριστές είναι απασχολημένοι, καταγράφω τα στοιχεία σας.",
+    "tr": "112 otomatik asistanı: operatörler meşgul, bilgilerinizi alıyorum.",
+    "fr": "Assistant automatique 112 : opérateurs occupés, je prends vos informations."
+  },
+  "handoff_sms": {
+    "en": "A human operator will contact you. If a life is in danger, keep calling 112.",
+    "el": "Θα επικοινωνήσει μαζί σας χειριστής. Αν κινδυνεύει ζωή, συνεχίστε να καλείτε το 112.",
+    "tr": "Bir operatör size ulaşacak. Hayati tehlike varsa 112'yi aramaya devam edin.",
+    "fr": "Un opérateur vous contactera. En cas de danger vital, rappelez le 112."
+  },
+  "greeting_missed_call": {
+    "en": "This is the automated assistant of 112, calling back because your call to 112 did not get through. Tell me what happened, and where.",
+    "el": "Είμαι ο αυτόματος βοηθός του 112 και σας καλώ επειδή η κλήση σας στο 112 δεν ολοκληρώθηκε. Πείτε μου τι συνέβη και πού.",
+    "tr": "112'nin otomatik asistanıyım, 112 aramanız bağlanamadığı için sizi arıyorum. Ne olduğunu ve nerede olduğunu anlatın.",
+    "fr": "Ici l'assistant automatique du 112, je vous rappelle car votre appel au 112 n'a pas abouti. Dites-moi ce qui s'est passé, et où."
+  },
+  "greeting_missed_call_text": {
+    "en": "Your call to 112 did not get through. This is the automated 112 assistant: operators are busy, but I can take your details now and pass them on.",
+    "el": "Η κλήση σας στο 112 δεν ολοκληρώθηκε. Είμαι ο αυτόματος βοηθός του 112: οι χειριστές είναι απασχολημένοι, αλλά μπορώ να καταγράψω τώρα τα στοιχεία σας και να τα διαβιβάσω.",
+    "tr": "112 aramanız bağlanamadı. Ben 112'nin otomatik asistanıyım: operatörler meşgul, ama bilgilerinizi şimdi alıp iletebilirim.",
+    "fr": "Votre appel au 112 n'a pas abouti. Je suis l'assistant automatique du 112 : les opérateurs sont occupés, mais je peux prendre vos informations maintenant et les transmettre."
+  },
+  "greeting_missed_call_sms": {
+    "en": "Your 112 call didn't connect. 112 automated assistant here.",
+    "el": "Η κλήση σας στο 112 δεν συνδέθηκε. Αυτόματος βοηθός 112.",
+    "tr": "112 aramanız bağlanmadı. 112 otomatik asistanı.",
+    "fr": "Votre appel au 112 n'a pas abouti. Assistant automatique 112."
+  },
+  "handoff": {
+    "en": "I am connecting you to a human operator now. Please stay on the line.",
+    "el": "Σας συνδέω τώρα με έναν χειριστή. Παρακαλώ μείνετε στη γραμμή.",
+    "tr": "Sizi şimdi bir operatöre bağlıyorum. Lütfen hatta kalın.",
+    "fr": "Je vous mets en relation avec un opérateur. Restez en ligne, s'il vous plaît."
+  },
+  "confirm_again": {
+    "en": "Before I pass this on: is everything correct now?",
+    "el": "Πριν το διαβιβάσω: είναι όλα σωστά τώρα;",
+    "tr": "İletmeden önce: şimdi her şey doğru mu?",
+    "fr": "Avant de transmettre : est-ce que tout est correct maintenant ?"
+  },
+  "error_fallback": {
+    "en": "Sorry, I did not catch that. Could you say it again?",
+    "el": "Συγγνώμη, δεν το άκουσα καλά. Μπορείτε να το επαναλάβετε;",
+    "tr": "Özür dilerim, anlayamadım. Tekrar söyler misiniz?",
+    "fr": "Pardon, je n'ai pas bien compris. Pouvez-vous répéter ?"
+  },
+  "hold": {
+    "en": "One moment, I'm noting that down.",
+    "el": "Μισό λεπτό, το σημειώνω.",
+    "tr": "Bir saniye, not alıyorum.",
+    "fr": "Un instant, je note."
+  },
+  "passed_on": {
+    "_status": "DRAFT: said instead of a promise that help is coming, which the model must never make (nobody has been sent yet). Native speakers should check el/tr/fr.",
+    "el": "Η αναφορά σας περνά αμέσως στους χειριστές.",
+    "tr": "Bildiriminiz hemen operatörlere iletiliyor.",
+    "en": "Your report is going to the operators right away.",
+    "fr": "Votre signalement est transmis tout de suite aux opérateurs."
+  },
+  "form_intro": {
+    "_status": "DRAFT: the list of what is still missing, sent by text so a report takes two or three messages (brain/steps.py form_items). Native speakers should check el/tr/fr.",
+    "en": "Please reply in ONE message with:",
+    "el": "Απαντήστε σε ΕΝΑ μήνυμα με:",
+    "tr": "Lütfen TEK mesajda yazın:",
+    "fr": "Répondez en UN seul message avec :"
+  },
+  "form_again": {
+    "en": "Thank you. Still missing, in one message please:",
+    "el": "Ευχαριστώ. Λείπουν ακόμα, σε ένα μήνυμα παρακαλώ:",
+    "tr": "Teşekkürler. Eksik kalanlar, lütfen tek mesajda:",
+    "fr": "Merci. Il manque encore, en un seul message s'il vous plaît :"
+  },
+  "form_what_happened": {
+    "en": "What happened",
+    "el": "Τι συνέβη",
+    "tr": "Ne oldu",
+    "fr": "Ce qui s'est passé"
+  },
+  "form_where": {
+    "en": "Where: town or area, street and number (or a landmark)",
+    "el": "Πού: πόλη ή περιοχή, οδός και αριθμός (ή ένα γνωστό σημείο)",
+    "tr": "Nerede: il, ilçe, mahalle, sokak ve numara (ya da bilinen bir yer)",
+    "fr": "Où : ville ou quartier, rue et numéro (ou un lieu connu)"
+  },
+  "form_neighbourhood": {
+    "en": "Which neighbourhood",
+    "el": "Σε ποια γειτονιά",
+    "tr": "Hangi mahalle",
+    "fr": "Quel quartier"
+  },
+  "form_house_number": {
+    "en": "The house number (or the nearest corner)",
+    "el": "Ο αριθμός (ή η κοντινότερη γωνία)",
+    "tr": "Bina numarası (ya da en yakın köşe)",
+    "fr": "Le numéro (ou le carrefour le plus proche)"
+  },
+  "form_cross_street": {
+    "en": "The nearest corner or cross street",
+    "el": "Η κοντινότερη γωνία ή ο κάθετος δρόμος",
+    "tr": "En yakın köşe ya da ara sokak",
+    "fr": "Le carrefour ou la rue transversale la plus proche"
+  },
+  "form_spell_street": {
+    "en": "The street name exactly as on the street sign",
+    "el": "Το όνομα της οδού ακριβώς όπως στην πινακίδα",
+    "tr": "Sokak adı, tabelada yazdığı gibi",
+    "fr": "Le nom de la rue tel qu'écrit sur la plaque"
+  },
+  "form_exact_spot": {
+    "en": "Where exactly at that place (side, entrance)",
+    "el": "Πού ακριβώς σε εκείνο το σημείο (πλευρά, είσοδος)",
+    "tr": "O yerin tam neresi (hangi taraf, giriş)",
+    "fr": "Où exactement à cet endroit (côté, entrée)"
+  },
+  "form_people": {
+    "en": "How many people are there",
+    "el": "Πόσα άτομα είναι εκεί",
+    "tr": "Kaç kişi var",
+    "fr": "Combien de personnes sont là"
+  },
+  "form_danger": {
+    "en": "Is anyone injured, trapped or unable to leave",
+    "el": "Υπάρχει τραυματίας, εγκλωβισμένος ή κάποιος που δεν μπορεί να βγει",
+    "tr": "Yaralı, mahsur kalan ya da çıkamayan var mı",
+    "fr": "Quelqu'un est-il blessé, coincé ou incapable de sortir"
+  },
+  "form_floor": {
+    "en": "Which floor, and can everyone get out",
+    "el": "Ποιος όροφος, και μπορούν όλοι να βγουν",
+    "tr": "Hangi kat, herkes çıkabiliyor mu",
+    "fr": "Quel étage, et tout le monde peut-il sortir"
+  },
+  "form_name": {
+    "en": "Your full name",
+    "el": "Το ονοματεπώνυμό σας",
+    "tr": "Adınız ve soyadınız",
+    "fr": "Votre nom complet"
+  }
+}

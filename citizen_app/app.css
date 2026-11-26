@@ -95,11 +95,6 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 .ico-phone {-webkit-mask-image: url("icons/phone.svg"); mask-image: url("icons/phone.svg")}
 .ico-locate {-webkit-mask-image: url("icons/locate.svg"); mask-image: url("icons/locate.svg")}
 .ico-install {-webkit-mask-image: url("icons/install.svg"); mask-image: url("icons/install.svg")}
-.ico-mic {-webkit-mask-image: url("icons/mic.svg"); mask-image: url("icons/mic.svg")}
-.ico-volume {-webkit-mask-image: url("icons/volume.svg"); mask-image: url("icons/volume.svg")}
-.ico-volume-off {-webkit-mask-image: url("icons/volume-off.svg"); mask-image: url("icons/volume-off.svg")}
-.ico-send {-webkit-mask-image: url("icons/send.svg"); mask-image: url("icons/send.svg")}
-.ico-call {-webkit-mask-image: url("icons/call.svg"); mask-image: url("icons/call.svg")}
 
 /* ---- 3. The screen: banner, title bar, notice, "this is old", map, answer. On a small phone the map keeps 180 px, or a
    third of the height when that is less, and the answer scrolls in what is left.
@@ -121,8 +116,8 @@ a {-webkit-touch-callout: default}                                  /* a long pr
            border: 0; border-radius: 0; background: var(--exercise); color: #ffffff; font-size: 15px; font-weight: 600; line-height: 20px;
            letter-spacing: 0.02em; text-align: center}
 .exercise:focus-visible {outline-color: #ffffff}
-.top {display: flex; align-items: center; gap: 4px; padding: calc(6px + env(safe-area-inset-top, 0px)) var(--gr) 6px var(--gl);
-      border-bottom: var(--hair); background: var(--card)}
+.top {display: flex; align-items: center; gap: 4px; padding: 6px var(--gr) 6px var(--gl); border-bottom: var(--hair); background: var(--card)}
+.exercise[hidden] + .top {padding-top: calc(6px + env(safe-area-inset-top, 0px))}       /* no banner: the title bar is the first line */
 .top h1 {flex: 1; min-width: 0; font-size: 20px; font-weight: 700; line-height: 24px; letter-spacing: -0.01em;
          overflow-wrap: anywhere}                                                        /* a long name takes a second line, it is not cut */
 .area {display: block; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px; letter-spacing: 0}
@@ -151,7 +146,7 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 }
 .install-btn {color: var(--f7-theme-color)}
 /* 112 is the only filled shape of the title bar, and the only red one */
-.call {flex: none; width: auto; min-width: 64px; height: 44px; margin-left: 4px; padding: 0 16px; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
+.call {flex: none; min-width: 64px; height: 44px; margin-left: 4px; padding: 0 16px; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
        --f7-button-fill-bg-color: var(--blocked); --f7-button-border-radius: 22px}
 
 /* what the operations room says to everybody, and under it the line that says the information is old */
@@ -416,66 +411,6 @@ a {-webkit-touch-callout: default}                                  /* a long pr
     }
     html.mobile-view .language {width: 44px; max-width: none; padding: 0; color: transparent}
 }
-
-/* ---- 9. Mobile 112 Voice Agent overlay ---- */
-.voice-view {position: absolute; inset: 0; z-index: 20; background: #f2f2f7; color: var(--ink)}
-.voice-shell {display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; height: 100%}
-.voice-top {display: flex; align-items: center; gap: 8px; padding: calc(8px + env(safe-area-inset-top, 0px)) var(--gr) 8px var(--gl);
-            border-bottom: var(--hair); background: var(--card)}
-.voice-title-box {flex: 1; min-width: 0}
-.voice-title-box h2 {font-size: 17px; font-weight: 700; line-height: 22px}
-.voice-sub {display: flex; align-items: center; gap: 6px; color: var(--quiet); font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums}
-.voice-dot {width: 8px; height: 8px; border-radius: 50%; background: var(--checked)}
-.voice-dot.off {background: var(--no-data)}
-.voice-dial {flex: none; width: auto; display: inline-flex; align-items: center; gap: 5px; height: 36px; padding: 0 12px; font-size: 14px; font-weight: 700;
-             --f7-button-fill-bg-color: var(--blocked); --f7-button-border-radius: 18px}
-.voice-dial .ico {width: 15px; height: 15px}
-.voice-disclosure {padding: 8px var(--gr) 8px var(--gl); border-bottom: var(--hair); background: #fff4cc; color: var(--ink);
-                   font-size: 12px; line-height: 16px}
-
-.voice-chat {display: flex; flex-direction: column; gap: 10px; overflow-y: auto; overscroll-behavior: contain;
-             padding: 14px var(--gr) 14px var(--gl)}
-.voice-msg {max-width: 86%; padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 21px}
-.voice-msg.agent {align-self: flex-start; border-bottom-left-radius: 4px; background: var(--card); color: var(--ink);
-                  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06)}
-.voice-msg.agent.handoff {border: 1px solid rgba(185, 28, 28, 0.35); background: #fef2f2}
-.voice-msg.caller {align-self: flex-end; border-bottom-right-radius: 4px; background: var(--f7-theme-color); color: #ffffff}
-
-.voice-report {padding: 12px 14px; border-radius: 12px; border: var(--hair); background: var(--card); font-size: 14px; line-height: 19px}
-.voice-report-title {margin-bottom: 6px; color: var(--quiet); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em}
-.voice-report-list {display: grid; gap: 4px}
-.voice-advice {margin-top: 8px; padding-top: 8px; border-top: var(--hair); color: var(--ink); font-weight: 500}
-
-.voice-chips {display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px}
-.voice-chip {width: auto; min-height: 38px; padding: 6px 12px; border: var(--hair); border-radius: 10px; background: var(--card);
-             color: var(--ink); font-size: 14px; font-weight: 500; text-align: start}
-.voice-chip:active {background: var(--press)}
-
-.voice-dock {display: grid; gap: 10px; padding: 10px var(--gr) calc(12px + var(--safe-bottom)) var(--gl);
-             border-top: var(--hair); background: var(--card)}
-.voice-status {color: var(--quiet); font-size: 13px; font-weight: 500; line-height: 18px; text-align: center}
-.voice-status.live {color: var(--blocked); font-weight: 600}
-.voice-controls {display: flex; align-items: center; justify-content: center; gap: 28px}
-.voice-side {display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%;
-             background: #f2f2f7; color: var(--ink)}
-.voice-side.muted {background: var(--ink); color: #ffffff}
-.voice-side.voice-end {background: #fee2e2; color: var(--blocked)}
-.voice-side:active {opacity: 0.75}
-.voice-mic {display: grid; place-items: center; width: 64px; height: 64px; padding: 0; border: 0; border-radius: 50%;
-            background: var(--f7-theme-color); color: #ffffff; box-shadow: 0 4px 14px rgba(0, 102, 204, 0.32)}
-.voice-mic .ico {width: 28px; height: 28px}
-.voice-mic.listening {background: var(--blocked); box-shadow: 0 0 0 8px rgba(185, 28, 28, 0.2), 0 4px 14px rgba(185, 28, 28, 0.35)}
-.voice-mic:disabled {opacity: 0.4; cursor: not-allowed}
-
-.voice-form {display: flex; align-items: center; gap: 8px}
-.voice-input {flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: var(--hair); border-radius: 22px;
-              background: #f2f2f7; color: var(--ink); font: inherit; font-size: 16px}
-.voice-send {display: grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
-             background: var(--f7-theme-color); color: #ffffff}
-.voice-send .ico {width: 20px; height: 20px}
-.voice-send:active {opacity: 0.8}
-.voice-ended-actions {display: grid; gap: 8px; justify-items: center}
-.voice-ended-actions .main {width: 100%}
 
 /* somebody who asked the phone for less movement */
 @media (prefers-reduced-motion: reduce) {

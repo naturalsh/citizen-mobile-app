@@ -1,0 +1,71 @@
+{
+  "_status": "Built from official Greek and Turkish guidance; sources and decisions per topic in brain/advice/SOURCES.md. Greek and Turkish still need a native-speaker read.",
+  "hazard": "wildfire",
+  "topics": {
+    "approaching": {
+      "when": "A wildfire is coming towards the caller but has not reached them, and they can still leave.",
+      "en": "Leave now if you can do so safely, driving calmly away from the fire and following any route the authorities give. Before you go, close the windows and doors and turn off the gas. Do not wait for the fire to come close, and do not go back until the authorities say it is safe.",
+      "el": "Φύγετε τώρα αν μπορείτε να το κάνετε με ασφάλεια, οδηγώντας ήρεμα μακριά από τη φωτιά και ακολουθώντας πιστά τη διαδρομή που δίνουν οι Αρχές. Πριν φύγετε, κλείστε παράθυρα και πόρτες και το γκάζι. Μην περιμένετε να πλησιάσει η φωτιά και μη γυρίσετε πριν πουν οι Αρχές ότι είναι ασφαλές.",
+      "tr": "Güvenle yapabiliyorsanız hemen ayrılın; yangının tersi yönünde sakin bir şekilde ilerleyin ve yetkililerin verdiği güzergâhı izleyin. Çıkmadan önce pencere ve kapıları kapatın, gazı kesin. Yangının yaklaşmasını beklemeyin ve yetkililer güvenli diyene kadar geri dönmeyin.",
+      "fr": "Partez maintenant si vous pouvez le faire en sécurité, en roulant calmement dans la direction opposée au feu et en suivant l'itinéraire donné par les autorités. Avant de partir, fermez fenêtres et portes et coupez le gaz. N'attendez pas que le feu approche et ne revenez pas avant le feu vert des autorités.",
+      "sms": {
+        "en": "Leave now if safe, away from the fire, by the route given. Close windows, gas off. Don't wait.",
+        "el": "Φύγετε τώρα αν είναι ασφαλές, μακριά από τη φωτιά. Κλείστε παράθυρα, γκάζι. Μην περιμένετε.",
+        "tr": "Güvenliyse hemen yangının tersine gidin. Pencereleri kapatın, gazı kesin. Beklemeyin.",
+        "fr": "Partez si c'est sûr, à l'opposé du feu. Fermez fenêtres et gaz. N'attendez pas."
+      }
+    },
+    "shelter_in_house": {
+      "when": "The fire has reached the caller's surroundings, they cannot leave safely, and they are inside a house or building.",
+      "en": "Stay inside unless you have a safe way out. Close all doors and windows and block the gaps with wet towels. Move away from the windows, fill the bath and buckets with water, and stay together in one room.",
+      "el": "Μείνετε μέσα, εκτός αν έχετε ασφαλή διαφυγή. Κλείστε όλες τις πόρτες και τα παράθυρα και φράξτε τις χαραμάδες με βρεγμένες πετσέτες. Απομακρυνθείτε από τα παράθυρα, γεμίστε την μπανιέρα και κουβάδες με νερό και μείνετε όλοι μαζί σε ένα δωμάτιο.",
+      "tr": "Güvenli bir çıkış yolunuz yoksa içeride kalın. Bütün kapı ve pencereleri kapatın, aralıkları ıslak havlularla tıkayın. Pencerelerden uzaklaşın, küveti ve kovaları suyla doldurun ve hep birlikte bir odada kalın.",
+      "fr": "Restez à l'intérieur, sauf si vous avez une sortie sûre. Fermez portes et fenêtres et bouchez les interstices avec des serviettes mouillées. Éloignez-vous des fenêtres, remplissez la baignoire et des seaux d'eau, et restez ensemble dans une pièce.",
+      "sms": {
+        "en": "Stay inside. Close doors and windows, wet towels in the gaps. Fill the bath. Stay in one room.",
+        "el": "Μείνετε μέσα. Κλείστε πόρτες, παράθυρα, βρεγμένες πετσέτες στις χαραμάδες. Γεμίστε μπανιέρα.",
+        "tr": "İçeride kalın. Kapı ve pencereleri kapatın, aralıklara ıslak havlu. Küveti doldurun.",
+        "fr": "Restez dedans. Fermez tout, serviettes mouillées aux fentes. Remplissez la baignoire."
+      }
+    },
+    "trapped_in_car": {
+      "when": "The caller is in a car and fire or thick smoke is around them on the road.",
+      "en": "Park away from trees and bushes, in the clearest spot you can, with the hazard lights on. Stay in the car with the windows and vents closed and the engine off, and get down below the windows, under a blanket if you have one. Get out only after the fire front has passed.",
+      "el": "Σταθμεύστε μακριά από δέντρα και θάμνους, στο πιο ανοιχτό σημείο που μπορείτε, με τα αλάρμ αναμμένα. Μείνετε μέσα με κλειστά παράθυρα και αεραγωγούς και σβηστή μηχανή, και σκύψτε κάτω από το ύψος των παραθύρων, σκεπασμένοι με κουβέρτα αν έχετε. Βγείτε μόνο όταν περάσει το μέτωπο της φωτιάς.",
+      "tr": "Ağaç ve çalılardan uzak, olabildiğince açık bir yere park edin, dörtlüleri yakın. Camlar ve havalandırma kapalı, motor kapalı şekilde araçta kalın; varsa bir battaniyeyle örtünüp cam hizasının altına eğilin. Ancak yangın cephesi geçtikten sonra dışarı çıkın.",
+      "fr": "Garez-vous loin des arbres et des broussailles, à l'endroit le plus dégagé possible, feux de détresse allumés. Restez dans la voiture, vitres et aérations fermées, moteur coupé, et baissez-vous sous les vitres, sous une couverture si vous en avez une. Ne sortez qu'après le passage du front de feu.",
+      "sms": {
+        "en": "Park in a clear spot, hazards on. Windows shut, engine off. Get low under a blanket. Wait.",
+        "el": "Σταθμεύστε σε ανοιχτό σημείο, αλάρμ. Κλειστά τζάμια, σβηστή μηχανή. Σκύψτε κάτω, με κουβέρτα.",
+        "tr": "Açık yere park edin, dörtlüler açık. Camlar kapalı, motor kapalı. Battaniyeyle eğilin.",
+        "fr": "Garez-vous à découvert, warnings. Vitres fermées, moteur coupé. Baissez-vous, couverture."
+      }
+    },
+    "trapped_outdoors": {
+      "when": "The caller is outdoors on foot and fire is near or around them.",
+      "en": "Move away from the fire and from bushes and trees. Look for ground that has already burnt, a ploughed field, a road or water, or shelter behind a rock or a solid wall. Cover your skin, and your mouth and nose with cloth.",
+      "el": "Απομακρυνθείτε από τη φωτιά και από θάμνους και δέντρα. Βρείτε έδαφος που έχει ήδη καεί, οργωμένο χωράφι, δρόμο ή νερό, ή προφυλαχθείτε πίσω από βράχο ή γερό τοίχο. Καλύψτε το δέρμα σας, και το στόμα και τη μύτη με ύφασμα.",
+      "tr": "Yangından, çalılardan ve ağaçlardan uzaklaşın. Daha önce yanmış bir alan, sürülmüş tarla, yol ya da su arayın veya bir kayanın ya da sağlam bir duvarın arkasına sığının. Teninizi örtün, ağzınızı ve burnunuzu bir bezle kapatın.",
+      "fr": "Éloignez-vous du feu, des broussailles et des arbres. Cherchez un terrain déjà brûlé, un champ labouré, une route ou de l'eau, ou abritez-vous derrière un rocher ou un mur solide. Couvrez votre peau, et votre bouche et votre nez avec un tissu.",
+      "sms": {
+        "en": "Get away from trees and brush. Go to burnt ground, a road or water. Cover skin and mouth.",
+        "el": "Μακριά από δέντρα, θάμνους. Σε καμένο έδαφος, δρόμο ή νερό. Καλύψτε δέρμα και στόμα.",
+        "tr": "Ağaç ve çalılardan uzaklaşın. Yanmış alana, yola, suya gidin. Teni ve ağzı örtün.",
+        "fr": "Loin des arbres. Allez sur terrain brûlé, route ou eau. Couvrez peau et bouche."
+      }
+    },
+    "smoke": {
+      "when": "Smoke is reaching the caller but the fire itself is not at their location.",
+      "en": "Stay indoors with the doors and windows shut, and block the gaps with wet cloths. If smoke gets in, cover your mouth and nose with a wet cloth and stay low. If you must go out, wear an FFP2 mask if you have one. If anyone has trouble breathing or chest pain, tell me now.",
+      "el": "Μείνετε μέσα με κλειστές πόρτες και παράθυρα και φράξτε τις χαραμάδες με βρεγμένα πανιά. Αν μπει καπνός, καλύψτε στόμα και μύτη με βρεγμένο πανί και μείνετε χαμηλά. Αν πρέπει να βγείτε, φορέστε μάσκα FFP2 αν έχετε. Αν κάποιος δυσκολεύεται να αναπνεύσει ή πονάει στο στήθος, πείτε το μου τώρα.",
+      "tr": "Kapı ve pencereler kapalı şekilde içeride kalın, aralıkları ıslak bezle tıkayın. Duman içeri girerse ağzınızı ve burnunuzu ıslak bir bezle örtün ve eğilerek alçakta kalın. Dışarı çıkmanız gerekirse varsa FFP2 maske takın. Nefes almakta zorlanan ya da göğüs ağrısı olan biri varsa bunu hemen söyleyin.",
+      "fr": "Restez à l'intérieur, portes et fenêtres fermées, et bouchez les fentes avec des linges mouillés. Si la fumée entre, couvrez bouche et nez avec un linge mouillé et restez près du sol. Si vous devez sortir, portez un masque FFP2 si vous en avez un. Si quelqu'un a du mal à respirer ou mal à la poitrine, dites-le-moi maintenant.",
+      "sms": {
+        "en": "Stay in, windows shut, wet cloth in gaps. Smoke inside: wet cloth over mouth, stay low.",
+        "el": "Μείνετε μέσα, κλειστά παράθυρα. Αν μπει καπνός: βρεγμένο πανί στο στόμα, μείνετε χαμηλά.",
+        "tr": "İçeride kalın, camlar kapalı. Duman girerse ağza ıslak bez, alçakta kalın.",
+        "fr": "Restez dedans, fenêtres fermées. Fumée : linge mouillé sur la bouche, restez bas."
+      }
+    }
+  }
+}
