@@ -121,8 +121,8 @@ a {-webkit-touch-callout: default}                                  /* a long pr
            border: 0; border-radius: 0; background: var(--exercise); color: #ffffff; font-size: 15px; font-weight: 600; line-height: 20px;
            letter-spacing: 0.02em; text-align: center}
 .exercise:focus-visible {outline-color: #ffffff}
-.top {display: flex; align-items: center; gap: 4px; padding: 6px var(--gr) 6px var(--gl); border-bottom: var(--hair); background: var(--card)}
-.exercise[hidden] + .top {padding-top: calc(6px + env(safe-area-inset-top, 0px))}       /* no banner: the title bar is the first line */
+.top {display: flex; align-items: center; gap: 4px; padding: calc(6px + env(safe-area-inset-top, 0px)) var(--gr) 6px var(--gl);
+      border-bottom: var(--hair); background: var(--card)}
 .top h1 {flex: 1; min-width: 0; font-size: 20px; font-weight: 700; line-height: 24px; letter-spacing: -0.01em;
          overflow-wrap: anywhere}                                                        /* a long name takes a second line, it is not cut */
 .area {display: block; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px; letter-spacing: 0}
