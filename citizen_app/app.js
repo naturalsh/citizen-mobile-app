@@ -231,8 +231,7 @@ function words() {
     $('nav-map').querySelector('.nav-label').textContent = t('navMap');
     $('nav-assembly').querySelector('.nav-label').textContent = t('navAssembly');
     $('nav-medical').querySelector('.nav-label').textContent = t('navMedical');
-    $('exercise').hidden = !pack?.exercise;
-    $('exercise').textContent = `${t('exercise')} · ${t('exerciseShort')}`;
+    $('exercise').hidden = true;
     $('notice').hidden = !pack?.notice;
     if (pack?.notice) {
         $('notice').replaceChildren(h('strong', {text: `${t('notice')} · ${pack.notice.issued_by} · ${clock(pack.notice.issued_at)}`}),
