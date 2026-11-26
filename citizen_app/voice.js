@@ -1,4 +1,5 @@
-/* Mobile 112 Voice Agent UI: connects directly to the LiveKit room of the running Voice_Agents backend. */
+/* Mobile 112 Voice Agent UI: connects directly to the LiveKit room of the running Voice_Agents backend.
+   Supports mic mute/unmute, speaker mute/unmute (agent audio), and switching to text writing mode. */
 
 import {t} from './i18n.js';
 import {h} from './dom.js';
@@ -12,6 +13,8 @@ function formatElapsed(sec) {
     return `${m}:${s}`;
 }
 
+const icon = name => h('span', {class: `ico ico-${name}`, 'aria-hidden': 'true'});
+
 export async function openVoiceAgent(container) {
     if (!container) return;
     if (activeRoom) {
@@ -20,9 +23,13 @@ export async function openVoiceAgent(container) {
     }
     clearInterval(timerId);
 
-    let muted = false;
+    let micMuted = false;
+    let speakerMuted = false;
+    let textMode = false;
     let startedAt = null;
-    let statusEl, timerEl, orbEl, muteBtn, logEl, audioEl;
+    const audioEls = [];
+
+    let statusEl, timerEl, orbEl, logEl, composerForm, textInput;
 
     const close = async () => {
         clearInterval(timerId);
@@ -30,16 +37,16 @@ export async function openVoiceAgent(container) {
             try { await activeRoom.disconnect(); } catch {}
             activeRoom = null;
         }
-        audioEl?.remove();
+        for (const el of audioEls) el.remove();
+        audioEls.length = 0;
+        container.classList.remove('text-mode');
         container.hidden = true;
         container.replaceChildren();
     };
 
     const setStatus = (text, mode = '') => {
         if (statusEl) statusEl.textContent = text;
-        if (orbEl) {
-            orbEl.className = `voice-orb ${mode}`.trim();
-        }
+        if (orbEl) orbEl.className = `voice-orb ${mode}`.trim();
     };
 
     const appendLine = (who, text) => {
@@ -49,29 +56,108 @@ export async function openVoiceAgent(container) {
         logEl.scrollTop = logEl.scrollHeight;
     };
 
-    muteBtn = h('button', {
-        class: 'voice-btn voice-mute',
+    /* Bottom dock buttons: Mic, Speaker (mute agent voice), Text mode, End call */
+    const micIco = icon('mic');
+    const micLbl = h('span', {class: 'voice-action-lbl', text: t('voiceMute')});
+    const micBtn = h('button', {
+        class: 'voice-action',
         type: 'button',
+        'aria-pressed': 'false',
         onclick: async () => {
-            if (!activeRoom?.localParticipant) return;
-            muted = !muted;
-            await activeRoom.localParticipant.setMicrophoneEnabled(!muted);
-            muteBtn.textContent = t(muted ? 'voiceUnmute' : 'voiceMute');
-            muteBtn.classList.toggle('is-muted', muted);
+            micMuted = !micMuted;
+            if (activeRoom?.localParticipant) {
+                try { await activeRoom.localParticipant.setMicrophoneEnabled(!micMuted); } catch {}
+            }
+            micIco.className = `ico ico-${micMuted ? 'mic-off' : 'mic'}`;
+            micLbl.textContent = micMuted ? t('voiceUnmute') : t('voiceMute');
+            micBtn.setAttribute('aria-pressed', String(micMuted));
+            micBtn.classList.toggle('is-muted', micMuted);
         },
-    }, t('voiceMute'));
+    }, h('span', {class: 'voice-circle'}, micIco), micLbl);
+
+    const spkIco = icon('speaker');
+    const spkLbl = h('span', {class: 'voice-action-lbl', text: t('voiceSpeakerMute')});
+    const spkBtn = h('button', {
+        class: 'voice-action',
+        type: 'button',
+        'aria-pressed': 'false',
+        onclick: () => {
+            speakerMuted = !speakerMuted;
+            for (const el of audioEls) el.muted = speakerMuted;
+            spkIco.className = `ico ico-${speakerMuted ? 'speaker-off' : 'speaker'}`;
+            spkLbl.textContent = speakerMuted ? t('voiceSpeakerUnmute') : t('voiceSpeakerMute');
+            spkBtn.setAttribute('aria-pressed', String(speakerMuted));
+            spkBtn.classList.toggle('is-muted', speakerMuted);
+        },
+    }, h('span', {class: 'voice-circle'}, spkIco), spkLbl);
+
+    const txtIco = icon('keyboard');
+    const txtLbl = h('span', {class: 'voice-action-lbl', text: t('voiceTextMode')});
+    const txtBtn = h('button', {
+        class: 'voice-action',
+        type: 'button',
+        'aria-pressed': 'false',
+        onclick: () => {
+            textMode = !textMode;
+            container.classList.toggle('text-mode', textMode);
+            composerForm.hidden = !textMode;
+            txtLbl.textContent = textMode ? t('voiceVoiceMode') : t('voiceTextMode');
+            txtBtn.setAttribute('aria-pressed', String(textMode));
+            txtBtn.classList.toggle('is-active', textMode);
+            if (textMode) textInput.focus();
+        },
+    }, h('span', {class: 'voice-circle'}, txtIco), txtLbl);
 
     const endBtn = h('button', {
-        class: 'voice-btn voice-end',
+        class: 'voice-action voice-action-end',
         type: 'button',
         onclick: close,
-    }, t('voiceEnd'));
+    }, h('span', {class: 'voice-circle'}, icon('hangup')), h('span', {class: 'voice-action-lbl', text: t('voiceEnd')}));
+
+    textInput = h('input', {
+        class: 'voice-input',
+        type: 'text',
+        autocomplete: 'off',
+        placeholder: t('voicePlaceholder'),
+        'aria-label': t('voicePlaceholder'),
+    });
+
+    const sendBtn = h('button', {
+        class: 'voice-send',
+        type: 'submit',
+        'aria-label': t('voiceSend'),
+    }, icon('send'));
+
+    composerForm = h('form', {
+        class: 'voice-composer',
+        hidden: true,
+        onsubmit: async event => {
+            event.preventDefault();
+            const msg = textInput.value.trim();
+            if (!msg) return;
+            textInput.value = '';
+            appendLine('user', msg);
+            if (activeRoom?.localParticipant) {
+                try {
+                    if (typeof activeRoom.localParticipant.sendText === 'function') {
+                        await activeRoom.localParticipant.sendText(msg, {topic: 'lk.chat'});
+                    } else {
+                        const encoded = new TextEncoder().encode(msg);
+                        await activeRoom.localParticipant.publishData(encoded, {reliable: true, topic: 'lk.chat'});
+                    }
+                } catch (err) {
+                    console.warn('Failed to send text to voice agent:', err);
+                }
+            }
+        },
+    }, textInput, sendBtn);
 
     statusEl = h('p', {class: 'voice-status', text: t('voiceConnecting')});
     timerEl = h('p', {class: 'voice-timer', text: '00:00'});
     orbEl = h('div', {class: 'voice-orb connecting'});
     logEl = h('div', {class: 'voice-log', 'aria-live': 'polite'});
 
+    container.classList.remove('text-mode');
     container.replaceChildren(
         h('div', {class: 'voice-head'},
             h('span', {class: 'voice-badge', text: '112'}),
@@ -79,7 +165,8 @@ export async function openVoiceAgent(container) {
             h('a', {class: 'voice-dial', href: 'tel:112', text: t('voiceDial112')})),
         h('div', {class: 'voice-center'}, orbEl, statusEl, timerEl),
         logEl,
-        h('div', {class: 'voice-controls'}, muteBtn, endBtn),
+        composerForm,
+        h('div', {class: 'voice-controls'}, micBtn, spkBtn, txtBtn, endBtn),
     );
     container.hidden = false;
 
@@ -99,8 +186,10 @@ export async function openVoiceAgent(container) {
 
         room.on(LK.RoomEvent.TrackSubscribed, track => {
             if (track.kind === LK.Track.Kind.Audio) {
-                audioEl = track.attach();
+                const audioEl = track.attach();
                 audioEl.autoplay = true;
+                audioEl.muted = speakerMuted;
+                audioEls.push(audioEl);
                 container.append(audioEl);
             }
         });
@@ -124,7 +213,7 @@ export async function openVoiceAgent(container) {
         });
 
         await room.connect(url, token);
-        await room.localParticipant.setMicrophoneEnabled(true);
+        await room.localParticipant.setMicrophoneEnabled(!micMuted);
 
         startedAt = Date.now();
         setStatus(t('voiceListening'), 'listening');

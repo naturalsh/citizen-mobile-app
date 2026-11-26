@@ -95,6 +95,13 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 .ico-phone {-webkit-mask-image: url("icons/phone.svg"); mask-image: url("icons/phone.svg")}
 .ico-locate {-webkit-mask-image: url("icons/locate.svg"); mask-image: url("icons/locate.svg")}
 .ico-install {-webkit-mask-image: url("icons/install.svg"); mask-image: url("icons/install.svg")}
+.ico-mic {-webkit-mask-image: url("icons/mic.svg"); mask-image: url("icons/mic.svg")}
+.ico-mic-off {-webkit-mask-image: url("icons/mic-off.svg"); mask-image: url("icons/mic-off.svg")}
+.ico-speaker {-webkit-mask-image: url("icons/speaker.svg"); mask-image: url("icons/speaker.svg")}
+.ico-speaker-off {-webkit-mask-image: url("icons/speaker-off.svg"); mask-image: url("icons/speaker-off.svg")}
+.ico-keyboard {-webkit-mask-image: url("icons/keyboard.svg"); mask-image: url("icons/keyboard.svg")}
+.ico-send {-webkit-mask-image: url("icons/send.svg"); mask-image: url("icons/send.svg")}
+.ico-hangup {-webkit-mask-image: url("icons/hangup.svg"); mask-image: url("icons/hangup.svg")}
 
 /* ---- 3. The screen: banner, title bar, notice, "this is old", map, answer. On a small phone the map keeps 180 px, or a
    third of the height when that is less, and the answer scrolls in what is left.
@@ -418,30 +425,48 @@ a {-webkit-touch-callout: default}                                  /* a long pr
 }
 
 /* ---- 9. Mobile 112 Voice Agent call screen */
-.voice-screen {position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; justify-content: space-between;
-               padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gr) calc(24px + var(--safe-bottom)) var(--gl);
+.voice-screen {position: absolute; inset: 0; z-index: 20; display: flex; flex-direction: column; gap: 12px;
+               padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gr) calc(20px + var(--safe-bottom)) var(--gl);
                background: #0f172a; color: #f8fafc}
-.voice-head {display: flex; align-items: center; gap: 10px}
+.voice-head {display: flex; align-items: center; gap: 10px; flex: none}
 .voice-badge {padding: 4px 10px; border-radius: 999px; background: var(--blocked); color: #ffffff; font-size: 13px; font-weight: 700}
 .voice-head h2 {flex: 1; font-size: 18px; font-weight: 700; line-height: 22px}
 .voice-dial {padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); color: #f8fafc; font-size: 13px;
              font-weight: 600; text-decoration: none}
-.voice-center {display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 16px 0}
-.voice-orb {width: 112px; height: 112px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #38bdf8, #0284c7);
+.voice-center {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; flex: 1; min-height: 0}
+.voice-screen.text-mode .voice-center {flex: none; flex-direction: row; justify-content: flex-start; gap: 12px; padding: 4px 0}
+.voice-orb {width: 108px; height: 108px; border-radius: 50%; flex: none;
+            background: radial-gradient(circle at 35% 35%, #38bdf8, #0284c7);
             box-shadow: 0 0 0 12px rgba(56, 189, 248, 0.14); transition: transform 0.2s ease, box-shadow 0.2s ease}
+.voice-screen.text-mode .voice-orb {width: 34px; height: 34px; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18)}
 .voice-orb.connecting {background: radial-gradient(circle at 35% 35%, #94a3b8, #475569); box-shadow: 0 0 0 12px rgba(148, 163, 184, 0.15)}
 .voice-orb.speaking {background: radial-gradient(circle at 35% 35%, #4ade80, #16a34a); box-shadow: 0 0 0 18px rgba(74, 222, 128, 0.22);
                      transform: scale(1.06)}
 .voice-orb.error, .voice-orb.ended {background: radial-gradient(circle at 35% 35%, #f87171, #b91c1c); box-shadow: none}
-.voice-status {font-size: 17px; font-weight: 600; text-align: center; max-width: 300px}
-.voice-timer {font-size: 15px; color: #94a3b8; font-variant-numeric: tabular-nums}
-.voice-log {flex: 1; min-height: 60px; max-height: 180px; overflow-y: auto; padding: 10px 12px; border-radius: 12px;
+.voice-status {font-size: 16px; font-weight: 600; text-align: center; max-width: 300px}
+.voice-screen.text-mode .voice-status {flex: 1; text-align: start; font-size: 14px; max-width: none}
+.voice-timer {font-size: 14px; color: #94a3b8; font-variant-numeric: tabular-nums}
+.voice-log {flex: 0 1 150px; min-height: 56px; overflow-y: auto; padding: 10px 12px; border-radius: 12px;
             background: rgba(255, 255, 255, 0.06); font-size: 14px; line-height: 20px}
+.voice-screen.text-mode .voice-log {flex: 1; max-height: none}
 .voice-line + .voice-line {margin-top: 6px}
 .voice-line.agent strong {color: #38bdf8}
 .voice-line.user strong {color: #4ade80}
-.voice-controls {display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px}
-.voice-btn {min-height: 52px; padding: 12px 16px; border: 0; border-radius: 14px; font-size: 16px; font-weight: 600}
-.voice-mute {background: rgba(255, 255, 255, 0.14); color: #ffffff}
-.voice-mute.is-muted {background: #f59e0b; color: #111827}
-.voice-end {background: var(--blocked); color: #ffffff}
+.voice-composer {display: flex; align-items: center; gap: 8px; flex: none}
+.voice-input {flex: 1; min-width: 0; height: 44px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 22px;
+              background: rgba(255, 255, 255, 0.08); color: #ffffff; font: inherit; font-size: 16px}
+.voice-input::placeholder {color: #94a3b8}
+.voice-send {display: grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+             background: var(--f7-theme-color); color: #ffffff}
+.voice-send .ico {width: 20px; height: 20px}
+.voice-send:active {opacity: 0.8}
+.voice-controls {display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; flex: none; padding-top: 4px}
+.voice-action {display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 4px 0; border: 0; background: none; color: #e2e8f0}
+.voice-circle {display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; background: rgba(255, 255, 255, 0.14);
+               color: #ffffff; transition: background 0.15s ease, transform 0.12s ease}
+.voice-circle .ico {width: 24px; height: 24px}
+.voice-action:active .voice-circle {transform: scale(0.94)}
+.voice-action.is-muted .voice-circle {background: #f59e0b; color: #111827}
+.voice-action.is-active .voice-circle {background: var(--f7-theme-color); color: #ffffff}
+.voice-action-end .voice-circle {background: var(--blocked); color: #ffffff}
+.voice-action-lbl {font-size: 12px; font-weight: 500; line-height: 15px; text-align: center; color: #cbd5e1}
