@@ -1,0 +1,6 @@
+{
+  "name": "citizen-app",
+  "private": true,
+  "type": "module",
+  "description": "The citizen web app of Nature Shield. No build step and nothing to install: this file only tells Node that the .js files here are ES modules, so the tests can import them."
+}

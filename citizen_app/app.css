@@ -1,0 +1,425 @@
+/* The look of the citizen app: one screen, the map above and the answer below it (beside it on a wide screen and
+   on a phone held sideways).
+
+   Made for a phone held in one hand, outdoors, by somebody under stress: large text, large buttons, few colours.
+   What is known about a street is never told by colour alone: every colour comes with words or a pattern.
+
+   Buttons, lists, the white blocks and the switch between the two lists are drawn by Framework7's stylesheet
+   (vendor/framework7.min.css, loaded before this file; vendor/README.md says where it comes from). It is here without
+   its script, so what the script would have done is written in section 1 as plain rules. The rest is our own. */
+
+/* ---- 1. The library without its script. */
+:root {
+    /* Framework7's script writes the theme colours when it starts, as an inline <style>, which the service forbids
+       for citizens (Content-Security-Policy in drone_vision/service.py). These are the values its own colour function
+       gives for the blue #0066cc. White on it is 5.6 to 1. The way on the map is drawn in the same blue (map.js). */
+    --f7-ios-primary: #0066cc; --f7-ios-primary-shade: #0052a3; --f7-ios-primary-tint: #007af5; --f7-ios-primary-rgb: 0, 102, 204;
+
+    --ink: #1c1c1e; --quiet: rgba(0, 0, 0, 0.6); --press: rgba(118, 118, 128, 0.16); --card: #ffffff;
+    --hair: calc(1px / var(--f7-device-pixel-ratio, 1)) solid rgba(0, 0, 0, 0.22);        /* a line as thin as the library's own */
+    /* what is known about a street, as on the map */
+    --checked: #15803d; --unchecked: #b45309; --no-data: #6b7280; --blocked: #b91c1c;
+    --exercise: #4a2a7a;
+    color-scheme: light;
+}
+html.ios {
+    --f7-theme-color: var(--f7-ios-primary); --f7-theme-color-rgb: var(--f7-ios-primary-rgb);
+    --f7-theme-color-shade: var(--f7-ios-primary-shade); --f7-theme-color-tint: var(--f7-ios-primary-tint);
+
+    /* where the library's values do not hold for us */
+    --f7-font-size: 17px; --f7-line-height: 22px; --f7-text-color: var(--ink);
+    --f7-list-item-title-white-space: normal; --f7-block-title-white-space: normal;        /* the name of a place is never cut short */
+    --f7-list-inset-border-radius: 12px; --f7-block-inset-border-radius: 12px; --f7-list-item-min-height: 48px;
+    --f7-list-margin-vertical: 16px; --f7-block-margin-vertical: 16px;                     /* a panel under a map, not a whole page */
+    --f7-block-title-font-size: 13px; --f7-block-title-line-height: 18px; --f7-block-title-margin-bottom: 8px;
+    --f7-block-title-text-color: var(--quiet);
+}
+
+/* what the library sets for bare elements, and what it leaves to the browser */
+* {box-sizing: border-box}
+[hidden] {display: none !important}
+html {touch-action: manipulation; overscroll-behavior-y: none}        /* two quick taps press twice; no accidental pull-to-refresh */
+body {overflow: hidden; height: 100dvh; overscroll-behavior-y: none; background: var(--f7-page-bg-color)} /* the page stands still: the answer scrolls */
+h1, h2, h3, p, ul, ol {margin: 0}
+ul, ol {padding: 0; list-style: none}
+button, select {font: inherit; color: inherit}
+button {cursor: pointer}
+button, summary {-webkit-user-select: none; user-select: none}      /* a finger that rests on a button does not select its words */
+a {-webkit-touch-callout: default}                                  /* a long press on a link still offers to copy it */
+:focus-visible {outline: 3px solid var(--f7-theme-color); outline-offset: 2px}          /* the library takes the outline away */
+.unseen {position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap}
+.noscript {position: fixed; inset: 0; z-index: 10; padding: 24px 16px; background: var(--card); font-size: 19px; line-height: 26px}
+
+/* a filled button is the one thing a screen asks to be pressed; its words are never cut */
+.main {height: auto; min-height: 50px; padding-top: 8px; padding-bottom: 8px; line-height: 22px; white-space: normal;
+       --f7-button-large-font-weight: 600; --f7-button-border-radius: 12px}
+.sheet .main {width: calc(100% - var(--gl) - var(--gr)); margin-left: var(--gl); margin-right: var(--gr)}
+.button-fill:active {opacity: 0.8}                                  /* pressed: the library's script is not here to say so */
+
+/* a line of a list that can be pressed is a button here (the library expects a link) */
+.list button.item-link, .list button.list-button {border: 0; border-radius: 0; background: none}
+.list button.item-link {padding-top: 0; padding-right: 0; padding-bottom: 0; text-align: start}
+.list.inset li:first-child > button {border-radius: 12px 12px 0 0}
+.list.inset li:last-child > button {border-radius: 0 0 12px 12px}
+.list.inset li:only-child > button {border-radius: 12px}
+.list button:active {background-color: var(--f7-list-link-pressed-bg-color)}
+.list button:focus-visible, .tab:focus-visible, .handle:focus-visible, .exercise:focus-visible {outline-offset: -3px}
+/* The library draws the arrow at the end of such a line with a font it carries inside its stylesheet as a data:
+   address, which the service refuses; vendor/README.md says how that font was taken out. The arrow is Ionicons'. */
+.list .item-link .item-inner:before {content: ""; right: calc(12px + var(--f7-safe-area-right)); width: 16px; height: 16px; margin-top: -8px;
+    background-color: rgba(0, 0, 0, 0.32);
+    font-family: inherit;               /* or the browser asks for the font that is not there, to measure a line without letters */
+    -webkit-mask: url("vendor/ionicons/chevron-forward-outline.svg") center / contain no-repeat;
+    mask: url("vendor/ionicons/chevron-forward-outline.svg") center / contain no-repeat}
+
+/* ---- 2. Drawings: Ionicons (vendor/ionicons), used as a stencil over the colour of the words beside them. */
+.ico {display: inline-block; flex: none; width: 22px; height: 22px; background-color: currentColor; vertical-align: middle;
+      -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat}
+.ico-globe {-webkit-mask-image: url("vendor/ionicons/globe-outline.svg"); mask-image: url("vendor/ionicons/globe-outline.svg")}
+.ico-info {-webkit-mask-image: url("vendor/ionicons/information-circle-outline.svg"); mask-image: url("vendor/ionicons/information-circle-outline.svg")}
+.ico-close {-webkit-mask-image: url("vendor/ionicons/close-outline.svg"); mask-image: url("vendor/ionicons/close-outline.svg")}
+.ico-down {-webkit-mask-image: url("vendor/ionicons/chevron-down-outline.svg"); mask-image: url("vendor/ionicons/chevron-down-outline.svg")}
+.ico-up {-webkit-mask-image: url("vendor/ionicons/chevron-up-outline.svg"); mask-image: url("vendor/ionicons/chevron-up-outline.svg")}
+.ico-forward {-webkit-mask-image: url("vendor/ionicons/chevron-forward-outline.svg"); mask-image: url("vendor/ionicons/chevron-forward-outline.svg")}
+.ico-map {-webkit-mask-image: url("vendor/ionicons/map-outline.svg"); mask-image: url("vendor/ionicons/map-outline.svg")}
+.ico-pin {-webkit-mask-image: url("vendor/ionicons/location-outline.svg"); mask-image: url("vendor/ionicons/location-outline.svg")}
+.ico-ok {-webkit-mask-image: url("vendor/ionicons/checkmark-circle-outline.svg"); mask-image: url("vendor/ionicons/checkmark-circle-outline.svg")}
+.ico-alert {-webkit-mask-image: url("vendor/ionicons/alert-circle-outline.svg"); mask-image: url("vendor/ionicons/alert-circle-outline.svg")}
+.ico-no {-webkit-mask-image: url("vendor/ionicons/close-circle-outline.svg"); mask-image: url("vendor/ionicons/close-circle-outline.svg")}
+.ico-water {-webkit-mask-image: url("icons/water.svg"); mask-image: url("icons/water.svg")}
+.ico-medical {-webkit-mask-image: url("icons/medical.svg"); mask-image: url("icons/medical.svg")}
+.ico-power {-webkit-mask-image: url("icons/power.svg"); mask-image: url("icons/power.svg")}
+.ico-shelter {-webkit-mask-image: url("icons/shelter.svg"); mask-image: url("icons/shelter.svg")}
+.ico-accessible {-webkit-mask-image: url("icons/accessible.svg"); mask-image: url("icons/accessible.svg")}
+.ico-walk {-webkit-mask-image: url("icons/walk.svg"); mask-image: url("icons/walk.svg")}
+.ico-phone {-webkit-mask-image: url("icons/phone.svg"); mask-image: url("icons/phone.svg")}
+.ico-locate {-webkit-mask-image: url("icons/locate.svg"); mask-image: url("icons/locate.svg")}
+.ico-install {-webkit-mask-image: url("icons/install.svg"); mask-image: url("icons/install.svg")}
+
+/* ---- 3. The screen: banner, title bar, notice, "this is old", map, answer. On a small phone the map keeps 180 px, or a
+   third of the height when that is less, and the answer scrolls in what is left.
+   --safe-…: how far a notch, round corners or the bar at the bottom reach into the screen (nothing on most phones)
+   --gl, --gr: the gutter at the left and at the right: 16 px, or as much as the notch takes */
+.app {position: fixed; inset: 0; display: grid; grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto auto auto minmax(min(180px, 30%), 1fr) auto auto; background: var(--f7-page-bg-color);
+      --safe-left: env(safe-area-inset-left, 0px); --safe-right: env(safe-area-inset-right, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px)}
+.app > * {--gl: max(16px, var(--safe-left)); --gr: max(16px, var(--safe-right))}
+.exercise {grid-row: 1}
+.top {grid-row: 2}
+.notice {grid-row: 3}
+.stale {grid-row: 4}
+.stage {grid-row: 5}
+.sheet {grid-row: 6}
+.mobile-nav {grid-row: 7}
+
+.exercise {min-height: calc(44px + env(safe-area-inset-top, 0px)); padding: calc(8px + env(safe-area-inset-top, 0px)) var(--gr) 8px var(--gl);
+           border: 0; border-radius: 0; background: var(--exercise); color: #ffffff; font-size: 15px; font-weight: 600; line-height: 20px;
+           letter-spacing: 0.02em; text-align: center}
+.exercise:focus-visible {outline-color: #ffffff}
+.top {display: flex; align-items: center; gap: 4px; padding: 6px var(--gr) 6px var(--gl); border-bottom: var(--hair); background: var(--card)}
+.exercise[hidden] + .top {padding-top: calc(6px + env(safe-area-inset-top, 0px))}       /* no banner: the title bar is the first line */
+.top h1 {flex: 1; min-width: 0; font-size: 20px; font-weight: 700; line-height: 24px; letter-spacing: -0.01em;
+         overflow-wrap: anywhere}                                                        /* a long name takes a second line, it is not cut */
+.area {display: block; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px; letter-spacing: 0}
+@media (max-width: 359px) {
+    .top h1 {font-size: 17px; line-height: 22px}
+}
+
+/* The language: on a phone held upright there is no room for its name beside the title, so the chooser is a globe that
+   opens the phone's own list; the name is there, unseen, for people who listen to the screen.
+   `height`: iOS does not listen to `min-height` here. 17 px: under 16 px iOS zooms the page when the list opens. */
+.language-box {position: relative; flex: none}
+.language-box .ico {position: absolute; top: 10px; left: 10px; width: 24px; height: 24px; pointer-events: none}
+.language {display: block; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 22px; background: none; color: transparent;
+           font-size: 17px; -webkit-appearance: none; appearance: none; cursor: pointer}
+.language option {color: var(--ink)}
+@media (min-width: 560px) {
+    .language {width: auto; max-width: 9rem; padding: 0 12px 0 40px; color: var(--ink); white-space: nowrap}
+}
+.round, .shut {display: grid; flex: none; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none}
+.round .ico, .shut .ico {width: 24px; height: 24px}
+.round:active, .shut:active, .language:active, .plain:active {background: var(--press)}
+.view-toggle {display: none}
+@media (min-width: 900px) {
+    .view-toggle {display: grid}
+    html.mobile-view .view-toggle {background: rgba(0, 102, 204, 0.12); color: var(--f7-theme-color)}
+}
+.install-btn {color: var(--f7-theme-color)}
+/* 112 is the only filled shape of the title bar, and the only red one */
+.call {flex: none; min-width: 64px; height: 44px; margin-left: 4px; padding: 0 16px; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
+       --f7-button-fill-bg-color: var(--blocked); --f7-button-border-radius: 22px}
+
+/* what the operations room says to everybody, and under it the line that says the information is old */
+.notice {display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 12px; padding: 12px var(--gr) 12px var(--gl);
+         border-bottom: var(--hair); background: #fff4cc; font-size: 15px; font-weight: 600; line-height: 20px}
+.notice::before {content: ""; grid-row: 1 / span 2; width: 20px; height: 20px; background-color: currentColor;
+                 -webkit-mask: url("vendor/ionicons/megaphone-outline.svg") center / contain no-repeat;
+                 mask: url("vendor/ionicons/megaphone-outline.svg") center / contain no-repeat}
+.notice strong {display: block; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px}
+.stale {display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 8px var(--gr) 8px var(--gl); background: var(--ink);
+        color: #ffffff; font-size: 13px; font-weight: 600; line-height: 18px}
+.stale::before {content: ""; flex: none; width: 18px; height: 18px; background-color: currentColor;
+                -webkit-mask: url("vendor/ionicons/cloud-offline-outline.svg") center / contain no-repeat;
+                mask: url("vendor/ionicons/cloud-offline-outline.svg") center / contain no-repeat}
+
+/* the map and what lies over it */
+.stage {position: relative; min-height: 0; background: #e8ebf0; --safe-bottom: 0px}        /* the answer is under the map: the bar at the bottom is its business */
+.map {position: absolute; inset: 0}
+.map-missing {padding: 12px var(--gr) 12px var(--gl); color: var(--quiet); font-size: 15px; line-height: 20px; text-align: center}
+.hint {position: absolute; top: 12px; left: max(12px, var(--safe-left)); right: calc(64px + var(--safe-right)); display: flex; overflow: hidden;
+       border-radius: 12px; background: var(--ink); color: #ffffff; font-size: 15px; font-weight: 600; line-height: 20px;
+       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3)}
+.hint span {flex: 1; align-self: center; padding: 12px 12px 12px 16px}
+.hint button {flex: none; width: auto; min-height: 44px; padding: 0 16px; border: 0; border-left: 1px solid rgba(255, 255, 255, 0.24);
+              background: none; color: #ffffff}
+.hint button:active {background: rgba(255, 255, 255, 0.16)}
+.hint button:focus-visible {outline-color: #ffffff; outline-offset: -3px}
+.toast {position: absolute; left: max(12px, var(--safe-left)); right: max(12px, var(--safe-right)); bottom: calc(36px + var(--safe-bottom));
+        padding: 12px 16px; border-radius: 12px; background: var(--ink); color: #ffffff; font-size: 15px; line-height: 20px; text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); z-index: 3}
+
+/* floating thumb-reachable map controls (GPS locate & recenter route) — bottom-left so they never collide with top-right zoom or bottom-right attribution */
+.map-fabs {position: absolute; left: calc(12px + var(--safe-left)); bottom: calc(14px + var(--safe-bottom)); z-index: 2;
+           display: flex; flex-direction: row; gap: 10px}
+.fab {display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: var(--hair); border-radius: 50%;
+      background: var(--card); color: var(--ink); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22); transition: transform 0.12s ease}
+.fab:active {transform: scale(0.94); background: #f2f4f7}
+.fab .ico {width: 22px; height: 22px}
+.fab.active {background: var(--f7-theme-color); border-color: var(--f7-theme-color); color: #ffffff}
+.fab.waiting {color: var(--f7-theme-color); box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.24), 0 2px 10px rgba(0, 0, 0, 0.22)}
+
+/* ---- 4. The answer: a draggable bottom sheet under the map that snaps between peek, half and full. Inside it the
+   library's white lists and blocks lie on its grey ground, 16 px apart.
+   --tl, --tr: where words outside a white block begin and end: in line with the words inside one */
+.sheet {max-height: 52vh; max-height: 52dvh; overflow-y: auto; overscroll-behavior: contain; border-top: var(--hair);
+        border-radius: 16px 16px 0 0; background: var(--f7-page-bg-color); box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
+        padding-bottom: 4px;
+        --tl: calc(var(--gl) + 16px); --tr: calc(var(--gr) + 16px);
+        /* the library keeps its lists clear of a notch by itself, once it is told how far the notch reaches past our gutter */
+        --f7-safe-area-left: max(0px, calc(var(--safe-left) - 16px)); --f7-safe-area-right: max(0px, calc(var(--safe-right) - 16px));
+        --f7-safe-area-outer-left: var(--f7-safe-area-left); --f7-safe-area-outer-right: var(--f7-safe-area-right)}
+.sheet.sheet-full {max-height: 76vh; max-height: 76dvh}
+.sheet.sheet-peek {max-height: 84px; overflow-y: hidden}
+.wait {padding: 24px 16px; color: var(--quiet); text-align: center}
+/* the line that is always there; it stays above the library's lists and blocks, which are one layer up */
+.handle {position: sticky; top: 0; z-index: 2; display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 100%; min-height: 56px;
+         padding: 8px var(--gr) 8px var(--gl); border: 0; border-radius: 16px 16px 0 0; background: var(--f7-page-bg-color); text-align: start;
+         touch-action: none}
+.grabber {display: block; width: 38px; height: 4px; margin: 0 auto 2px; border-radius: 999px; background: rgba(0, 0, 0, 0.22)}
+.handle-row {display: flex; align-items: center; gap: 12px; width: 100%}
+
+/* mobile bottom navigation bar */
+.mobile-nav {display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px;
+             padding: 4px var(--gr) calc(4px + var(--safe-bottom)) var(--gl); border-top: var(--hair); background: var(--card); z-index: 4}
+.nav-btn {display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 50px;
+          padding: 4px 6px; border: 0; border-radius: 10px; background: none; color: var(--quiet); font-size: 11px; font-weight: 600; line-height: 14px}
+.nav-btn .ico {width: 22px; height: 22px}
+.nav-btn.active {color: var(--f7-theme-color)}
+.nav-btn:active {background: var(--press)}
+.nav-btn:focus-visible {outline-offset: -3px}
+.summary {flex: 1; min-width: 0}
+.summary-name {display: block; overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap}
+.summary-more {display: block; color: var(--quiet); font-size: 15px; line-height: 20px; font-variant-numeric: tabular-nums}
+.handle-word {display: inline-flex; flex: none; align-items: center; gap: 4px; color: var(--f7-theme-color)}
+.handle-word .ico {width: 18px; height: 18px}
+.handle:active .handle-word {opacity: 0.5}
+.body {padding: 8px 0 16px}
+.body > :first-child {margin-top: 0}
+.body > :last-child {margin-bottom: 0}
+.sheet .block-title {margin-top: 20px; margin-right: var(--tr); margin-left: var(--tl)}
+
+/* words on the grey ground */
+.waiting, .private, .foot {margin: 16px var(--tr) 16px var(--tl); color: var(--quiet); font-size: 13px; line-height: 18px}
+.waiting {font-size: 15px; line-height: 20px}
+.problem {display: flex; gap: 8px; margin: 16px var(--tr) 8px var(--tl); color: var(--blocked); font-size: 15px; font-weight: 600; line-height: 20px}
+.problem .ico {width: 20px; height: 20px}
+.advice {margin: 8px var(--tr) 16px var(--tl)}
+
+/* where the person is: asked (one filled button, and the other two ways as a list), or said in one line */
+.where {display: grid; gap: 12px; margin: 16px 0}
+.where > * {margin-top: 0; margin-bottom: 0}
+.where h2 {margin-right: var(--gr); margin-left: var(--gl); font-size: 20px; font-weight: 700; line-height: 24px; letter-spacing: -0.01em}
+.echo {position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap}      /* the line above says it */
+.where .plain {justify-self: center}
+.position {display: flex; align-items: center; gap: 12px; margin: 16px var(--gr) 16px var(--gl); padding: 8px 8px 8px 16px; border-radius: 12px;
+           background: var(--card)}
+.position p {flex: 1; min-width: 0}
+.label {display: block; color: var(--quiet); font-size: 13px; line-height: 18px}
+.how {display: block}
+.how::first-letter {text-transform: uppercase}                          /* it was the end of a sentence; now it is a line of its own */
+.dot {flex: none; width: 14px; height: 14px; margin: 0 3px; border: 2px solid #ffffff; border-radius: 50%; background: var(--f7-theme-color);
+      box-shadow: 0 0 0 2px var(--f7-theme-color)}                      /* the mark of "you" on the map, small */
+.plain {flex: none; width: auto; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--f7-theme-color)}
+
+/* assembly points, or hospitals: the library's switch, as high as a finger and with words that may take two lines */
+.tabs {margin: 16px var(--gr) 16px var(--gl); --f7-button-border-radius: 10px}
+.tabs .tab {height: auto; min-height: 44px; padding: 4px 8px; line-height: 18px; white-space: normal}
+
+/* a place in a list: its sign, its name, how far it is, what was reported about it, what is known about the way */
+.sign {flex: none; width: 28px; height: 28px}
+.row-name {display: block; font-weight: 600}
+.row-more, .told, .row-way {font-size: 15px; line-height: 20px}
+.row-more {display: block; color: var(--quiet); font-variant-numeric: tabular-nums}
+.row-way {display: flex; align-items: center; gap: 8px; color: var(--quiet)}
+.told {display: block; font-weight: 600}
+.told.in_use {color: var(--checked)}
+.told.full, .told.closed, .told.blocked {color: var(--blocked)}
+.off .row-name {color: var(--quiet)}                                    /* a place reported full or closed steps back */
+.rows .list-button {min-height: 48px; padding: 13px 16px; line-height: 22px}
+
+/* ---- 5. The chosen place: one white block. Its name, what was reported about it, the walk and what is known about
+   the way, and the turns as its last line. Under the block, in small words, where we know the place from. */
+.place-head {display: flex; align-items: center; gap: 12px}
+.place-head div {min-width: 0}
+.place-head .sign {width: 40px; height: 40px}
+.card h2 {border-radius: 4px; font-size: 20px; font-weight: 700; line-height: 24px; letter-spacing: -0.01em; overflow-wrap: anywhere}
+.kind {margin-top: 2px; color: var(--quiet); font-size: 15px; line-height: 20px}
+.facilities {display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px}
+.facility {display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border: 1px solid rgba(0, 0, 0, 0.1);
+           border-radius: 999px; background: #f2f4f7; color: var(--ink); font-size: 13px; font-weight: 600; line-height: 18px}
+.facility .ico {width: 15px; height: 15px}
+.fac-water {background: #e0f2fe; border-color: #bae6fd; color: #0369a1}
+.fac-medical {background: #fee2e2; border-color: #fecaca; color: #b91c1c}
+.fac-power {background: #fef3c7; border-color: #fde68a; color: #92400e}
+.fac-shelter {background: #dcfce7; border-color: #bbf7d0; color: #166534}
+.fac-accessible {background: #ede9fe; border-color: #ddd6fe; color: #5b21b6}
+.facilities.compact {gap: 4px; margin-top: 6px}
+.facilities.compact .facility {padding: 2px 7px; font-size: 12px; line-height: 16px}
+.facilities.compact .facility .ico {width: 13px; height: 13px}
+.report {display: flex; gap: 8px; margin-top: 12px; font-size: 15px; line-height: 20px}       /* what the operators reported about the place */
+.report.none {color: var(--quiet)}
+.report.in_use {color: var(--checked); font-weight: 600}
+.report.full, .report.closed {color: var(--blocked); font-size: 17px; font-weight: 600; line-height: 22px}
+.report .ico {width: 20px; height: 20px; margin-top: 1px}
+.when {display: block; color: var(--quiet); font-size: 13px; font-weight: 400; line-height: 18px}
+.walk-box {display: flex; align-items: center; gap: 10px; margin-top: 14px; padding: 10px 12px; border: 1px solid rgba(0, 102, 204, 0.2);
+           border-radius: 10px; background: rgba(0, 102, 204, 0.06)}
+.walk-box .ico {width: 24px; height: 24px; color: var(--f7-theme-color)}
+.walk-info {min-width: 0}
+.walk {font-size: 17px; font-weight: 700; line-height: 22px; font-variant-numeric: tabular-nums}
+.eta {color: var(--quiet); font-size: 13px; line-height: 18px; font-variant-numeric: tabular-nums}
+.verdict {display: flex; gap: 8px; margin-top: 10px; font-size: 15px; font-weight: 600; line-height: 20px}
+.report + .verdict {margin-top: 16px}                                    /* no way was found: the sentence stands where the walk would */
+.verdict .ico {width: 20px; height: 20px}
+.verdict.checked .ico {color: var(--checked)}
+.verdict.partly .ico {color: var(--unchecked)}
+.verdict.blocked .ico {color: var(--blocked)}
+
+/* how much of the way is known: a bar, and its parts in words. The stripes are not decoration: they tell "not checked"
+   from "blocked" for somebody who does not see the colours apart. */
+.bar {display: flex; gap: 2px; height: 8px; margin-top: 12px; overflow: hidden; border-radius: 4px}
+.part {flex: 1 1 0; min-width: 8px}
+.checked.part, .checked.swatch {background: var(--checked)}
+.unchecked.part, .unchecked.swatch {background: repeating-linear-gradient(90deg, var(--unchecked) 0 6px, #fcd34d 6px 9px)}
+.no_data.part, .no_data.swatch {background: var(--no-data)}
+.blocked.part, .blocked.swatch {background: repeating-linear-gradient(135deg, var(--blocked) 0 5px, #450a0a 5px 8px)}
+.key {display: grid; gap: 4px; margin-top: 12px; color: var(--quiet); font-size: 15px; line-height: 20px; font-variant-numeric: tabular-nums}
+.key li {display: flex; align-items: center; gap: 8px}
+.swatch {flex: none; width: 14px; height: 8px; border-radius: 2px}
+.trust {margin-top: 12px; color: var(--quiet); font-size: 13px; line-height: 18px}
+
+/* the turns, folded; and the telephone of the place */
+.steps, .contact {margin-top: 12px; border-top: var(--hair)}
+.steps summary {display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; list-style: none; cursor: pointer}
+.steps summary::-webkit-details-marker {display: none}
+.steps summary .ico {width: 16px; height: 16px; color: rgba(0, 0, 0, 0.32); transition: transform 0.2s}
+.steps[open] summary .ico {transform: rotate(90deg)}
+.steps li {display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; padding: 12px 0; border-top: var(--hair);
+           font-size: 15px; line-height: 20px}
+.far {color: var(--quiet); font-variant-numeric: tabular-nums; white-space: nowrap}
+.steps .told {grid-column: 1 / -1}
+.contact {display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px}
+.contact a {display: inline-flex; align-items: center; min-height: 44px; font-variant-numeric: tabular-nums}
+.steps + .contact {margin-top: 0}
+.card > .steps:last-child, .card > .contact:last-child {margin-bottom: -12px}      /* the last line of the block is as high as a line of a list */
+.sources {margin: -8px var(--tr) 16px var(--tl); color: var(--quiet); font-size: 13px; line-height: 18px}
+.sources p + p {margin-top: 4px}
+.source-link {display: inline-flex; align-items: center; min-height: 44px}
+
+/* ---- 6. The window for "exercise" and "about". */
+.dialog {width: min(92vw, 520px); max-height: 86vh; max-height: 86dvh; padding: 0; border: 0; border-radius: 12px; background: var(--card);
+         color: var(--ink)}
+.dialog::backdrop {background: rgba(0, 0, 0, 0.4)}
+.dialog-body {display: grid; gap: 12px; padding: 0 16px 16px}
+.dialog-head {position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; margin: 0 -16px; padding: 6px 6px 6px 16px;
+              border-bottom: var(--hair); background: var(--card)}
+.dialog-head h2 {flex: 1; min-width: 0; font-size: 17px; font-weight: 600; line-height: 22px}
+.dialog-body h3 {margin-top: 4px; color: var(--quiet); font-size: 13px; font-weight: 600; line-height: 18px}
+.dialog-body .foot {margin: 0}
+.legend {display: grid; gap: 8px; font-size: 15px; line-height: 20px}
+.legend li {display: grid; grid-template-columns: 40px minmax(0, 1fr); align-items: center; gap: 12px}
+.legend .sign {justify-self: center}
+.sample {height: 6px; border-radius: 3px}
+.sample.checked {background: var(--checked)}
+.sample.unchecked {background: repeating-linear-gradient(90deg, var(--unchecked) 0 8px, transparent 8px 13px)}
+.sample.blocked {height: 16px; background: var(--blocked); color: #ffffff; font: 700 13px/16px system-ui, sans-serif; text-align: center}
+.sample.no_data {height: 8px; border: 1px solid #9aa3b0; background: #ffffff}
+.sample.route {height: 10px; border: 3px solid var(--f7-theme-color); background: #ffffff}
+.sample.drone {height: 22px; border: 2px dashed #475569; border-radius: 0; background: #f8fafc}
+.credits {display: grid; gap: 4px; color: var(--quiet); font-size: 13px; line-height: 18px}
+
+/* ---- 7. Things drawn on the map. */
+.you {width: 26px; height: 26px; border: 4px solid #ffffff; border-radius: 50%; background: var(--f7-theme-color);
+      box-shadow: 0 0 0 2px var(--f7-theme-color), 0 2px 6px rgba(0, 0, 0, 0.4); cursor: grab; touch-action: none}
+.you::after {content: ""; position: absolute; inset: -14px; border-radius: 50%}
+.drone-label {padding: 1px 6px; border: 1px solid #94a3b8; border-radius: 4px 4px 4px 0; background: rgba(255, 255, 255, 0.92); color: #334155;
+              font-size: 12px; font-weight: 600; white-space: nowrap; pointer-events: none}
+.maplibregl-popup-content {padding: 12px 36px 12px 12px; border-radius: 12px; color: var(--ink); font: 15px/20px var(--f7-font-family)}
+.maplibregl-popup-close-button {width: 34px; height: 34px; font-size: 20px}             /* a width of its own: the library makes a bare button as wide as its box */
+.maplibregl-ctrl-group button {width: 44px; height: 44px}                                /* closer and further: a thumb's size */
+.maplibregl-ctrl-top-right, .maplibregl-ctrl-bottom-right {right: var(--safe-right)}
+.maplibregl-ctrl-bottom-right {bottom: var(--safe-bottom)}
+.street-card {display: grid; gap: 4px; min-width: 170px}
+.street-name, .known {font-weight: 600}
+.known.checked {color: var(--checked)}
+.known.unchecked {color: var(--unchecked)}
+.known.blocked {color: var(--blocked)}
+
+/* ---- 8. Other shapes of the screen. */
+/* a phone that cannot draw the map: the answer takes the whole screen */
+.no-map {grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto}
+.no-map .stage {display: grid; place-items: center; min-height: 64px}
+.no-map .sheet {max-height: none; border-radius: 0; box-shadow: none}
+.no-map .handle {display: none}
+.no-map .body {padding-top: 16px}
+.no-map .echo {position: static; width: auto; height: auto; clip-path: none; white-space: normal}
+
+/* a wide screen, or a phone held sideways: the answer beside the map (unless desktop Mobile View frame is active) */
+@media (min-width: 900px), (orientation: landscape) and (min-width: 560px) {
+    html:not(.mobile-view) .app, html:not(.mobile-view) .no-map {
+        grid-template-columns: min(420px, 48%) minmax(0, 1fr);
+        grid-template-rows: auto auto auto auto minmax(0, 1fr);
+    }
+    html:not(.mobile-view) .exercise, html:not(.mobile-view) .top, html:not(.mobile-view) .notice, html:not(.mobile-view) .stale {grid-column: 1 / -1}
+    html:not(.mobile-view) .sheet {grid-column: 1; grid-row: 5; max-height: none; border-top: 0; border-right: var(--hair);
+                                   border-radius: 0; box-shadow: none; padding-bottom: var(--safe-bottom); --safe-right: 0px}
+    html:not(.mobile-view) .stage {grid-column: 2; grid-row: 5; --safe-left: 0px; --safe-bottom: env(safe-area-inset-bottom, 0px)}
+    html:not(.mobile-view) .handle, html:not(.mobile-view) .mobile-nav {display: none}
+    html:not(.mobile-view) .body {padding-top: 16px}
+    html:not(.mobile-view) .echo {position: static; width: auto; height: auto; clip-path: none; white-space: normal}
+}
+
+/* Desktop Mobile View: realistic phone frame on wide screens so the mobile UI can be previewed and demoed anywhere */
+@media (min-width: 900px) {
+    html.mobile-view body {background: #141720}
+    html.mobile-view .app {
+        inset: auto;
+        top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 390px;
+        height: min(844px, calc(100dvh - 32px));
+        border: 8px solid #1e222e;
+        border-radius: 36px;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+    html.mobile-view .language {width: 44px; max-width: none; padding: 0; color: transparent}
+}
+
+/* somebody who asked the phone for less movement */
+@media (prefers-reduced-motion: reduce) {
+    .tabs .segmented-highlight, .steps summary .ico, .fab {transition: none}
+}
+/* a screen that paints its own colours would paint the drawings away: they keep the colour of the words */
+@media (forced-colors: active) {
+    .ico, .notice::before, .stale::before, .list .item-link .item-inner:before {forced-color-adjust: none; background-color: CanvasText}
+}

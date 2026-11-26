@@ -1,0 +1,3 @@
+# The files from other projects are kept byte for byte: git must not change their line endings on any computer,
+# or the checksums in README.md would no longer be true (tests/test_citizen_app.py compares them).
+* -text

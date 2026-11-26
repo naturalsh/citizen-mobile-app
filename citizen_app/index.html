@@ -1,0 +1,86 @@
+<!doctype html>
+<!-- The citizen app of Nature Shield: where the safe places are and how to walk there.
+     Nothing in this file may be an inline script or an inline style: the service forbids both for citizens
+     (Content-Security-Policy), so that text from outside can never run as code.
+     The look is Framework7's stylesheet (vendor/README.md) with our own mobile-first rules on top (app.css). -->
+<html lang="en" class="ios">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4a2a7a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Safe places">
+<meta name="format-detection" content="telephone=yes">
+<meta name="robots" content="noindex">
+<title>Safe places · Nature Shield</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
+<link rel="stylesheet" href="vendor/framework7.min.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app">
+    <button id="exercise" class="exercise" type="button" hidden></button>
+
+    <header class="top">
+        <h1 id="name">Safe places</h1>
+        <button id="install-btn" class="round install-btn" type="button" aria-label="Install app" hidden><span class="ico ico-install" aria-hidden="true"></span></button>
+        <button id="view-toggle" class="round view-toggle" type="button" aria-label="Mobile view" aria-pressed="false"><span class="ico ico-phone" aria-hidden="true"></span></button>
+        <span class="language-box">
+            <span class="ico ico-globe" aria-hidden="true"></span>
+            <select id="language" class="language" aria-label="Language"></select>
+        </span>
+        <button id="about" class="round" type="button" aria-label="About and legend"><span class="ico ico-info" aria-hidden="true"></span></button>
+        <a id="call" class="button button-fill call" href="tel:112" aria-label="Call 112">112</a>
+    </header>
+
+    <p id="notice" class="notice" hidden></p>
+    <p id="stale" class="stale" role="status" hidden></p>
+
+    <main class="stage">
+        <div id="map" class="map"></div>
+        <div id="hint" class="hint" hidden></div>
+        <div id="map-fabs" class="map-fabs" hidden>
+            <button id="fab-fit" class="fab" type="button" aria-label="Recenter map" hidden><span class="ico ico-map" aria-hidden="true"></span></button>
+            <button id="fab-gps" class="fab" type="button" aria-label="Use my location"><span class="ico ico-locate" aria-hidden="true"></span></button>
+        </div>
+        <p id="toast" class="toast" role="status" hidden></p>
+    </main>
+
+    <section id="sheet" class="sheet">
+        <p class="wait">Loading… · Yükleniyor… · Φόρτωση…</p>
+    </section>
+
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Navigation">
+        <button id="nav-map" class="nav-btn" type="button" data-nav="map">
+            <span class="ico ico-map" aria-hidden="true"></span>
+            <span class="nav-label">Map</span>
+        </button>
+        <button id="nav-assembly" class="nav-btn" type="button" data-nav="assembly">
+            <span class="ico ico-shelter" aria-hidden="true"></span>
+            <span class="nav-label">Assembly</span>
+        </button>
+        <button id="nav-medical" class="nav-btn" type="button" data-nav="medical">
+            <span class="ico ico-medical" aria-hidden="true"></span>
+            <span class="nav-label">Hospitals</span>
+        </button>
+    </nav>
+</div>
+
+<p id="live" class="unseen" aria-live="polite"></p>
+<dialog id="dialog" class="dialog"></dialog>
+
+<noscript>
+    <p class="noscript">This page needs JavaScript. In danger call 112.<br>
+    Bu sayfa JavaScript gerektirir. Tehlikede 112'yi arayın.<br>
+    Η σελίδα χρειάζεται JavaScript. Σε κίνδυνο καλέστε το 112.</p>
+</noscript>
+
+<script src="vendor/maplibre-gl.js" defer></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
