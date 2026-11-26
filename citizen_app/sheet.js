@@ -58,7 +58,9 @@ function handle(view, on) {
         h('span', {class: 'grabber', 'aria-hidden': 'true'}),
         h('span', {class: 'handle-row'},
             h('span', {class: 'summary'}, h('span', {class: 'summary-name', text: name}), more && ' ', more && h('span', {class: 'summary-more', text: more})),
-            h('span', {class: 'handle-word'}, t(view.open ? 'showMap' : 'showDetails'), glyph(view.open ? 'down' : 'up'))));
+            h('span', {class: 'handle-word'},
+                view.open ? h('span', {class: 'unseen', text: t('showMap')}) : t('showDetails'),
+                glyph(view.open ? 'down' : 'up'))));
 }
 
 function where(view, on) {
